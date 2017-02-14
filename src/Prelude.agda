@@ -62,6 +62,12 @@ module ≡ where
 
   subst : ∀ {A : Set} {x y} (Ψ : A → Set) (ρ : x ≡ y) → Ψ x → Ψ y
   subst Ψ refl x = x
+
+  ap : ∀ {A B : Set} {x₀ x₁} (f : A → B) → x₀ ≡ x₁ → f x₀ ≡ f x₁
+  ap f refl = refl
+
+  ap² : ∀ {A B C : Set} {x₀ x₁ y₀ y₁} (f : A → B → C) → x₀ ≡ x₁ → y₀ ≡ y₁ → f x₀ y₀ ≡ f x₁ y₁
+  ap² f refl refl = refl
 open ≡ public
   using (_≡_)
   using (refl)
