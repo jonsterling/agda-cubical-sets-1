@@ -16,7 +16,7 @@ mutual
       : ∀ {xs}
       → x ∈ x ∷ xs
     step
-      : ∀ {y xs}
+      : ∀ {xs} y
       → (φ : x ≢ y) -- only allow refs to the first occurrence of x (shadowing)
       → (ε : x ∈ xs)
       → x ∈ y ∷ xs
@@ -29,7 +29,7 @@ mutual
 record Names (X : Symbols) : Set where
   constructor pt
   field
-    {x} : String
+    x : String
     el : x ∈ X
 open Names public
 
@@ -77,12 +77,12 @@ module DeMorgan where
       → rel a a
     rel-seq
       : ∀ {a b c}
-      → rel a b
-      → rel b c
+      → (p : rel a b)
+      → (q : rel b c)
       → rel a c
     rel-inv
       : ∀ {a b}
-      → rel a b
+      → (p : rel a b)
       → rel b a
     or-abs
       : ∀ {a b}
@@ -99,6 +99,11 @@ module DeMorgan where
     or-ide
       : ∀ {a}
       → rel (or a a) a
+    or-rsp
+      : ∀ {a₀ a₁ b₀ b₁}
+      → rel a₀ a₁
+      → rel b₀ b₁
+      → rel (or a₀ b₀) (or a₁ b₁)
     or-uni
       : ∀ {a}
       → rel (or a #0) a
@@ -117,6 +122,11 @@ module DeMorgan where
     and-ide
       : ∀ {a}
       → rel (and a a) a
+    and-rsp
+      : ∀ {a₀ a₁ b₀ b₁}
+      → rel a₀ a₁
+      → rel b₀ b₁
+      → rel (and a₀ b₀) (and a₁ b₁)
     and-uni
       : ∀ {a}
       → rel (and a #1) a
@@ -126,6 +136,10 @@ module DeMorgan where
     not-inv
       : ∀ {a}
       → rel (not (not a)) a
+    not-rsp
+      : ∀ {a₀ a₁}
+      → rel a₀ a₁
+      → rel (not a₀) (not a₁)
 
   data Sub (J : Symbols) : (I : Symbols) → Set where
     stop
@@ -145,9 +159,9 @@ module DeMorgan where
 
   mutual
     look : ∀ {I J} → Sub J I → Names I → DeMorgan J
-    look (stop) (pt ())
-    look (step 𝔡 f) (pt (stop)) = 𝔡
-    look (step 𝔡 f) (pt (step φ ε)) = look f (pt ε)
+    look (stop) (pt _ ())
+    look (step 𝔡 _) (pt _ (stop)) = 𝔡
+    look (step _ f) (pt x (step _ _ ε)) = look f (pt x ε)
     look (loop) ε = ret ε
     look (f ≫=≫ g) ε = look f ε ≫= g
 
@@ -161,6 +175,39 @@ module DeMorgan where
 
   _≃_ : ∀ {J I} (f g : Sub J I) → Set
   f ≃ g = ∀ {𝒾} → rel (look f 𝒾) (look g 𝒾)
+
+  ≫=-λ
+    : {I J : Symbols} {a b : DeMorgan I}
+    → (f : Sub J I)
+    → rel a b
+    → rel (a ≫= f) (b ≫= f)
+  ≫=-λ f rel-idn = rel-idn
+  ≫=-λ f (rel-seq p q) = rel-seq (≫=-λ f p) (≫=-λ f q)
+  ≫=-λ f (rel-inv p) = rel-inv (≫=-λ f p)
+  ≫=-λ f or-abs = or-abs
+  ≫=-λ f or-ass = or-ass
+  ≫=-λ f or-com = or-com
+  ≫=-λ f or-dis = or-dis
+  ≫=-λ f or-ide = or-ide
+  ≫=-λ f (or-rsp p q) = or-rsp (≫=-λ f p) (≫=-λ f q)
+  ≫=-λ f or-uni = or-uni
+  ≫=-λ f and-abs = and-abs
+  ≫=-λ f and-ass = and-ass
+  ≫=-λ f and-com = and-com
+  ≫=-λ f and-dis = and-dis
+  ≫=-λ f and-ide = and-ide
+  ≫=-λ f (and-rsp p q) = and-rsp (≫=-λ f p) (≫=-λ f q)
+  ≫=-λ f and-uni = and-uni
+  ≫=-λ f not-dis = not-dis
+  ≫=-λ f not-inv = not-inv
+  ≫=-λ f (not-rsp p) = not-rsp (≫=-λ f p)
+
+  postulate
+    ≫=-ρ
+      : ∀ {I J} a
+      → (f g : Sub J I)
+      → f ≃ g
+      → rel (a ≫= f) (a ≫= g)
 open DeMorgan public
   hiding (module DeMorgan)
 
@@ -213,14 +260,14 @@ record □Set : Set where
 open □Set public
 
 -- FIXME
-□_ : Symbols → □Set
+□ : Symbols → □Set
 fib₀ (□ I) J = Sub I J
 fib₁ (□ I) J = _≃_
 coe₀ (□ I) = _≫=≫_
-coe₁ (□ I) k p {𝓁} = {!!}
+coe₁ (□ I) {J}{K}{f}{g} k p {𝓁} = ≫=-ρ (look k 𝓁) f g p
 fib-idn (□ I) = rel-idn
-fib-seq (□ I) p q {𝓁} = rel-seq (p {𝓁}) (q {𝓁})
-fib-inv (□ I) p {𝓁} = rel-inv (p {𝓁})
+fib-seq (□ I) p q = rel-seq p q
+fib-inv (□ I) p = rel-inv p
 coe-idn (□ I) = rel-idn
-coe-seq (□ I) f g {𝒿} = {!!}
-coe-rel (□ I) φ {ℓ} = {!!}
+coe-seq (□ I) f g = {!!}
+coe-rel (□ I) {A = A} φ = ≫=-λ A φ
