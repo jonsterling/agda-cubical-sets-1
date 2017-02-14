@@ -316,14 +316,6 @@ coe-idn (□ I) = rel-idn refl
 coe-seq (□ I) {A = A} f g {𝒾} = rel-idn (≫=-α (look g 𝒾) f A)
 coe-rel (□ I) {A = A} φ = ≫=-λ A φ
 
-restrict : ∀ {I} → DeMorgan I → Bool
-restrict (var x) = true
-restrict #0 = false
-restrict #1 = false
-restrict (or a b) = Bool.and (restrict a) (restrict b)
-restrict (and a b) = Bool.and (restrict a) (restrict b)
-restrict (not a) = restrict a
-
 data Circle (I : Symbols) : Set where
   base : Circle I
   loop : (φ : DeMorgan I) → Circle I
@@ -354,21 +346,21 @@ fib-seq circle {A = base} {loop φ₀} {loop φ₁} (T.inr a) (T.inl (b , c)) = 
 fib-seq circle {A = base} {loop φ₀} {loop φ₁} (T.inr a) (T.inr b) = T.inr (rel-seq (rel-inv b) a)
 fib-seq circle {A = loop φ₀} {base} {base} p q = p
 fib-seq circle {A = loop φ₀} {base} {loop φ₁} p q = T.inl (p , q)
-fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inl (T.inl a , b)) q = T.inl a
-fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inl (T.inr a , b)) q = T.inr a
-fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inr a) (T.inl b) = T.inl (rel-seq a b)
-fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inr a) (T.inr b) = T.inr (rel-seq a b)
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inl (a , b)) (T.inl (c , d)) = T.inl (a , d)
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inl (a , T.inl b)) (T.inr c) = T.inl (a , T.inl (rel-seq (rel-inv c) b))
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inl (a , T.inr b)) (T.inr c) = T.inl (a , T.inr (rel-seq (rel-inv c) b))
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inr a) (T.inl (T.inl b , c)) = T.inl (T.inl (rel-seq a b) , c)
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inr a) (T.inl (T.inr b , c)) = T.inl (T.inr (rel-seq a b) , c)
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inr a) (T.inr b) = T.inr (rel-seq a b)
+fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inl (T.inl p , q)) r = T.inl p
+fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inl (T.inr p , q)) r = T.inr p
+fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inr p) (T.inl q) = T.inl (rel-seq p q)
+fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inr p) (T.inr q) = T.inr (rel-seq p q)
+fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inl (p , q)) (T.inl (r , s)) = T.inl (p , s)
+fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inl (p , T.inl q)) (T.inr r) = T.inl (p , T.inl (rel-seq (rel-inv r) q))
+fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inl (p , T.inr q)) (T.inr r) = T.inl (p , T.inr (rel-seq (rel-inv r) q))
+fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inr p) (T.inl (T.inl q , r)) = T.inl (T.inl (rel-seq p q) , r)
+fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inr p) (T.inl (T.inr q , r)) = T.inl (T.inr (rel-seq p q) , r)
+fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inr p) (T.inr q) = T.inr (rel-seq p q)
 fib-inv circle {A = base} {base} p = *
 fib-inv circle {A = base} {loop φ₁} p = p
 fib-inv circle {A = loop φ₀} {base} p = p
-fib-inv circle {A = loop φ₀} {loop φ₁} (T.inl (a , b)) = T.inl (b , a)
-fib-inv circle {A = loop φ₀} {loop φ₁} (T.inr b) = T.inr (rel-inv b)
+fib-inv circle {A = loop φ₀} {loop φ₁} (T.inl (p , q)) = T.inl (q , p)
+fib-inv circle {A = loop φ₀} {loop φ₁} (T.inr p) = T.inr (rel-inv p)
 coe-idn circle = {!!}
 coe-seq circle = {!!}
 coe-rel circle {A = base} k = *
