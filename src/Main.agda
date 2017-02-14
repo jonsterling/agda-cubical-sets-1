@@ -54,8 +54,8 @@ open ≅
   using (_≅_)
 
 module DeMorgan where
-  -- infixl 0 _≫=_
-  -- infixr 0 _≫=≫_
+  infixl 0 _≫=_
+  infixr 0 _≫=≫_
 
   data DeMorgan (X : Symbols) : Set where
     ret : (x : Names X) → DeMorgan X
