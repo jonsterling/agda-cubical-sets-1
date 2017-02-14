@@ -7,9 +7,8 @@ open import Prelude
 infix  1 _∈_
 infix  0 _⇔_
 
-data Symbols : Set where
-  [] : Symbols
-  _∷_ : (x : String) (xs : Symbols) → Symbols
+Symbols : Set
+Symbols = List String
 
 mutual
   data _∈_ (x : String) : Symbols → Set where
