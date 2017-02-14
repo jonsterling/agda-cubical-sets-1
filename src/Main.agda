@@ -146,6 +146,10 @@ module DeMorgan where
       → rel a₀ a₁
       → rel (not a₀) (not a₁)
 
+  postulate
+    -- FIXME
+    not-rel-#0-#1 : ∀ {I} → ¬ rel {I} #0 #1
+
   data Sub (J : Symbols) : (I : Symbols) → Set where
     stop
       : Sub J []
@@ -316,52 +320,74 @@ coe-idn (□ I) = rel-idn refl
 coe-seq (□ I) {A = A} f g {𝒾} = rel-idn (≫=-α (look g 𝒾) f A)
 coe-rel (□ I) {A = A} φ = ≫=-λ A φ
 
-data Circle (I : Symbols) : Set where
-  base : Circle I
-  loop : (φ : DeMorgan I) → Circle I
+data Interval (I : Symbols) : Set where
+  east : Interval I
+  west : Interval I
+  step : (φ : DeMorgan I) → Interval I
 
-circle : □Set
-fib₀ circle = Circle
-fib₁ circle I base base = T.𝟙
-fib₁ circle I base (loop φ) = rel φ #0 T.⊕ rel φ #1
-fib₁ circle I (loop φ) base = rel φ #0 T.⊕ rel φ #1
-fib₁ circle I (loop φ₀) (loop φ₁) = ((rel φ₀ #0 T.⊕ rel φ₀ #1) T.⊗ (rel φ₁ #0 T.⊕ rel φ₁ #1)) T.⊕ rel φ₀ φ₁
-coe₀ circle f base = base
-coe₀ circle f (loop φ) = loop (φ ≫= {!f!})
-coe₁ circle {A = base} {base} f p = *
-coe₁ circle {A = base} {loop φ} f (T.inl a) = T.inl (#0-≫= {!!} a)
-coe₁ circle {A = base} {loop φ} f (T.inr b) = T.inr (#1-≫= {!!} b)
-coe₁ circle {A = loop φ} {base} f (T.inl a) = T.inl (#0-≫= {!!} a)
-coe₁ circle {A = loop φ} {base} f (T.inr b) = T.inr (#1-≫= {!!} b)
-coe₁ circle {A = loop φ₀} {loop φ₁} f (T.inl a) = {!!}
-coe₁ circle {A = loop φ₀} {loop φ₁} f (T.inr b) = T.inr (≫=-λ {!!} b)
-fib-idn circle {A = base} = *
-fib-idn circle {A = loop φ} = T.inr (rel-idn refl)
-fib-seq circle {A = base} {base} {base} p q = *
-fib-seq circle {A = base} {base} {loop φ₁} p q = q
-fib-seq circle {A = base} {loop φ₀} {base} p q = *
-fib-seq circle {A = base} {loop φ₀} {loop φ₁} (T.inl a) (T.inl (b , c)) = c
-fib-seq circle {A = base} {loop φ₀} {loop φ₁} (T.inl a) (T.inr b) = T.inl (rel-seq (rel-inv b) a)
-fib-seq circle {A = base} {loop φ₀} {loop φ₁} (T.inr a) (T.inl (b , c)) = c
-fib-seq circle {A = base} {loop φ₀} {loop φ₁} (T.inr a) (T.inr b) = T.inr (rel-seq (rel-inv b) a)
-fib-seq circle {A = loop φ₀} {base} {base} p q = p
-fib-seq circle {A = loop φ₀} {base} {loop φ₁} p q = T.inl (p , q)
-fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inl (T.inl p , q)) r = T.inl p
-fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inl (T.inr p , q)) r = T.inr p
-fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inr p) (T.inl q) = T.inl (rel-seq p q)
-fib-seq circle {A = loop φ₀} {loop φ₁} {base} (T.inr p) (T.inr q) = T.inr (rel-seq p q)
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inl (p , q)) (T.inl (r , s)) = T.inl (p , s)
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inl (p , T.inl q)) (T.inr r) = T.inl (p , T.inl (rel-seq (rel-inv r) q))
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inl (p , T.inr q)) (T.inr r) = T.inl (p , T.inr (rel-seq (rel-inv r) q))
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inr p) (T.inl (T.inl q , r)) = T.inl (T.inl (rel-seq p q) , r)
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inr p) (T.inl (T.inr q , r)) = T.inl (T.inr (rel-seq p q) , r)
-fib-seq circle {A = loop φ₀} {loop φ₁} {loop φ₂} (T.inr p) (T.inr q) = T.inr (rel-seq p q)
-fib-inv circle {A = base} {base} p = *
-fib-inv circle {A = base} {loop φ₁} p = p
-fib-inv circle {A = loop φ₀} {base} p = p
-fib-inv circle {A = loop φ₀} {loop φ₁} (T.inl (p , q)) = T.inl (q , p)
-fib-inv circle {A = loop φ₀} {loop φ₁} (T.inr p) = T.inr (rel-inv p)
-coe-idn circle = {!!}
-coe-seq circle = {!!}
-coe-rel circle {A = base} k = *
-coe-rel circle {A = loop φ} k = {!!}
+interval : □Set
+fib₀ interval = Interval
+fib₁ interval I east east = T.𝟙
+fib₁ interval I west west = T.𝟙
+fib₁ interval I east (step φ₁) = rel φ₁ #0
+fib₁ interval I west (step φ₁) = rel φ₁ #1
+fib₁ interval I (step φ₀) east = rel φ₀ #0
+fib₁ interval I (step φ₀) west = rel φ₀ #1
+fib₁ interval I (step φ₀) (step φ₁) = rel φ₀ φ₁
+fib₁ interval I _ _ = T.𝟘
+coe₀ interval f east = east
+coe₀ interval f west = west
+coe₀ interval f (step φ) = {!!}
+coe₁ interval {A = east} {east} f p = *
+coe₁ interval {A = east} {west} f ()
+coe₁ interval {A = east} {step φ₁} f p = {!!}
+coe₁ interval {A = west} {east} f ()
+coe₁ interval {A = west} {west} f p = *
+coe₁ interval {A = west} {step φ₁} f p = {!!}
+coe₁ interval {A = step φ₀} {east} f p = {!!}
+coe₁ interval {A = step φ₀} {west} f p = {!!}
+coe₁ interval {A = step φ₀} {step φ₁} f p = {!!}
+fib-idn interval {A = east} = *
+fib-idn interval {A = west} = *
+fib-idn interval {A = step φ} = rel-idn refl
+fib-seq interval {A = east} {east} {east} p q = *
+fib-seq interval {A = east} {east} {west} p ()
+fib-seq interval {A = east} {east} {step φ} p q = q
+fib-seq interval {A = east} {west} {C} () q
+fib-seq interval {A = east} {step φ₁} {east} p q = *
+fib-seq interval {A = east} {step φ₁} {west} p q = not-rel-#0-#1 (rel-seq (rel-inv p) q)
+fib-seq interval {A = east} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
+fib-seq interval {A = west} {east} {C} () q
+fib-seq interval {A = west} {west} {east} p ()
+fib-seq interval {A = west} {west} {west} p q = *
+fib-seq interval {A = west} {west} {step φ} p q = q
+fib-seq interval {A = west} {step φ₁} {east} p q = not-rel-#0-#1 (rel-seq (rel-inv q) p)
+fib-seq interval {A = west} {step φ₁} {west} p q = *
+fib-seq interval {A = west} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
+fib-seq interval {A = step φ₀} {east} {east} p q = p
+fib-seq interval {A = step φ₀} {east} {west} p ()
+fib-seq interval {A = step φ₀} {east} {step φ₂} p q = rel-seq p (rel-inv q)
+fib-seq interval {A = step φ₀} {west} {east} p ()
+fib-seq interval {A = step φ₀} {west} {west} p q = p
+fib-seq interval {A = step φ₀} {west} {step φ₂} p q = rel-seq p (rel-inv q)
+fib-seq interval {A = step φ₀} {step φ₁} {east} p q = rel-seq p q
+fib-seq interval {A = step φ₀} {step φ₁} {west} p q = rel-seq p q
+fib-seq interval {A = step φ₀} {step φ₁} {step φ₂} p q = rel-seq p q
+fib-inv interval {A = east} {east} p = *
+fib-inv interval {A = east} {west} ()
+fib-inv interval {A = east} {step φ₁} p = p
+fib-inv interval {A = west} {east} ()
+fib-inv interval {A = west} {west} p = *
+fib-inv interval {A = west} {step φ₁} p = p
+fib-inv interval {A = step φ₀} {east} p = p
+fib-inv interval {A = step φ₀} {west} p = p
+fib-inv interval {A = step φ₀} {step φ₁} p = rel-inv p
+coe-idn interval {A = east} = *
+coe-idn interval {A = west} = *
+coe-idn interval {A = step φ} = {!!}
+coe-seq interval {A = east} f g = *
+coe-seq interval {A = west} f g = *
+coe-seq interval {A = step φ} f g = {!!}
+coe-rel interval {A = east} α = *
+coe-rel interval {A = west} α = *
+coe-rel interval {A = step φ} α = {!!}
