@@ -4,15 +4,51 @@ module Main where
 
 open import Prelude
 
+infix  0 _∉_
 infix  1 _∈_
 infix  0 _⇔_
+
+mutual
+  data Symbols : Set where
+    nil : Symbols
+    cons : (x : String) (xs : Symbols) (φ : x ∉ xs) → Symbols
+
+  _∉_ : String → Symbols → Set
+  x ∉ nil = T.𝟙
+  x ∉ cons y xs _ with x String.≟ y
+  … | no  _ = x ∉ xs
+  … | yes _ = T.𝟘
+
+data _∈_ (x : String) : Symbols → Set where
+  stop
+    : ∀ {xs φ}
+    → x ∈ cons x xs φ
+  step
+    : ∀ {y xs φ}
+    → x ∈ xs
+    → x ∈ cons y xs φ
+
+record Names (X : Symbols) : Set where
+  constructor pt
+  field
+    {x} : String
+    el : x ∈ X
+open Names public
+
+record _⇔_ (A B : Set) : Set where
+  no-eta-equality
+  constructor eqv
+  field
+    into : A → B
+    from : B → A
+open _⇔_ public
 
 module DeMorgan where
   infixl 0 _≫=_
   infixr 0 _≫=≫_
 
-  data DeMorgan (X : Set) : Set where
-    ret : (x : X) → DeMorgan X
+  data DeMorgan (X : Symbols) : Set where
+    ret : (x : Names X) → DeMorgan X
     #0 : DeMorgan X
     #1 : DeMorgan X
     or : (a b : DeMorgan X) → DeMorgan X
@@ -75,7 +111,11 @@ module DeMorgan where
       : ∀ {a}
       → rel (not (not a)) a
 
-  _≫=_ : {A B : Set} → DeMorgan A → (A → DeMorgan B) → DeMorgan B
+  -- FIXME: defunctionalize
+  Sub : Symbols → Symbols → Set
+  Sub J I = Names I → DeMorgan J
+
+  _≫=_ : ∀ {I J} → DeMorgan I → Sub J I → DeMorgan J
   ret x ≫= f = f x
   #0 ≫= f = #0
   #1 ≫= f = #1
@@ -83,56 +123,28 @@ module DeMorgan where
   and a b ≫= f = and (a ≫= f) (b ≫= f)
   not a ≫= f = not (a ≫= f)
 
-  _≫=≫_ : {A B C : Set} → (A → DeMorgan B) → (B → DeMorgan C) → (A → DeMorgan C)
+  _≫=≫_ : ∀ {I J K} → Sub J I → Sub K J → Sub K I
   (f ≫=≫ g) a = f a ≫= g
 open DeMorgan public
   hiding (module DeMorgan)
 
-data _∈_ {X : Set} (x : X) : List X → Set where
-  stop
-    : ∀ {xs}
-    → x ∈ x ∷ xs
-  step
-    : ∀ {y xs}
-    → x ∈ xs
-    → x ∈ y ∷ xs
-
-record _⇔_ (A B : Set) : Set where
-  no-eta-equality
-  constructor eqv
-  field
-    into : A → B
-    from : B → A
-open _⇔_ public
-
 module ≅ where
-  module _ {X : Set} where
-    _≅_ : (xs ys : List X) → Set
-    xs ≅ ys = ∀ {a} → a ∈ xs ⇔ a ∈ ys
+  _≅_ : Symbols → Symbols → Set
+  xs ≅ ys = ∀ {a} → a ∈ xs ⇔ a ∈ ys
 
-    idn : ∀ {xs} → xs ≅ xs
-    into idn a∈xs = a∈xs
-    from idn a∈xs = a∈xs
+  idn : ∀ {xs} → xs ≅ xs
+  into idn a∈xs = a∈xs
+  from idn a∈xs = a∈xs
 
-    seq : ∀ {xs ys zs} → xs ≅ ys → ys ≅ zs → xs ≅ zs
-    into (seq xs≅ys ys≅zs) a∈xs = into ys≅zs (into xs≅ys a∈xs)
-    from (seq xs≅ys ys≅zs) a∈zs = from xs≅ys (from ys≅zs a∈zs)
+  seq : ∀ {xs ys zs} → xs ≅ ys → ys ≅ zs → xs ≅ zs
+  into (seq xs≅ys ys≅zs) a∈xs = into ys≅zs (into xs≅ys a∈xs)
+  from (seq xs≅ys ys≅zs) a∈zs = from xs≅ys (from ys≅zs a∈zs)
 
-    inv : ∀ {xs ys} → xs ≅ ys → ys ≅ xs
-    into (inv xs≅ys) a∈ys = from xs≅ys a∈ys
-    from (inv xs≅ys) a∈xs = into xs≅ys a∈xs
+  inv : ∀ {xs ys} → xs ≅ ys → ys ≅ xs
+  into (inv xs≅ys) a∈ys = from xs≅ys a∈ys
+  from (inv xs≅ys) a∈xs = into xs≅ys a∈xs
 open ≅
   using (_≅_)
-
-Symbols : Set
-Symbols = List String
-
-record Names (X : Symbols) : Set where
-  constructor pt
-  field
-    {x} : String
-    el : x ∈ X
-open Names public
 
 record □Set : Set where
   no-eta-equality
@@ -146,11 +158,11 @@ record □Set : Set where
   field
     coe₀
       : ∀ {I J}
-      → (f : Names J → DeMorgan (Names I))
+      → (f : Sub I J)
       → (a : fib₀ I) → fib₀ J
     coe₁
       : ∀ {I J A B}
-      → (f : Names J → DeMorgan (Names I))
+      → (f : Sub I J)
       → (p : fib₁ I A B)
       → fib₁ J (coe₀ f A) (coe₀ f B)
   field
@@ -172,19 +184,19 @@ record □Set : Set where
       → fib₁ I (coe₀ ret A) A
     coe-seq
       : ∀ {I J K A}
-      → (f : Names J → DeMorgan (Names I))
-      → (g : Names K → DeMorgan (Names J))
+      → (f : Sub I J)
+      → (g : Sub J K)
       → fib₁ K (coe₀ (g ≫=≫ f) A) (coe₀ g (coe₀ f A))
     coe-rel
       : ∀ {I J A}
-      → {f g : Names J → DeMorgan (Names I)}
+      → {f g : Sub I J}
       → (φ : ∀ {𝒿} → rel (f 𝒿) (g 𝒿))
       → fib₁ J (coe₀ f A) (coe₀ g A)
 open □Set public
 
 -- FIXME
 □_ : Symbols → □Set
-fib₀ (□ I) J = Names J → DeMorgan (Names I)
+fib₀ (□ I) J = Sub I J
 fib₁ (□ I) J f g = ∀ {𝒿} → rel (f 𝒿) (g 𝒿)
 coe₀ (□ I) = _≫=≫_
 coe₁ (□ I) k p {𝓁} = {!!}
