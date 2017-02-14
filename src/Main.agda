@@ -17,8 +17,8 @@ mutual
       → x ∈ x ∷ xs
     step
       : ∀ {y xs}
-      → (ε : x ∈ xs)
       → (φ : x ≢ y) -- only allow refs to the first occurrence of x (shadowing)
+      → (ε : x ∈ xs)
       → x ∈ y ∷ xs
 
   _≢_ : String → String → Set
@@ -151,7 +151,7 @@ module DeMorgan where
     look : ∀ {I J} → Sub J I → Names I → DeMorgan J
     look (stop) (pt ())
     look (step 𝔡 f) (pt (stop)) = 𝔡
-    look (step 𝔡 f) (pt (step ε φ)) = look f (pt ε)
+    look (step 𝔡 f) (pt (step φ ε)) = look f (pt ε)
     look (loop) ε = ret ε
     look (f ≫=≫ g) ε = look f ε ≫= g
 
