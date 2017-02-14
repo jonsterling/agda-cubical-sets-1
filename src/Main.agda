@@ -143,10 +143,6 @@ module DeMorgan where
       → (g : Sub J K)
       → Sub J I
 
-  postulate
-    dem-wkn : ∀ {𝒾 I} → DeMorgan I → DeMorgan (𝒾 ∷ I)
-    sub-wkn : ∀ {𝒿 I J} → Sub J I → Sub (𝒿 ∷ J) I
-
   mutual
     look : ∀ {I J} → Sub J I → Names I → DeMorgan J
     look (stop) (pt ())
