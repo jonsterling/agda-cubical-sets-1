@@ -73,8 +73,9 @@ module DeMorgan where
 
   data rel {X} : (a b : DeMorgan X) → Set where
     rel-idn
-      : ∀ {a}
-      → rel a a
+      : ∀ {a b}
+      → a ≡ b
+      → rel a b
     rel-seq
       : ∀ {a b c}
       → (p : rel a b)
@@ -181,7 +182,7 @@ module DeMorgan where
     → (f : Sub J I)
     → rel a b
     → rel (a ≫= f) (b ≫= f)
-  ≫=-λ f rel-idn = rel-idn
+  ≫=-λ f (rel-idn refl) = rel-idn refl
   ≫=-λ f (rel-seq p q) = rel-seq (≫=-λ f p) (≫=-λ f q)
   ≫=-λ f (rel-inv p) = rel-inv (≫=-λ f p)
   ≫=-λ f or-abs = or-abs
@@ -208,6 +209,19 @@ module DeMorgan where
       → (f g : Sub J I)
       → f ≃ g
       → rel (a ≫= f) (a ≫= g)
+
+  ≫=-α
+    : ∀ {I J K}
+    → (a : DeMorgan I)
+    → (f : Sub J I)
+    → (g : Sub K J)
+    → ((a ≫= f) ≫= g) ≡ (a ≫= (f ≫=≫ g))
+  ≫=-α (ret _) f g = refl
+  ≫=-α #0 f g = refl
+  ≫=-α #1 f g = refl
+  ≫=-α (or a b) f g = ≡.ap² or (≫=-α a f g) (≫=-α b f g)
+  ≫=-α (and a b) f g = ≡.ap² and (≫=-α a f g) (≫=-α b f g)
+  ≫=-α (not a) f g = ≡.ap not (≫=-α a f g)
 open DeMorgan public
   hiding (module DeMorgan)
 
@@ -265,9 +279,9 @@ fib₀ (□ I) J = Sub I J
 fib₁ (□ I) J = _≃_
 coe₀ (□ I) = _≫=≫_
 coe₁ (□ I) {J}{K}{f}{g} k p {𝓁} = ≫=-ρ (look k 𝓁) f g p
-fib-idn (□ I) = rel-idn
+fib-idn (□ I) = rel-idn refl
 fib-seq (□ I) p q = rel-seq p q
 fib-inv (□ I) p = rel-inv p
-coe-idn (□ I) = rel-idn
-coe-seq (□ I) f g = {!!}
+coe-idn (□ I) = rel-idn refl
+coe-seq (□ I) {A = A} f g {𝒾} = rel-idn (≫=-α (look g 𝒾) f A)
 coe-rel (□ I) {A = A} φ = ≫=-λ A φ
