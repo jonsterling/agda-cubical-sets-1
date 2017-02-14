@@ -43,6 +43,24 @@ record _⇔_ (A B : Set) : Set where
     from : B → A
 open _⇔_ public
 
+module ≅ where
+  _≅_ : Symbols → Symbols → Set
+  xs ≅ ys = ∀ {a} → a ∈ xs ⇔ a ∈ ys
+
+  idn : ∀ {xs} → xs ≅ xs
+  into idn a∈xs = a∈xs
+  from idn a∈xs = a∈xs
+
+  seq : ∀ {xs ys zs} → xs ≅ ys → ys ≅ zs → xs ≅ zs
+  into (seq xs≅ys ys≅zs) a∈xs = into ys≅zs (into xs≅ys a∈xs)
+  from (seq xs≅ys ys≅zs) a∈zs = from xs≅ys (from ys≅zs a∈zs)
+
+  inv : ∀ {xs ys} → xs ≅ ys → ys ≅ xs
+  into (inv xs≅ys) a∈ys = from xs≅ys a∈ys
+  from (inv xs≅ys) a∈xs = into xs≅ys a∈xs
+open ≅
+  using (_≅_)
+
 module DeMorgan where
   infixl 0 _≫=_
   infixr 0 _≫=≫_
@@ -127,24 +145,6 @@ module DeMorgan where
   (f ≫=≫ g) a = f a ≫= g
 open DeMorgan public
   hiding (module DeMorgan)
-
-module ≅ where
-  _≅_ : Symbols → Symbols → Set
-  xs ≅ ys = ∀ {a} → a ∈ xs ⇔ a ∈ ys
-
-  idn : ∀ {xs} → xs ≅ xs
-  into idn a∈xs = a∈xs
-  from idn a∈xs = a∈xs
-
-  seq : ∀ {xs ys zs} → xs ≅ ys → ys ≅ zs → xs ≅ zs
-  into (seq xs≅ys ys≅zs) a∈xs = into ys≅zs (into xs≅ys a∈xs)
-  from (seq xs≅ys ys≅zs) a∈zs = from xs≅ys (from ys≅zs a∈zs)
-
-  inv : ∀ {xs ys} → xs ≅ ys → ys ≅ xs
-  into (inv xs≅ys) a∈ys = from xs≅ys a∈ys
-  from (inv xs≅ys) a∈xs = into xs≅ys a∈xs
-open ≅
-  using (_≅_)
 
 record □Set : Set where
   no-eta-equality
