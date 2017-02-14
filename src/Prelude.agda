@@ -4,13 +4,22 @@ open import Agda.Builtin.Bool public
 open import Agda.Builtin.String public
 
 module T where
+  infix 0 ¬_
+
   data 𝟘 : Set where
 
-  absurd : {A : Set} → A → (A → 𝟘) → 𝟘
+  ¬_ : ∀ {a} → Set a → Set a
+  ¬ A = A → 𝟘
+
+  absurd : {A : Set} → A → ¬ ¬ A
   absurd a k = k a
 
   record 𝟙 : Set where
-    constructor tt
+    constructor *
+
+  instance
+    trivial : 𝟙
+    trivial = *
 
   record _⊗_ (A B : Set) : Set where
     constructor _,_
@@ -32,11 +41,18 @@ module T where
 
   syntax Σ A (λ x → B) = Σ[ A ∋ x ] B
 open T public
+  using (¬_)
+  using (*)
   using (_,_)
   using (_▸_)
 
 module ≡ where
   open import Agda.Builtin.Equality public
+
+  infix 4 _≢_
+
+  _≢_ : ∀ {a} {A : Set a} (x : A) → A → Set a
+  x ≢ y = ¬ (x ≡ y)
 
   seq : {A : Set} {a b c : A} → a ≡ b → b ≡ c → a ≡ c
   seq p refl = p
