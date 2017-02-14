@@ -1,6 +1,5 @@
 module Prelude where
 
-open import Agda.Builtin.Bool public
 open import Agda.Builtin.String public
 
 module T where
@@ -75,6 +74,22 @@ open ≡ public
 data Decidable (A : Set) : Set where
   no : (A → T.𝟘) → Decidable A
   yes : A → Decidable A
+
+module Bool where
+  open import Agda.Builtin.Bool public
+
+  and : Bool → Bool → Bool
+  and false q = false
+  and true q = q
+
+  T : Bool → Set
+  T false = T.𝟘
+  T true = T.𝟙
+open Bool public
+  hiding (module Bool)
+  using (Bool)
+  using (false)
+  using (true)
 
 module List where
   open import Agda.Builtin.List public
