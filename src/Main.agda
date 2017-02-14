@@ -64,7 +64,7 @@ module DeMorgan where
   infixr 0 _≫=≫_
 
   data DeMorgan (X : Symbols) : Set where
-    ret : (x : Names X) → DeMorgan X
+    var : (x : Names X) → DeMorgan X
     #0 : DeMorgan X
     #1 : DeMorgan X
     or : (a b : DeMorgan X) → DeMorgan X
@@ -163,11 +163,11 @@ module DeMorgan where
     look (stop) (pt _ ())
     look (step 𝔡 _) (pt _ (stop)) = 𝔡
     look (step _ f) (pt x (step _ _ ε)) = look f (pt x ε)
-    look (loop) ε = ret ε
+    look (loop) ε = var ε
     look (f ≫=≫ g) ε = look f ε ≫= g
 
     _≫=_ : ∀ {I J} → DeMorgan I → Sub J I → DeMorgan J
-    ret x ≫= f = look f x
+    var x ≫= f = look f x
     #0 ≫= f = #0
     #1 ≫= f = #1
     or a b ≫= f = or (a ≫= f) (b ≫= f)
@@ -216,7 +216,7 @@ module DeMorgan where
     → (f : Sub J I)
     → (g : Sub K J)
     → ((a ≫= f) ≫= g) ≡ (a ≫= (f ≫=≫ g))
-  ≫=-α (ret _) f g = refl
+  ≫=-α (var _) f g = refl
   ≫=-α #0 f g = refl
   ≫=-α #1 f g = refl
   ≫=-α (or a b) f g = ≡.ap² or (≫=-α a f g) (≫=-α b f g)
