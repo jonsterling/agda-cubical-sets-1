@@ -4,29 +4,21 @@ module Main where
 
 open import Prelude
 
-infix  0 _∉_
 infix  1 _∈_
 infix  0 _⇔_
 
-mutual
-  data Symbols : Set where
-    nil : Symbols
-    cons : (x : String) (xs : Symbols) (φ : x ∉ xs) → Symbols
-
-  _∉_ : String → Symbols → Set
-  x ∉ nil = T.𝟙
-  x ∉ cons y xs _ with x String.≟ y
-  … | no  _ = x ∉ xs
-  … | yes _ = T.𝟘
+data Symbols : Set where
+  [] : Symbols
+  _∷_ : (x : String) (xs : Symbols) → Symbols
 
 data _∈_ (x : String) : Symbols → Set where
   stop
-    : ∀ {xs φ}
-    → x ∈ cons x xs φ
+    : ∀ {xs}
+    → x ∈ x ∷ xs
   step
-    : ∀ {y xs φ}
-    → x ∈ xs
-    → x ∈ cons y xs φ
+    : ∀ {y xs}
+    → (ε : x ∈ xs)
+    → x ∈ y ∷ xs
 
 record Names (X : Symbols) : Set where
   constructor pt
@@ -62,8 +54,8 @@ open ≅
   using (_≅_)
 
 module DeMorgan where
-  infixl 0 _≫=_
-  infixr 0 _≫=≫_
+  -- infixl 0 _≫=_
+  -- infixr 0 _≫=≫_
 
   data DeMorgan (X : Symbols) : Set where
     ret : (x : Names X) → DeMorgan X
@@ -129,20 +121,44 @@ module DeMorgan where
       : ∀ {a}
       → rel (not (not a)) a
 
-  -- FIXME: defunctionalize
-  Sub : Symbols → Symbols → Set
-  Sub J I = Names I → DeMorgan J
+  data Sub (J : Symbols) : (I : Symbols) → Set where
+    stop
+      : Sub J []
+    step
+      : ∀ {𝒾 I}
+      → (𝔡 : DeMorgan J)
+      → (σ : Sub J I)
+      → Sub J (𝒾 ∷ I)
+    loop
+      : Sub J J
+    _≫=≫_
+      : ∀ {I K}
+      → (f : Sub K I)
+      → (g : Sub J K)
+      → Sub J I
 
-  _≫=_ : ∀ {I J} → DeMorgan I → Sub J I → DeMorgan J
-  ret x ≫= f = f x
-  #0 ≫= f = #0
-  #1 ≫= f = #1
-  or a b ≫= f = or (a ≫= f) (b ≫= f)
-  and a b ≫= f = and (a ≫= f) (b ≫= f)
-  not a ≫= f = not (a ≫= f)
+  postulate
+    dem-wkn : ∀ {𝒾 I} → DeMorgan I → DeMorgan (𝒾 ∷ I)
+    sub-wkn : ∀ {𝒿 I J} → Sub J I → Sub (𝒿 ∷ J) I
 
-  _≫=≫_ : ∀ {I J K} → Sub J I → Sub K J → Sub K I
-  (f ≫=≫ g) a = f a ≫= g
+  mutual
+    look : ∀ {I J} → Sub J I → Names I → DeMorgan J
+    look (stop) (pt ())
+    look (step 𝔡 f) (pt (stop)) = 𝔡
+    look (step 𝔡 f) (pt (step ε)) = look f (pt ε)
+    look (loop) ε = ret ε
+    look (f ≫=≫ g) ε = look f ε ≫= g
+
+    _≫=_ : ∀ {I J} → DeMorgan I → Sub J I → DeMorgan J
+    ret x ≫= f = look f x
+    #0 ≫= f = #0
+    #1 ≫= f = #1
+    or a b ≫= f = or (a ≫= f) (b ≫= f)
+    and a b ≫= f = and (a ≫= f) (b ≫= f)
+    not a ≫= f = not (a ≫= f)
+
+  _≃_ : ∀ {J I} (f g : Sub J I) → Set
+  f ≃ g = ∀ {𝒾} → rel (look f 𝒾) (look g 𝒾)
 open DeMorgan public
   hiding (module DeMorgan)
 
@@ -181,7 +197,7 @@ record □Set : Set where
   field
     coe-idn
       : ∀ {I A}
-      → fib₁ I (coe₀ ret A) A
+      → fib₁ I (coe₀ loop A) A
     coe-seq
       : ∀ {I J K A}
       → (f : Sub I J)
@@ -190,14 +206,14 @@ record □Set : Set where
     coe-rel
       : ∀ {I J A}
       → {f g : Sub I J}
-      → (φ : ∀ {𝒿} → rel (f 𝒿) (g 𝒿))
+      → (φ : f ≃ g)
       → fib₁ J (coe₀ f A) (coe₀ g A)
 open □Set public
 
 -- FIXME
 □_ : Symbols → □Set
 fib₀ (□ I) J = Sub I J
-fib₁ (□ I) J f g = ∀ {𝒿} → rel (f 𝒿) (g 𝒿)
+fib₁ (□ I) J = _≃_
 coe₀ (□ I) = _≫=≫_
 coe₁ (□ I) k p {𝓁} = {!!}
 fib-idn (□ I) = rel-idn
