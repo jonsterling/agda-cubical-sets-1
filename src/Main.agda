@@ -146,9 +146,36 @@ module DeMorgan where
       → rel a₀ a₁
       → rel (not a₀) (not a₁)
 
+  connect
+    : ∀ {I a b c}
+    → rel {I} a b
+    → rel {I} a c
+    → rel {I} b c
+  connect (rel-idn refl) q = q
+  connect (rel-seq p r) q = rel-seq (rel-inv r) (rel-seq (rel-inv p) q)
+  connect (rel-inv p) q = rel-seq p q
+  connect or-abs q = rel-seq (rel-inv or-abs) q
+  connect or-ass q = rel-seq (rel-inv or-ass) q
+  connect or-com q = rel-seq or-com q
+  connect or-dis q = rel-seq (rel-inv or-dis) q
+  connect or-ide q = rel-seq (rel-inv or-ide) q
+  connect (or-rsp p r) q = rel-seq (rel-inv (or-rsp p r)) q
+  connect or-uni q = rel-seq (rel-inv or-uni) q
+  connect and-abs q = rel-seq (rel-inv and-abs) q
+  connect and-ass q = rel-seq (rel-inv and-ass) q
+  connect and-com q = rel-seq and-com q
+  connect and-dis q = rel-seq (rel-inv and-dis) q
+  connect and-ide q = rel-seq (rel-inv and-ide) q
+  connect (and-rsp p r) q = rel-seq (rel-inv (and-rsp p r)) q
+  connect and-uni q = rel-seq (rel-inv and-uni) q
+  connect not-and q = rel-seq (rel-inv not-and) q
+  connect not-or q = rel-seq (rel-inv not-or) q
+  connect not-#0 q = rel-seq (rel-inv not-#0) q
+  connect not-#1 q = rel-seq (rel-inv not-#1) q
+  connect (not-rsp p) q = rel-seq (rel-inv (not-rsp p)) q
+
   postulate
-    -- FIXME
-    not-rel-#0-#1 : ∀ {I} → ¬ rel {I} #0 #1
+    distinct : ∀ {I} → ¬ rel {I} #0 #1
 
   data Sub (J : Symbols) : (I : Symbols) → Set where
     stop
@@ -185,8 +212,18 @@ module DeMorgan where
   _≃_ : ∀ {J I} (f g : Sub J I) → Set
   f ≃ g = ∀ {𝒾} → rel (look f 𝒾) (look g 𝒾)
 
+  ≫=-loop
+    : ∀ {I} {a : DeMorgan I}
+    → (a ≫= loop) ≡ a
+  ≫=-loop {a = var _} = refl
+  ≫=-loop {a = #0} = refl
+  ≫=-loop {a = #1} = refl
+  ≫=-loop {a = or a b} = ≡.ap² or ≫=-loop ≫=-loop
+  ≫=-loop {a = and a b} = ≡.ap² and ≫=-loop ≫=-loop
+  ≫=-loop {a = not a} = ≡.ap not ≫=-loop
+
   ≫=-λ
-    : {I J : Symbols} {a b : DeMorgan I}
+    : ∀ {I J a b}
     → (f : Sub J I)
     → rel a b
     → rel (a ≫= f) (b ≫= f)
@@ -225,36 +262,13 @@ module DeMorgan where
     → (a : DeMorgan I)
     → (f : Sub J I)
     → (g : Sub K J)
-    → ((a ≫= f) ≫= g) ≡ (a ≫= (f ≫=≫ g))
+    → (a ≫= (f ≫=≫ g)) ≡ ((a ≫= f) ≫= g)
   ≫=-α (var _) f g = refl
   ≫=-α #0 f g = refl
   ≫=-α #1 f g = refl
   ≫=-α (or a b) f g = ≡.ap² or (≫=-α a f g) (≫=-α b f g)
   ≫=-α (and a b) f g = ≡.ap² and (≫=-α a f g) (≫=-α b f g)
   ≫=-α (not a) f g = ≡.ap not (≫=-α a f g)
-
-  #0-≫=
-    : ∀ {I J a}
-    → (f : Sub J I)
-    → rel a #0
-    → rel (a ≫= f) #0
-  #0-≫= f (rel-idn refl) = rel-idn refl
-  #0-≫= f (rel-seq p q) = rel-seq (≫=-λ f p) (#0-≫= f q)
-  #0-≫= f (rel-inv p) = {!!}
-  #0-≫= f or-abs = {!!}
-  #0-≫= f or-ide = or-ide
-  #0-≫= f or-uni = or-uni
-  #0-≫= f and-abs = {!!}
-  #0-≫= f and-ide = and-ide
-  #0-≫= f and-uni = and-uni
-  #0-≫= f not-#1 = not-#1
-
-  postulate
-    #1-≫=
-      : ∀ {I J a}
-      → (f : Sub J I)
-      → rel a #1
-      → rel (a ≫= f) #1
 
 open DeMorgan public
   hiding (module DeMorgan)
@@ -271,11 +285,11 @@ record □Set : Set where
   field
     coe₀
       : ∀ {I J}
-      → (f : Sub I J)
+      → (f : Sub J I)
       → (a : fib₀ I) → fib₀ J
     coe₁
       : ∀ {I J A B}
-      → (f : Sub I J)
+      → (f : Sub J I)
       → (p : fib₁ I A B)
       → fib₁ J (coe₀ f A) (coe₀ f B)
   field
@@ -297,28 +311,28 @@ record □Set : Set where
       → fib₁ I (coe₀ loop A) A
     coe-seq
       : ∀ {I J K A}
-      → (f : Sub I J)
+      → (f : Sub K I)
       → (g : Sub J K)
-      → fib₁ K (coe₀ (g ≫=≫ f) A) (coe₀ g (coe₀ f A))
+      → fib₁ J (coe₀ (f ≫=≫ g) A) (coe₀ g (coe₀ f A))
     coe-rel
       : ∀ {I J A}
-      → {f g : Sub I J}
+      → {f g : Sub J I}
       → (φ : f ≃ g)
       → fib₁ J (coe₀ f A) (coe₀ g A)
 open □Set public
 
 -- FIXME
 □ : Symbols → □Set
-fib₀ (□ I) J = Sub I J
+fib₀ (□ I) J = Sub J I
 fib₁ (□ I) J = _≃_
-coe₀ (□ I) = _≫=≫_
-coe₁ (□ I) {J}{K}{f}{g} k p {𝓁} = ≫=-ρ (look k 𝓁) f g p
+coe₀ (□ I) f g = g ≫=≫ f
+coe₁ (□ I) k p = ≫=-λ k p
 fib-idn (□ I) = rel-idn refl
 fib-seq (□ I) p q = rel-seq p q
 fib-inv (□ I) p = rel-inv p
-coe-idn (□ I) = rel-idn refl
-coe-seq (□ I) {A = A} f g {𝒾} = rel-idn (≫=-α (look g 𝒾) f A)
-coe-rel (□ I) {A = A} φ = ≫=-λ A φ
+coe-idn (□ I) = rel-idn ≫=-loop
+coe-seq (□ I) {A = A} f g {𝓍} = rel-idn (≫=-α (look A 𝓍) f g)
+coe-rel (□ I) {A = A} {f}{g} α {𝓍} = ≫=-ρ (look A 𝓍) f g α
 
 data Interval (I : Symbols) : Set where
   east : Interval I
@@ -337,16 +351,16 @@ fib₁ interval I (step φ₀) (step φ₁) = rel φ₀ φ₁
 fib₁ interval I _ _ = T.𝟘
 coe₀ interval f east = east
 coe₀ interval f west = west
-coe₀ interval f (step φ) = {!!}
+coe₀ interval f (step φ) = step (φ ≫= f)
 coe₁ interval {A = east} {east} f p = *
 coe₁ interval {A = east} {west} f ()
-coe₁ interval {A = east} {step φ₁} f p = {!!}
+coe₁ interval {A = east} {step φ₁} f p = ≫=-λ f p
 coe₁ interval {A = west} {east} f ()
 coe₁ interval {A = west} {west} f p = *
-coe₁ interval {A = west} {step φ₁} f p = {!!}
-coe₁ interval {A = step φ₀} {east} f p = {!!}
-coe₁ interval {A = step φ₀} {west} f p = {!!}
-coe₁ interval {A = step φ₀} {step φ₁} f p = {!!}
+coe₁ interval {A = west} {step φ₁} f p = ≫=-λ f p
+coe₁ interval {A = step φ₀} {east} f p = ≫=-λ f p
+coe₁ interval {A = step φ₀} {west} f p = ≫=-λ f p
+coe₁ interval {A = step φ₀} {step φ₁} f p = ≫=-λ f p
 fib-idn interval {A = east} = *
 fib-idn interval {A = west} = *
 fib-idn interval {A = step φ} = rel-idn refl
@@ -355,13 +369,13 @@ fib-seq interval {A = east} {east} {west} p ()
 fib-seq interval {A = east} {east} {step φ} p q = q
 fib-seq interval {A = east} {west} {C} () q
 fib-seq interval {A = east} {step φ₁} {east} p q = *
-fib-seq interval {A = east} {step φ₁} {west} p q = not-rel-#0-#1 (rel-seq (rel-inv p) q)
+fib-seq interval {A = east} {step φ₁} {west} p q = distinct (connect p q)
 fib-seq interval {A = east} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
 fib-seq interval {A = west} {east} {C} () q
 fib-seq interval {A = west} {west} {east} p ()
 fib-seq interval {A = west} {west} {west} p q = *
 fib-seq interval {A = west} {west} {step φ} p q = q
-fib-seq interval {A = west} {step φ₁} {east} p q = not-rel-#0-#1 (rel-seq (rel-inv q) p)
+fib-seq interval {A = west} {step φ₁} {east} p q = distinct (connect q p)
 fib-seq interval {A = west} {step φ₁} {west} p q = *
 fib-seq interval {A = west} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
 fib-seq interval {A = step φ₀} {east} {east} p q = p
@@ -384,10 +398,10 @@ fib-inv interval {A = step φ₀} {west} p = p
 fib-inv interval {A = step φ₀} {step φ₁} p = rel-inv p
 coe-idn interval {A = east} = *
 coe-idn interval {A = west} = *
-coe-idn interval {A = step φ} = {!!}
+coe-idn interval {A = step φ} = rel-idn ≫=-loop
 coe-seq interval {A = east} f g = *
 coe-seq interval {A = west} f g = *
-coe-seq interval {A = step φ} f g = {!!}
+coe-seq interval {A = step φ} f g = rel-idn (≫=-α φ f g)
 coe-rel interval {A = east} α = *
 coe-rel interval {A = west} α = *
-coe-rel interval {A = step φ} α = {!!}
+coe-rel interval {A = step φ} {f}{g} = ≫=-ρ φ f g
