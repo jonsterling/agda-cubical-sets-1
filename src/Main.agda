@@ -335,73 +335,73 @@ coe-seq (□ I) {A = A} f g {𝓍} = rel-idn (≫=-α (look A 𝓍) f g)
 coe-rel (□ I) {A = A} {f}{g} α {𝓍} = ≫=-ρ (look A 𝓍) f g α
 
 data Interval (I : Symbols) : Set where
-  east : Interval I
   west : Interval I
+  east : Interval I
   step : (φ : DeMorgan I) → Interval I
 
 interval : □Set
 fib₀ interval = Interval
-fib₁ interval I east east = T.𝟙
 fib₁ interval I west west = T.𝟙
-fib₁ interval I east (step φ₁) = rel φ₁ #0
-fib₁ interval I west (step φ₁) = rel φ₁ #1
-fib₁ interval I (step φ₀) east = rel φ₀ #0
-fib₁ interval I (step φ₀) west = rel φ₀ #1
+fib₁ interval I east east = T.𝟙
+fib₁ interval I west (step φ₁) = rel φ₁ #0
+fib₁ interval I east (step φ₁) = rel φ₁ #1
+fib₁ interval I (step φ₀) west = rel φ₀ #0
+fib₁ interval I (step φ₀) east = rel φ₀ #1
 fib₁ interval I (step φ₀) (step φ₁) = rel φ₀ φ₁
 fib₁ interval I _ _ = T.𝟘
-coe₀ interval f east = east
 coe₀ interval f west = west
+coe₀ interval f east = east
 coe₀ interval f (step φ) = step (φ ≫= f)
-coe₁ interval {A = east} {east} f p = *
-coe₁ interval {A = east} {west} f ()
-coe₁ interval {A = east} {step φ₁} f p = ≫=-λ f p
-coe₁ interval {A = west} {east} f ()
 coe₁ interval {A = west} {west} f p = *
+coe₁ interval {A = west} {east} f ()
 coe₁ interval {A = west} {step φ₁} f p = ≫=-λ f p
-coe₁ interval {A = step φ₀} {east} f p = ≫=-λ f p
+coe₁ interval {A = east} {west} f ()
+coe₁ interval {A = east} {east} f p = *
+coe₁ interval {A = east} {step φ₁} f p = ≫=-λ f p
 coe₁ interval {A = step φ₀} {west} f p = ≫=-λ f p
+coe₁ interval {A = step φ₀} {east} f p = ≫=-λ f p
 coe₁ interval {A = step φ₀} {step φ₁} f p = ≫=-λ f p
-fib-idn interval {A = east} = *
 fib-idn interval {A = west} = *
+fib-idn interval {A = east} = *
 fib-idn interval {A = step φ} = rel-idn refl
-fib-seq interval {A = east} {east} {east} p q = *
-fib-seq interval {A = east} {east} {west} p ()
-fib-seq interval {A = east} {east} {step φ} p q = q
-fib-seq interval {A = east} {west} {C} () q
-fib-seq interval {A = east} {step φ₁} {east} p q = *
-fib-seq interval {A = east} {step φ₁} {west} p q = distinct (connect p q)
-fib-seq interval {A = east} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
-fib-seq interval {A = west} {east} {C} () q
-fib-seq interval {A = west} {west} {east} p ()
 fib-seq interval {A = west} {west} {west} p q = *
+fib-seq interval {A = west} {west} {east} p ()
 fib-seq interval {A = west} {west} {step φ} p q = q
-fib-seq interval {A = west} {step φ₁} {east} p q = distinct (connect q p)
+fib-seq interval {A = west} {east} {C} () q
 fib-seq interval {A = west} {step φ₁} {west} p q = *
+fib-seq interval {A = west} {step φ₁} {east} p q = distinct (connect p q)
 fib-seq interval {A = west} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
-fib-seq interval {A = step φ₀} {east} {east} p q = p
-fib-seq interval {A = step φ₀} {east} {west} p ()
-fib-seq interval {A = step φ₀} {east} {step φ₂} p q = rel-seq p (rel-inv q)
-fib-seq interval {A = step φ₀} {west} {east} p ()
+fib-seq interval {A = east} {west} {C} () q
+fib-seq interval {A = east} {east} {west} p ()
+fib-seq interval {A = east} {east} {east} p q = *
+fib-seq interval {A = east} {east} {step φ} p q = q
+fib-seq interval {A = east} {step φ₁} {west} p q = distinct (connect q p)
+fib-seq interval {A = east} {step φ₁} {east} p q = *
+fib-seq interval {A = east} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
 fib-seq interval {A = step φ₀} {west} {west} p q = p
+fib-seq interval {A = step φ₀} {west} {east} p ()
 fib-seq interval {A = step φ₀} {west} {step φ₂} p q = rel-seq p (rel-inv q)
-fib-seq interval {A = step φ₀} {step φ₁} {east} p q = rel-seq p q
+fib-seq interval {A = step φ₀} {east} {west} p ()
+fib-seq interval {A = step φ₀} {east} {east} p q = p
+fib-seq interval {A = step φ₀} {east} {step φ₂} p q = rel-seq p (rel-inv q)
 fib-seq interval {A = step φ₀} {step φ₁} {west} p q = rel-seq p q
+fib-seq interval {A = step φ₀} {step φ₁} {east} p q = rel-seq p q
 fib-seq interval {A = step φ₀} {step φ₁} {step φ₂} p q = rel-seq p q
-fib-inv interval {A = east} {east} p = *
-fib-inv interval {A = east} {west} ()
-fib-inv interval {A = east} {step φ₁} p = p
-fib-inv interval {A = west} {east} ()
 fib-inv interval {A = west} {west} p = *
+fib-inv interval {A = west} {east} ()
 fib-inv interval {A = west} {step φ₁} p = p
-fib-inv interval {A = step φ₀} {east} p = p
+fib-inv interval {A = east} {west} ()
+fib-inv interval {A = east} {east} p = *
+fib-inv interval {A = east} {step φ₁} p = p
 fib-inv interval {A = step φ₀} {west} p = p
+fib-inv interval {A = step φ₀} {east} p = p
 fib-inv interval {A = step φ₀} {step φ₁} p = rel-inv p
-coe-idn interval {A = east} = *
 coe-idn interval {A = west} = *
+coe-idn interval {A = east} = *
 coe-idn interval {A = step φ} = rel-idn ≫=-loop
-coe-seq interval {A = east} f g = *
 coe-seq interval {A = west} f g = *
+coe-seq interval {A = east} f g = *
 coe-seq interval {A = step φ} f g = rel-idn (≫=-α φ f g)
-coe-rel interval {A = east} α = *
 coe-rel interval {A = west} α = *
+coe-rel interval {A = east} α = *
 coe-rel interval {A = step φ} {f}{g} = ≫=-ρ φ f g
