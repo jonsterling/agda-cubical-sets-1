@@ -3,377 +3,431 @@
 module Main where
 
 open import Prelude
+  hiding (¬_)
 
-infix  1 _∈_
-infix  0 _⇔_
+module Sym where
+  infix  0 _⇔_
+  infix  1 _∈_
 
-Symbols : Set
-Symbols = List String
-
-mutual
-  data _∈_ (x : String) : Symbols → Set where
-    stop
-      : ∀ {xs}
-      → x ∈ x ∷ xs
-    step
-      : ∀ {xs} y
-      → (φ : x ≢ y) -- only allow refs to the first occurrence of x (shadowing)
-      → (ε : x ∈ xs)
-      → x ∈ y ∷ xs
-
-  _≢_ : String → String → Set
-  x ≢ y with x String.≟ y
-  … | no  _ = T.𝟙
-  … | yes _ = T.𝟘
-
-record Names (X : Symbols) : Set where
-  constructor pt
-  field
-    x : String
-    el : x ∈ X
-open Names public
-
-record _⇔_ (A B : Set) : Set where
-  no-eta-equality
-  constructor eqv
-  field
-    into : A → B
-    from : B → A
-open _⇔_ public
-
-module ≅ where
-  _≅_ : Symbols → Symbols → Set
-  xs ≅ ys = ∀ {a} → a ∈ xs ⇔ a ∈ ys
-
-  idn : ∀ {xs} → xs ≅ xs
-  into idn a∈xs = a∈xs
-  from idn a∈xs = a∈xs
-
-  seq : ∀ {xs ys zs} → xs ≅ ys → ys ≅ zs → xs ≅ zs
-  into (seq xs≅ys ys≅zs) a∈xs = into ys≅zs (into xs≅ys a∈xs)
-  from (seq xs≅ys ys≅zs) a∈zs = from xs≅ys (from ys≅zs a∈zs)
-
-  inv : ∀ {xs ys} → xs ≅ ys → ys ≅ xs
-  into (inv xs≅ys) a∈ys = from xs≅ys a∈ys
-  from (inv xs≅ys) a∈xs = into xs≅ys a∈xs
-open ≅
-  using (_≅_)
-
-module DeMorgan where
-  infixl 0 _≫=_
-  infixr 0 _≫=≫_
-
-  data DeMorgan (X : Symbols) : Set where
-    var : (x : Names X) → DeMorgan X
-    #0 : DeMorgan X
-    #1 : DeMorgan X
-    or : (a b : DeMorgan X) → DeMorgan X
-    and : (a b : DeMorgan X) → DeMorgan X
-    not : (a : DeMorgan X) → DeMorgan X
-
-  data rel {X} : (a b : DeMorgan X) → Set where
-    rel-idn
-      : ∀ {a b}
-      → a ≡ b
-      → rel a b
-    rel-seq
-      : ∀ {a b c}
-      → (p : rel a b)
-      → (q : rel b c)
-      → rel a c
-    rel-inv
-      : ∀ {a b}
-      → (p : rel a b)
-      → rel b a
-    or-abs
-      : ∀ {a b}
-      → rel (or a (and a b)) a
-    or-ass
-      : ∀ {a b c}
-      → rel (or a (or b c)) (or (or a b) c)
-    or-com
-      : ∀ {a b}
-      → rel (or a b) (or b a)
-    or-dis
-      : ∀ {a b c}
-      → rel (or a (and b c)) (and (or a b) (or a c))
-    or-ide
-      : ∀ {a}
-      → rel (or a a) a
-    or-rsp
-      : ∀ {a₀ a₁ b₀ b₁}
-      → rel a₀ a₁
-      → rel b₀ b₁
-      → rel (or a₀ b₀) (or a₁ b₁)
-    or-uni
-      : ∀ {a}
-      → rel (or a #0) a
-    and-abs
-      : ∀ {a b}
-      → rel (and a (or a b)) a
-    and-ass
-      : ∀ {a b c}
-      → rel (and a (and b c)) (and (and a b) c)
-    and-com
-      : ∀ {a b}
-      → rel (and a b) (and b a)
-    and-dis
-      : ∀ {a b c}
-      → rel (and a (or b c)) (or (and a b) (and a c))
-    and-ide
-      : ∀ {a}
-      → rel (and a a) a
-    and-rsp
-      : ∀ {a₀ a₁ b₀ b₁}
-      → rel a₀ a₁
-      → rel b₀ b₁
-      → rel (and a₀ b₀) (and a₁ b₁)
-    and-uni
-      : ∀ {a}
-      → rel (and a #1) a
-    not-and
-      : ∀ {a b}
-      → rel (not (and a b)) (or (not a) (not b))
-    not-or
-      : ∀ {a b}
-      → rel (not (or a b)) (and (not a) (not b))
-    not-#0
-      : rel (not #0) #1
-    not-#1
-      : rel (not #1) #0
-    not-rsp
-      : ∀ {a₀ a₁}
-      → rel a₀ a₁
-      → rel (not a₀) (not a₁)
-
-  postulate
-    distinct : ∀ {I} → ¬ rel {I} #0 #1
-
-  data Sub (J : Symbols) : (I : Symbols) → Set where
-    stop
-      : Sub J []
-    step
-      : ∀ {𝒾 I}
-      → (𝔡 : DeMorgan J)
-      → (σ : Sub J I)
-      → Sub J (𝒾 ∷ I)
-    loop
-      : Sub J J
-    _≫=≫_
-      : ∀ {I K}
-      → (f : Sub K I)
-      → (g : Sub J K)
-      → Sub J I
+  Sym : Set
+  Sym = List String
 
   mutual
-    look : ∀ {I J} → Sub J I → Names I → DeMorgan J
-    look (stop) (pt _ ())
-    look (step 𝔡 _) (pt _ (stop)) = 𝔡
-    look (step _ f) (pt x (step _ _ ε)) = look f (pt x ε)
+    data _∈_ (x : String) : Sym → Set where
+      stop
+        : ∀ {xs}
+        → x ∈ x ∷ xs
+      step
+        : ∀ {xs} y
+        → (φ : x ≢ y) -- only allow refs to the first occurrence of x (shadowing)
+        → (ε : x ∈ xs)
+        → x ∈ y ∷ xs
+
+    _≢_ : String → String → Set
+    x ≢ y with x String.≟ y
+    … | no  _ = T.𝟙
+    … | yes _ = T.𝟘
+
+  record Names (X : Sym) : Set where
+    constructor pt
+    field
+      x : String
+      el : x ∈ X
+  open Names public
+
+  record _⇔_ (A B : Set) : Set where
+    no-eta-equality
+    constructor eqv
+    field
+      into : A → B
+      from : B → A
+  open _⇔_ public
+
+  module ≅ where
+    infix  0 _≅_
+
+    _≅_ : Sym → Sym → Set
+    xs ≅ ys = ∀ {a} → a ∈ xs ⇔ a ∈ ys
+
+    idn : ∀ {xs} → xs ≅ xs
+    into idn a∈xs = a∈xs
+    from idn a∈xs = a∈xs
+
+    seq : ∀ {xs ys zs} → xs ≅ ys → ys ≅ zs → xs ≅ zs
+    into (seq xs≅ys ys≅zs) a∈xs = into ys≅zs (into xs≅ys a∈xs)
+    from (seq xs≅ys ys≅zs) a∈zs = from xs≅ys (from ys≅zs a∈zs)
+
+    inv : ∀ {xs ys} → xs ≅ ys → ys ≅ xs
+    into (inv xs≅ys) a∈ys = from xs≅ys a∈ys
+    from (inv xs≅ys) a∈xs = into xs≅ys a∈xs
+  open ≅
+    using (_≅_)
+open Sym public
+
+module 𝕀 where
+  infix  0 _≅_
+  infix  4 ¬_
+  infixr 2 _∨_
+  infixr 3 _∧_
+
+  data 𝕀 (Γ : Sym) : Set where
+    var : (i : Names Γ) → 𝕀 Γ
+    #0 : 𝕀 Γ
+    #1 : 𝕀 Γ
+    _∨_ : (a b : 𝕀 Γ) → 𝕀 Γ
+    _∧_ : (a b : 𝕀 Γ) → 𝕀 Γ
+    ¬_ : (a : 𝕀 Γ) → 𝕀 Γ
+
+  instance
+    ∈-stop : ∀ {Γ} (x : String) → x ∈ x ∷ Γ
+    ∈-stop x = stop
+
+    ∈-step : ∀ {y Γ} → (x : String) ⦃ ε : x ∈ Γ ⦄ ⦃ p : x ≢ y ⦄ → x ∈ y ∷ Γ
+    ∈-step {y} x ⦃ ε ⦄ ⦃ p ⦄ = step y p ε
+
+    ≪_≫ : ∀ {Γ} (x : String) ⦃ ε : x ∈ Γ ⦄ → 𝕀 Γ
+    ≪ x ≫ ⦃ ε ⦄ = var (pt x ε)
+
+  data _≅_ {Γ} : (a b : 𝕀 Γ) → Set where
+    idn -- identity
+      : ∀ {a b}
+      → a ≡ b
+      → a ≅ b
+    seq -- composition (diagrammatic order)
+      : ∀ {a b c}
+      → (p : a ≅ b)
+      → (q : b ≅ c)
+      → a ≅ c
+    inv -- symmetry
+      : ∀ {a b}
+      → (p : a ≅ b)
+      → b ≅ a
+    ∨-abs -- absorption
+      : ∀ {a b}
+      → a ∨ a ∧ b ≅ a
+    ∨-ass -- associativity
+      : ∀ {a b c}
+      → a ∨ (b ∨ c) ≅ (a ∨ b) ∨ c
+    ∨-com -- commutativity
+      : ∀ {a b}
+      → a ∨ b ≅ b ∨ a
+    ∨-dis -- distributivity
+      : ∀ {a b c}
+      → a ∨ b ∧ c ≅ (a ∨ b) ∧ (a ∨ c)
+    ∨-ide -- idempotency
+      : ∀ {a}
+      → a ∨ a ≅ a
+    ∨-rsp -- congruence
+      : ∀ {a₀ a₁ b₀ b₁}
+      → a₀ ≅ a₁
+      → b₀ ≅ b₁
+      → a₀ ∨ b₀ ≅ a₁ ∨ b₁
+    ∨-uni
+      : ∀ {a}
+      → a ∨ #0 ≅ a
+    ∧-abs
+      : ∀ {a b}
+      → a ∧ (a ∨ b) ≅ a
+    ∧-ass
+      : ∀ {a b c}
+      → a ∧ (b ∧ c) ≅ (a ∧ b) ∧ c
+    ∧-com
+      : ∀ {a b}
+      → a ∧ b ≅ b ∧ a
+    ∧-dis
+      : ∀ {a b c}
+      → a ∧ (b ∨ c) ≅ a ∧ b ∨ a ∧ c
+    ∧-ide
+      : ∀ {a}
+      → a ∧ a ≅ a
+    ∧-rsp
+      : ∀ {a₀ a₁ b₀ b₁}
+      → a₀ ≅ a₁
+      → b₀ ≅ b₁
+      → a₀ ∧ b₀ ≅ a₁ ∧ b₁
+    ∧-uni
+      : ∀ {a}
+      → a ∧ #1 ≅ a
+    ¬-∧
+      : ∀ {a b}
+      → ¬ (a ∧ b) ≅ ¬ a ∨ ¬ b
+    ¬-∨
+      : ∀ {a b}
+      → ¬ (a ∨ b) ≅ ¬ a ∧ ¬ b
+    ¬-#0
+      : ¬ #0 ≅ #1
+    ¬-#1
+      : ¬ #1 ≅ #0
+    ¬-rsp
+      : ∀ {a₀ a₁}
+      → a₀ ≅ a₁
+      → ¬ a₀ ≅ ¬ a₁
+
+  postulate
+    distinct : ∀ {Γ} → T.¬ _≅_ {Γ} #0 #1
+open 𝕀 public
+  hiding (module 𝕀)
+  using (#0)
+  using (#1)
+  using (_∧_)
+  using (_∨_)
+  using (var)
+  using (¬_)
+  using (≪_≫)
+  using (𝕀)
+
+module Sub where
+  infix  6 _≔_
+  infixl 1 _≫=_
+  infixr 1 _≫=≫_
+
+  record Decl (Γ : Sym) : Set where
+    constructor _≔_
+    field
+      ▸i : String
+      ▸φ : 𝕀 Γ
+  open Decl public
+
+  data Sub (Δ : Sym) : (Γ : Sym) → Set where
+    []
+      : Sub Δ []
+    _∷_
+      : ∀ {Γ}
+      → (δ : Decl Δ)
+      → (f : Sub Δ Γ)
+      → Sub Δ (▸i δ ∷ Γ)
+    loop
+      : Sub Δ Δ
+    _≫=≫_
+      : ∀ {Γ Θ}
+      → (f : Sub Θ Γ)
+      → (g : Sub Δ Θ)
+      → Sub Δ Γ
+
+  mutual
+    look : ∀ {Γ Δ} → Sub Δ Γ → Names Γ → 𝕀 Δ
+    look [] (pt _ ())
+    look (_ ≔ φ ∷ _) (pt _ (stop)) = φ
+    look (_ ∷ f) (pt i (step _ _ ε)) = look f (pt i ε)
     look (loop) ε = var ε
     look (f ≫=≫ g) ε = look f ε ≫= g
 
-    _≫=_ : ∀ {I J} → DeMorgan I → Sub J I → DeMorgan J
-    var x ≫= f = look f x
+    _≫=_ : ∀ {Γ Δ} → 𝕀 Γ → Sub Δ Γ → 𝕀 Δ
+    var i ≫= f = look f i
     #0 ≫= f = #0
     #1 ≫= f = #1
-    or a b ≫= f = or (a ≫= f) (b ≫= f)
-    and a b ≫= f = and (a ≫= f) (b ≫= f)
-    not a ≫= f = not (a ≫= f)
+    a ∨ b ≫= f = (a ≫= f) ∨ (b ≫= f)
+    a ∧ b ≫= f = (a ≫= f) ∧ (b ≫= f)
+    ¬ a ≫= f = ¬ (a ≫= f)
 
-  _≃_ : ∀ {J I} (f g : Sub J I) → Set
-  f ≃ g = ∀ {𝒾} → rel (look f 𝒾) (look g 𝒾)
+  _≅_ : ∀ {Δ Γ} (f g : Sub Δ Γ) → Set
+  _≅_ f g = ∀ {i} → look f i 𝕀.≅ look g i
 
-  ≫=-loop
-    : ∀ {I} {a : DeMorgan I}
+  idn
+    : ∀ {Γ} {a : 𝕀 Γ}
     → (a ≫= loop) ≡ a
-  ≫=-loop {a = var _} = refl
-  ≫=-loop {a = #0} = refl
-  ≫=-loop {a = #1} = refl
-  ≫=-loop {a = or a b} = ≡.ap² or ≫=-loop ≫=-loop
-  ≫=-loop {a = and a b} = ≡.ap² and ≫=-loop ≫=-loop
-  ≫=-loop {a = not a} = ≡.ap not ≫=-loop
+  idn {a = var _} = refl
+  idn {a = #0} = refl
+  idn {a = #1} = refl
+  idn {a = a ∨ b} = ≡.ap² _∨_ idn idn
+  idn {a = a ∧ b} = ≡.ap² _∧_ idn idn
+  idn {a = ¬ a} = ≡.ap ¬_ idn
 
-  ≫=-λ
-    : ∀ {I J a b}
-    → (f : Sub J I)
-    → rel a b
-    → rel (a ≫= f) (b ≫= f)
-  ≫=-λ f (rel-idn refl) = rel-idn refl
-  ≫=-λ f (rel-seq p q) = rel-seq (≫=-λ f p) (≫=-λ f q)
-  ≫=-λ f (rel-inv p) = rel-inv (≫=-λ f p)
-  ≫=-λ f or-abs = or-abs
-  ≫=-λ f or-ass = or-ass
-  ≫=-λ f or-com = or-com
-  ≫=-λ f or-dis = or-dis
-  ≫=-λ f or-ide = or-ide
-  ≫=-λ f (or-rsp p q) = or-rsp (≫=-λ f p) (≫=-λ f q)
-  ≫=-λ f or-uni = or-uni
-  ≫=-λ f and-abs = and-abs
-  ≫=-λ f and-ass = and-ass
-  ≫=-λ f and-com = and-com
-  ≫=-λ f and-dis = and-dis
-  ≫=-λ f and-ide = and-ide
-  ≫=-λ f (and-rsp p q) = and-rsp (≫=-λ f p) (≫=-λ f q)
-  ≫=-λ f and-uni = and-uni
-  ≫=-λ f not-#0 = not-#0
-  ≫=-λ f not-#1 = not-#1
-  ≫=-λ f not-and = not-and
-  ≫=-λ f not-or = not-or
-  ≫=-λ f (not-rsp p) = not-rsp (≫=-λ f p)
+  rsp-lhs
+    : ∀ {Γ Δ a b}
+    → (f : Sub Δ Γ)
+    → a 𝕀.≅ b
+    → a ≫= f 𝕀.≅ b ≫= f
+  rsp-lhs f (𝕀.idn refl) = 𝕀.idn refl
+  rsp-lhs f (𝕀.seq p q) = 𝕀.seq (rsp-lhs f p) (rsp-lhs f q)
+  rsp-lhs f (𝕀.inv p) = 𝕀.inv (rsp-lhs f p)
+  rsp-lhs f 𝕀.∨-abs = 𝕀.∨-abs
+  rsp-lhs f 𝕀.∨-ass = 𝕀.∨-ass
+  rsp-lhs f 𝕀.∨-com = 𝕀.∨-com
+  rsp-lhs f 𝕀.∨-dis = 𝕀.∨-dis
+  rsp-lhs f 𝕀.∨-ide = 𝕀.∨-ide
+  rsp-lhs f (𝕀.∨-rsp p q) = 𝕀.∨-rsp (rsp-lhs f p) (rsp-lhs f q)
+  rsp-lhs f 𝕀.∨-uni = 𝕀.∨-uni
+  rsp-lhs f 𝕀.∧-abs = 𝕀.∧-abs
+  rsp-lhs f 𝕀.∧-ass = 𝕀.∧-ass
+  rsp-lhs f 𝕀.∧-com = 𝕀.∧-com
+  rsp-lhs f 𝕀.∧-dis = 𝕀.∧-dis
+  rsp-lhs f 𝕀.∧-ide = 𝕀.∧-ide
+  rsp-lhs f (𝕀.∧-rsp p q) = 𝕀.∧-rsp (rsp-lhs f p) (rsp-lhs f q)
+  rsp-lhs f 𝕀.∧-uni = 𝕀.∧-uni
+  rsp-lhs f 𝕀.¬-#0 = 𝕀.¬-#0
+  rsp-lhs f 𝕀.¬-#1 = 𝕀.¬-#1
+  rsp-lhs f 𝕀.¬-∧ = 𝕀.¬-∧
+  rsp-lhs f 𝕀.¬-∨ = 𝕀.¬-∨
+  rsp-lhs f (𝕀.¬-rsp p) = 𝕀.¬-rsp (rsp-lhs f p)
 
-  postulate
-    ≫=-ρ
-      : ∀ {I J} a
-      → (f g : Sub J I)
-      → f ≃ g
-      → rel (a ≫= f) (a ≫= g)
+  rsp-rhs
+    : ∀ {Γ Δ} a
+    → (f g : Sub Δ Γ)
+    → f ≅ g
+    → a ≫= f 𝕀.≅ a ≫= g
+  rsp-rhs (var i) f g α = α
+  rsp-rhs #0 f g α = 𝕀.idn refl
+  rsp-rhs #1 f g α = 𝕀.idn refl
+  rsp-rhs (a ∨ b) f g α = 𝕀.∨-rsp (rsp-rhs a f g α) (rsp-rhs b f g α)
+  rsp-rhs (a ∧ b) f g α = 𝕀.∧-rsp (rsp-rhs a f g α) (rsp-rhs b f g α)
+  rsp-rhs (¬ a) f g α = 𝕀.¬-rsp (rsp-rhs a f g α)
 
-  ≫=-α
-    : ∀ {I J K}
-    → (a : DeMorgan I)
-    → (f : Sub J I)
-    → (g : Sub K J)
+  ass
+    : ∀ {Γ Δ Θ}
+    → (a : 𝕀 Γ)
+    → (f : Sub Δ Γ)
+    → (g : Sub Θ Δ)
     → (a ≫= (f ≫=≫ g)) ≡ ((a ≫= f) ≫= g)
-  ≫=-α (var _) f g = refl
-  ≫=-α #0 f g = refl
-  ≫=-α #1 f g = refl
-  ≫=-α (or a b) f g = ≡.ap² or (≫=-α a f g) (≫=-α b f g)
-  ≫=-α (and a b) f g = ≡.ap² and (≫=-α a f g) (≫=-α b f g)
-  ≫=-α (not a) f g = ≡.ap not (≫=-α a f g)
+  ass (var _) f g = refl
+  ass #0 f g = refl
+  ass #1 f g = refl
+  ass (a ∨ b) f g = ≡.ap² _∨_ (ass a f g) (ass b f g)
+  ass (a ∧ b) f g = ≡.ap² _∧_ (ass a f g) (ass b f g)
+  ass (¬ a) f g = ≡.ap ¬_ (ass a f g)
 
-open DeMorgan public
-  hiding (module DeMorgan)
+  rsp
+    : ∀ {Γ Δ} a b
+    → (f g : Sub Δ Γ)
+    → a 𝕀.≅ b
+    → f ≅ g
+    → a ≫= f 𝕀.≅ b ≫= g
+  rsp a b f g α β = 𝕀.seq (rsp-lhs f α) (rsp-rhs b f g β)
+open Sub
+  hiding (module Sub)
+  using (Sub)
+  using ([])
+  using (_∷_)
+  using (_≔_)
+  using (_≫=_)
+  using (_≫=≫_)
+  using (look)
+  using (loop)
 
 record □Set : Set where
   no-eta-equality
-  field
-    fib₀
-      : (I : Symbols)
+  field -- setoids fibered over cubes
+    obj
+      : (Γ : Sym)
       → Set
-    fib₁
-      : ∀ I
-      → fib₀ I → fib₀ I → Set
-  field
-    coe₀
-      : ∀ {I J}
-      → (f : Sub J I)
-      → (a : fib₀ I) → fib₀ J
-    coe₁
-      : ∀ {I J A B}
-      → (f : Sub J I)
-      → (p : fib₁ I A B)
-      → fib₁ J (coe₀ f A) (coe₀ f B)
-  field
-    fib-idn
-      : ∀ {I A}
-      → fib₁ I A A
-    fib-seq
-      : ∀ {I A B C}
-      → (p : fib₁ I A B)
-      → (q : fib₁ I B C)
-      → fib₁ I A C
-    fib-inv
-      : ∀ {I A B}
-      → (p : fib₁ I A B)
-      → fib₁ I B A
-  field
-    coe-idn
-      : ∀ {I A}
-      → fib₁ I (coe₀ loop A) A
-    coe-seq
-      : ∀ {I J K A}
-      → (f : Sub K I)
-      → (g : Sub J K)
-      → fib₁ J (coe₀ (f ≫=≫ g) A) (coe₀ g (coe₀ f A))
-    coe-rel
-      : ∀ {I J A}
-      → {f g : Sub J I}
-      → (φ : f ≃ g)
-      → fib₁ J (coe₀ f A) (coe₀ g A)
+    hom
+      : ∀ Γ
+      → obj Γ → obj Γ → Set
+    idn
+      : ∀ {Γ A}
+      → hom Γ A A
+    seq
+      : ∀ {Γ A B C}
+      → (p : hom Γ A B)
+      → (q : hom Γ B C)
+      → hom Γ A C
+    inv
+      : ∀ {Γ A B}
+      → (p : hom Γ A B)
+      → hom Γ B A
+  field -- substitution across fibers
+    sub
+      : ∀ {Γ Δ}
+      → (f : Sub Δ Γ)
+      → obj Γ → obj Δ
+    sub-idn
+      : ∀ {Γ A}
+      → hom Γ (sub loop A) A
+    sub-seq
+      : ∀ {Γ Δ Θ A}
+      → (f : Sub Θ Γ)
+      → (g : Sub Δ Θ)
+      → hom Δ (sub (f ≫=≫ g) A) (sub g (sub f A))
+    sub-rsp -- functoriality or whiskering
+      : ∀ {Γ Δ A B}
+      → (f g : Sub Δ Γ)
+      → (α : f Sub.≅ g)
+      → (β : hom Γ A B)
+      → hom Δ (sub f A) (sub g B)
 open □Set public
 
--- FIXME
-□ : Symbols → □Set
-fib₀ (□ I) J = Sub J I
-fib₁ (□ I) J = _≃_
-coe₀ (□ I) f g = g ≫=≫ f
-coe₁ (□ I) k p = ≫=-λ k p
-fib-idn (□ I) = rel-idn refl
-fib-seq (□ I) p q = rel-seq p q
-fib-inv (□ I) p = rel-inv p
-coe-idn (□ I) = rel-idn ≫=-loop
-coe-seq (□ I) {A = A} f g {𝓍} = rel-idn (≫=-α (look A 𝓍) f g)
-coe-rel (□ I) {A = A} {f}{g} α {𝓍} = ≫=-ρ (look A 𝓍) f g α
+-- the formal or representable Γ-cube
+□ : Sym → □Set
+obj (□ Γ) Δ = Sub Δ Γ
+hom (□ Γ) Δ = Sub._≅_
+idn (□ Γ) = 𝕀.idn refl
+seq (□ Γ) p q = 𝕀.seq p q
+inv (□ Γ) p = 𝕀.inv p
+sub (□ Γ) f g = g ≫=≫ f
+sub-idn (□ Γ) = 𝕀.idn Sub.idn
+sub-seq (□ Γ) {A = A} f g = 𝕀.idn (Sub.ass (look A _) f g)
+sub-rsp (□ Γ) {A = A}{B} f g α β {i} = Sub.rsp (look A i) (look B i) f g β α
 
-data Interval (I : Symbols) : Set where
+-- the interval in HIT style
+data Interval (I : Sym) : Set where
   west : Interval I
   east : Interval I
-  step : (φ : DeMorgan I) → Interval I
+  walk : (φ : 𝕀 I) → Interval I
 
 interval : □Set
-fib₀ interval = Interval
-fib₁ interval I west west = T.𝟙
-fib₁ interval I east east = T.𝟙
-fib₁ interval I west (step φ₁) = rel φ₁ #0
-fib₁ interval I east (step φ₁) = rel φ₁ #1
-fib₁ interval I (step φ₀) west = rel φ₀ #0
-fib₁ interval I (step φ₀) east = rel φ₀ #1
-fib₁ interval I (step φ₀) (step φ₁) = rel φ₀ φ₁
-fib₁ interval I _ _ = T.𝟘
-coe₀ interval f west = west
-coe₀ interval f east = east
-coe₀ interval f (step φ) = step (φ ≫= f)
-coe₁ interval {A = west} {west} f p = *
-coe₁ interval {A = west} {east} f ()
-coe₁ interval {A = west} {step φ₁} f p = ≫=-λ f p
-coe₁ interval {A = east} {west} f ()
-coe₁ interval {A = east} {east} f p = *
-coe₁ interval {A = east} {step φ₁} f p = ≫=-λ f p
-coe₁ interval {A = step φ₀} {west} f p = ≫=-λ f p
-coe₁ interval {A = step φ₀} {east} f p = ≫=-λ f p
-coe₁ interval {A = step φ₀} {step φ₁} f p = ≫=-λ f p
-fib-idn interval {A = west} = *
-fib-idn interval {A = east} = *
-fib-idn interval {A = step φ} = rel-idn refl
-fib-seq interval {A = west} {west} {west} p q = *
-fib-seq interval {A = west} {west} {east} p ()
-fib-seq interval {A = west} {west} {step φ} p q = q
-fib-seq interval {A = west} {east} {C} () q
-fib-seq interval {A = west} {step φ₁} {west} p q = *
-fib-seq interval {A = west} {step φ₁} {east} p q = distinct (rel-seq (rel-inv p) q)
-fib-seq interval {A = west} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
-fib-seq interval {A = east} {west} {C} () q
-fib-seq interval {A = east} {east} {west} p ()
-fib-seq interval {A = east} {east} {east} p q = *
-fib-seq interval {A = east} {east} {step φ} p q = q
-fib-seq interval {A = east} {step φ₁} {west} p q = distinct (rel-seq (rel-inv q) p)
-fib-seq interval {A = east} {step φ₁} {east} p q = *
-fib-seq interval {A = east} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
-fib-seq interval {A = step φ₀} {west} {west} p q = p
-fib-seq interval {A = step φ₀} {west} {east} p ()
-fib-seq interval {A = step φ₀} {west} {step φ₂} p q = rel-seq p (rel-inv q)
-fib-seq interval {A = step φ₀} {east} {west} p ()
-fib-seq interval {A = step φ₀} {east} {east} p q = p
-fib-seq interval {A = step φ₀} {east} {step φ₂} p q = rel-seq p (rel-inv q)
-fib-seq interval {A = step φ₀} {step φ₁} {west} p q = rel-seq p q
-fib-seq interval {A = step φ₀} {step φ₁} {east} p q = rel-seq p q
-fib-seq interval {A = step φ₀} {step φ₁} {step φ₂} p q = rel-seq p q
-fib-inv interval {A = west} {west} p = *
-fib-inv interval {A = west} {east} ()
-fib-inv interval {A = west} {step φ₁} p = p
-fib-inv interval {A = east} {west} ()
-fib-inv interval {A = east} {east} p = *
-fib-inv interval {A = east} {step φ₁} p = p
-fib-inv interval {A = step φ₀} {west} p = p
-fib-inv interval {A = step φ₀} {east} p = p
-fib-inv interval {A = step φ₀} {step φ₁} p = rel-inv p
-coe-idn interval {A = west} = *
-coe-idn interval {A = east} = *
-coe-idn interval {A = step φ} = rel-idn ≫=-loop
-coe-seq interval {A = west} f g = *
-coe-seq interval {A = east} f g = *
-coe-seq interval {A = step φ} f g = rel-idn (≫=-α φ f g)
-coe-rel interval {A = west} α = *
-coe-rel interval {A = east} α = *
-coe-rel interval {A = step φ} {f}{g} = ≫=-ρ φ f g
+obj interval = Interval
+hom interval I west west = T.𝟙
+hom interval I east east = T.𝟙
+hom interval I west (walk φ₁) = φ₁ 𝕀.≅ #0
+hom interval I east (walk φ₁) = φ₁ 𝕀.≅ #1
+hom interval I (walk φ₀) west = φ₀ 𝕀.≅ #0
+hom interval I (walk φ₀) east = φ₀ 𝕀.≅ #1
+hom interval I (walk φ₀) (walk φ₁) = φ₀ 𝕀.≅ φ₁
+hom interval I _ _ = T.𝟘
+idn interval {A = west} = *
+idn interval {A = east} = *
+idn interval {A = walk φ} = 𝕀.idn refl
+seq interval {A = west} {west} {west} p q = *
+seq interval {A = west} {west} {east} p ()
+seq interval {A = west} {west} {walk φ} p q = q
+seq interval {A = west} {east} {C} () q
+seq interval {A = west} {walk φ₁} {west} p q = *
+seq interval {A = west} {walk φ₁} {east} p q = 𝕀.distinct (𝕀.seq (𝕀.inv p) q)
+seq interval {A = west} {walk φ₁} {walk φ₂} p q = 𝕀.seq (𝕀.inv q) p
+seq interval {A = east} {west} {C} () q
+seq interval {A = east} {east} {west} p ()
+seq interval {A = east} {east} {east} p q = *
+seq interval {A = east} {east} {walk φ} p q = q
+seq interval {A = east} {walk φ₁} {west} p q = 𝕀.distinct (𝕀.seq (𝕀.inv q) p)
+seq interval {A = east} {walk φ₁} {east} p q = *
+seq interval {A = east} {walk φ₁} {walk φ₂} p q = 𝕀.seq (𝕀.inv q) p
+seq interval {A = walk φ₀} {west} {west} p q = p
+seq interval {A = walk φ₀} {west} {east} p ()
+seq interval {A = walk φ₀} {west} {walk φ₂} p q = 𝕀.seq p (𝕀.inv q)
+seq interval {A = walk φ₀} {east} {west} p ()
+seq interval {A = walk φ₀} {east} {east} p q = p
+seq interval {A = walk φ₀} {east} {walk φ₂} p q = 𝕀.seq p (𝕀.inv q)
+seq interval {A = walk φ₀} {walk φ₁} {west} p q = 𝕀.seq p q
+seq interval {A = walk φ₀} {walk φ₁} {east} p q = 𝕀.seq p q
+seq interval {A = walk φ₀} {walk φ₁} {walk φ₂} p q = 𝕀.seq p q
+inv interval {A = west} {west} p = *
+inv interval {A = west} {east} ()
+inv interval {A = west} {walk φ₁} p = p
+inv interval {A = east} {west} ()
+inv interval {A = east} {east} p = *
+inv interval {A = east} {walk φ₁} p = p
+inv interval {A = walk φ₀} {west} p = p
+inv interval {A = walk φ₀} {east} p = p
+inv interval {A = walk φ₀} {walk φ₁} p = 𝕀.inv p
+sub interval f west = west
+sub interval f east = east
+sub interval f (walk φ) = walk (φ ≫= f)
+sub-idn interval {A = west} = *
+sub-idn interval {A = east} = *
+sub-idn interval {A = walk φ} = 𝕀.idn Sub.idn
+sub-seq interval {A = west} f g = *
+sub-seq interval {A = east} f g = *
+sub-seq interval {A = walk φ} f g = 𝕀.idn (Sub.ass φ f g)
+sub-rsp interval {A = west} {west} f p α β = *
+sub-rsp interval {A = west} {east} f p α ()
+sub-rsp interval {A = west} {walk φ₁} f p α β = Sub.rsp φ₁ #0 p p β (𝕀.idn refl)
+sub-rsp interval {A = east} {west} f p α ()
+sub-rsp interval {A = east} {east} f p α β = *
+sub-rsp interval {A = east} {walk φ₁} f p α β = Sub.rsp φ₁ #1 p f β (𝕀.inv α)
+sub-rsp interval {A = walk φ₀} {west} f p α β = Sub.rsp φ₀ #0 f p β α
+sub-rsp interval {A = walk φ₀} {east} f p α β = Sub.rsp φ₀ #1 f p β α
+sub-rsp interval {A = walk φ₀} {walk φ₁} f p α β = Sub.rsp φ₀ φ₁ f p β α
+
+-- example: walk "a" ≅ west (given "a" ≔ #0)
+ϕ : hom interval [] (sub interval ("a" ≔ #0 ∷ []) (walk ≪ "a" ≫)) west
+ϕ = 𝕀.idn refl
