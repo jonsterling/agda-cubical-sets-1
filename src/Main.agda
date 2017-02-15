@@ -146,34 +146,6 @@ module DeMorgan where
       → rel a₀ a₁
       → rel (not a₀) (not a₁)
 
-  connect
-    : ∀ {I a b c}
-    → rel {I} a b
-    → rel {I} a c
-    → rel {I} b c
-  connect (rel-idn refl) q = q
-  connect (rel-seq p r) q = rel-seq (rel-inv r) (rel-seq (rel-inv p) q)
-  connect (rel-inv p) q = rel-seq p q
-  connect or-abs q = rel-seq (rel-inv or-abs) q
-  connect or-ass q = rel-seq (rel-inv or-ass) q
-  connect or-com q = rel-seq or-com q
-  connect or-dis q = rel-seq (rel-inv or-dis) q
-  connect or-ide q = rel-seq (rel-inv or-ide) q
-  connect (or-rsp p r) q = rel-seq (rel-inv (or-rsp p r)) q
-  connect or-uni q = rel-seq (rel-inv or-uni) q
-  connect and-abs q = rel-seq (rel-inv and-abs) q
-  connect and-ass q = rel-seq (rel-inv and-ass) q
-  connect and-com q = rel-seq and-com q
-  connect and-dis q = rel-seq (rel-inv and-dis) q
-  connect and-ide q = rel-seq (rel-inv and-ide) q
-  connect (and-rsp p r) q = rel-seq (rel-inv (and-rsp p r)) q
-  connect and-uni q = rel-seq (rel-inv and-uni) q
-  connect not-and q = rel-seq (rel-inv not-and) q
-  connect not-or q = rel-seq (rel-inv not-or) q
-  connect not-#0 q = rel-seq (rel-inv not-#0) q
-  connect not-#1 q = rel-seq (rel-inv not-#1) q
-  connect (not-rsp p) q = rel-seq (rel-inv (not-rsp p)) q
-
   postulate
     distinct : ∀ {I} → ¬ rel {I} #0 #1
 
@@ -369,13 +341,13 @@ fib-seq interval {A = west} {west} {east} p ()
 fib-seq interval {A = west} {west} {step φ} p q = q
 fib-seq interval {A = west} {east} {C} () q
 fib-seq interval {A = west} {step φ₁} {west} p q = *
-fib-seq interval {A = west} {step φ₁} {east} p q = distinct (connect p q)
+fib-seq interval {A = west} {step φ₁} {east} p q = distinct (rel-seq (rel-inv p) q)
 fib-seq interval {A = west} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
 fib-seq interval {A = east} {west} {C} () q
 fib-seq interval {A = east} {east} {west} p ()
 fib-seq interval {A = east} {east} {east} p q = *
 fib-seq interval {A = east} {east} {step φ} p q = q
-fib-seq interval {A = east} {step φ₁} {west} p q = distinct (connect q p)
+fib-seq interval {A = east} {step φ₁} {west} p q = distinct (rel-seq (rel-inv q) p)
 fib-seq interval {A = east} {step φ₁} {east} p q = *
 fib-seq interval {A = east} {step φ₁} {step φ₂} p q = rel-seq (rel-inv q) p
 fib-seq interval {A = step φ₀} {west} {west} p q = p
