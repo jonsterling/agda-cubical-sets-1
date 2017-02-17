@@ -148,20 +148,23 @@ module 𝕀 where
     ∧-uni
       : ∀ {a}
       → a ∧ #1 ≅ a
-    ¬-∧
+    ¬-dis-∧
       : ∀ {a b}
       → ¬ (a ∧ b) ≅ ¬ a ∨ ¬ b
-    ¬-∨
+    ¬-dis-∨
       : ∀ {a b}
       → ¬ (a ∨ b) ≅ ¬ a ∧ ¬ b
-    ¬-#0
-      : ¬ #0 ≅ #1
-    ¬-#1
-      : ¬ #1 ≅ #0
+    ¬-inv
+      : ∀ {a}
+      → ¬ ¬ a ≅ a
     ¬-rsp
       : ∀ {a₀ a₁}
       → a₀ ≅ a₁
       → ¬ a₀ ≅ ¬ a₁
+    ¬-#0
+      : ¬ #0 ≅ #1
+    ¬-#1
+      : ¬ #1 ≅ #0
 
   postulate
     distinct : ∀ {Γ} → T.¬ _≅_ {Γ} #0 #1
@@ -255,11 +258,12 @@ module Sub where
   rsp-lhs f 𝕀.∧-ide = 𝕀.∧-ide
   rsp-lhs f (𝕀.∧-rsp p q) = 𝕀.∧-rsp (rsp-lhs f p) (rsp-lhs f q)
   rsp-lhs f 𝕀.∧-uni = 𝕀.∧-uni
+  rsp-lhs f 𝕀.¬-dis-∧ = 𝕀.¬-dis-∧
+  rsp-lhs f 𝕀.¬-dis-∨ = 𝕀.¬-dis-∨
+  rsp-lhs f 𝕀.¬-inv = 𝕀.¬-inv
+  rsp-lhs f (𝕀.¬-rsp p) = 𝕀.¬-rsp (rsp-lhs f p)
   rsp-lhs f 𝕀.¬-#0 = 𝕀.¬-#0
   rsp-lhs f 𝕀.¬-#1 = 𝕀.¬-#1
-  rsp-lhs f 𝕀.¬-∧ = 𝕀.¬-∧
-  rsp-lhs f 𝕀.¬-∨ = 𝕀.¬-∨
-  rsp-lhs f (𝕀.¬-rsp p) = 𝕀.¬-rsp (rsp-lhs f p)
 
   rsp-rhs
     : ∀ {Γ Δ} a
@@ -428,6 +432,12 @@ sub-rsp interval {A = walk φ₀} {west} f p α β = Sub.rsp φ₀ #0 f p β α
 sub-rsp interval {A = walk φ₀} {east} f p α β = Sub.rsp φ₀ #1 f p β α
 sub-rsp interval {A = walk φ₀} {walk φ₁} f p α β = Sub.rsp φ₀ φ₁ f p β α
 
--- example: walk "a" ≅ west (given "a" ≔ #0)
-ϕ : hom interval [] (sub interval ("a" ≔ #0 ∷ []) (walk ≪ "a" ≫)) west
-ϕ = 𝕀.idn refl
+-- example: walk "a" ≅ west (given {"a" ≔ #0})
+ϕ₀ : hom interval [] (sub interval ("a" ≔ #0 ∷ []) (walk ≪ "a" ≫)) west
+ϕ₀ = 𝕀.idn refl
+
+-- example: walk (¬ "a" ∨ "b") ≅ east (given {"a" ≔ #0, "b" ≔ #0})
+ϕ₁ : hom interval []
+  (sub interval ("a" ≔ #0 ∷ "b" ≔ #0 ∷ []) (walk (¬ ≪ "a" ≫ ∨ ≪ "b" ≫)))
+  east
+ϕ₁ = 𝕀.seq 𝕀.∨-uni 𝕀.¬-#0
