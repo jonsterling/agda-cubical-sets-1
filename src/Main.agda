@@ -2,18 +2,19 @@
 
 module Main where
 
+open import Category
+open import Globular
 open import Prelude
   hiding (¬_)
 
-module Sym where
-  infix  0 _⇔_
+module Symbols where
   infix  1 _∈_
 
-  Sym : Set
-  Sym = List String
+  Symbols : Set
+  Symbols = List String
 
   mutual
-    data _∈_ (x : String) : Sym → Set where
+    data _∈_ (x : String) : Symbols → Set where
       stop
         : ∀ {xs}
         → x ∈ x ∷ xs
@@ -28,41 +29,13 @@ module Sym where
     … | no  _ = T.𝟙
     … | yes _ = T.𝟘
 
-  record Names (X : Sym) : Set where
+  record Names (X : Symbols) : Set where
     constructor pt
     field
       x : String
       el : x ∈ X
   open Names public
-
-  record _⇔_ (A B : Set) : Set where
-    no-eta-equality
-    constructor eqv
-    field
-      into : A → B
-      from : B → A
-  open _⇔_ public
-
-  module ≅ where
-    infix  0 _≅_
-
-    _≅_ : Sym → Sym → Set
-    xs ≅ ys = ∀ {a} → a ∈ xs ⇔ a ∈ ys
-
-    idn : ∀ {xs} → xs ≅ xs
-    into idn a∈xs = a∈xs
-    from idn a∈xs = a∈xs
-
-    seq : ∀ {xs ys zs} → xs ≅ ys → ys ≅ zs → xs ≅ zs
-    into (seq xs≅ys ys≅zs) a∈xs = into ys≅zs (into xs≅ys a∈xs)
-    from (seq xs≅ys ys≅zs) a∈zs = from xs≅ys (from ys≅zs a∈zs)
-
-    inv : ∀ {xs ys} → xs ≅ ys → ys ≅ xs
-    into (inv xs≅ys) a∈ys = from xs≅ys a∈ys
-    from (inv xs≅ys) a∈xs = into xs≅ys a∈xs
-  open ≅
-    using (_≅_)
-open Sym public
+open Symbols public
 
 module 𝕀 where
   infix  0 _≅_
@@ -70,7 +43,7 @@ module 𝕀 where
   infixr 2 _∨_
   infixr 3 _∧_
 
-  data 𝕀 (Γ : Sym) : Set where
+  data 𝕀 (Γ : Symbols) : Set where
     var : (i : Names Γ) → 𝕀 Γ
     #0 : 𝕀 Γ
     #1 : 𝕀 Γ
@@ -184,14 +157,14 @@ module Sub where
   infixl 1 _≫=_
   infixr 1 _≫=≫_
 
-  record Decl (Γ : Sym) : Set where
+  record Decl (Γ : Symbols) : Set where
     constructor _≔_
     field
       ▸i : String
       ▸φ : 𝕀 Γ
   open Decl public
 
-  data Sub (Δ : Sym) : (Γ : Sym) → Set where
+  data Sub (Δ : Symbols) : (Γ : Symbols) → Set where
     []
       : Sub Δ []
     _∷_
@@ -297,6 +270,22 @@ module Sub where
     → f ≅ g
     → a ≫= f 𝕀.≅ b ≫= g
   rsp a b f g α β = 𝕀.seq (rsp-lhs f α) (rsp-rhs b f g β)
+
+  -- the category of nominal cubes
+  cat : Category
+  quiver cat .● = Symbols
+  quiver cat .∂ Γ Δ .● = Sub Δ Γ
+  quiver cat .∂ Γ Δ .∂ f g .● = f ≅ g
+  quiver cat .∂ Γ Δ .∂ f g .∂ α β = Void
+  idn₀ cat = loop
+  seq₀ cat = _≫=≫_
+  idn₁ cat = 𝕀.idn refl
+  seq₁ cat α β {i} = 𝕀.seq (α {i}) (β {i})
+  inv₁ cat α {i} = 𝕀.inv (α {i})
+  seq₀* cat {f₀ = f₀}{f₁}{g₀}{g₁} α β {i} = rsp (look f₀ i) (look f₁ i) g₀ g₁ (α {i}) β
+  coh-λ cat = 𝕀.idn refl
+  coh-ρ cat = 𝕀.idn idn
+  coh-α cat {f = f}{g}{h}{i} = 𝕀.idn (ass (look f i) g h)
 open Sub
   hiding (module Sub)
   using (Sub)
@@ -308,50 +297,53 @@ open Sub
   using (look)
   using (loop)
 
-record □Set : Set where
-  no-eta-equality
-  field -- setoids fibered over cubes
-    obj
-      : (Γ : Sym)
-      → Set
-    hom
-      : ∀ Γ
-      → obj Γ → obj Γ → Set
-    idn
-      : ∀ {Γ A}
-      → hom Γ A A
-    seq
-      : ∀ {Γ A B C}
-      → (p : hom Γ A B)
-      → (q : hom Γ B C)
-      → hom Γ A C
-    inv
-      : ∀ {Γ A B}
-      → (p : hom Γ A B)
-      → hom Γ B A
-  field -- substitution across fibers
-    sub
-      : ∀ {Γ Δ}
-      → (f : Sub Δ Γ)
-      → obj Γ → obj Δ
-    sub-idn
-      : ∀ {Γ A}
-      → hom Γ (sub loop A) A
-    sub-seq
-      : ∀ {Γ Δ Θ A}
-      → (f : Sub Θ Γ)
-      → (g : Sub Δ Θ)
-      → hom Δ (sub (f ≫=≫ g) A) (sub g (sub f A))
-    sub-rsp -- functoriality or whiskering
-      : ∀ {Γ Δ A B}
-      → (f g : Sub Δ Γ)
-      → (α : f Sub.≅ g)
-      → (β : hom Γ A B)
-      → hom Δ (sub f A) (sub g B)
+module □Set where
+  record □Set : Set where
+    no-eta-equality
+    field -- setoids fibered over cubes
+      obj
+        : (Γ : Symbols)
+        → Set
+      hom
+        : ∀ Γ
+        → obj Γ → obj Γ → Set
+      idn
+        : ∀ {Γ A}
+        → hom Γ A A
+      seq
+        : ∀ {Γ A B C}
+        → (p : hom Γ A B)
+        → (q : hom Γ B C)
+        → hom Γ A C
+      inv
+        : ∀ {Γ A B}
+        → (p : hom Γ A B)
+        → hom Γ B A
+    field -- substitution across fibers
+      sub
+        : ∀ {Γ Δ}
+        → (f : Sub Δ Γ)
+        → obj Γ → obj Δ
+      sub-idn
+        : ∀ {Γ A}
+        → hom Γ (sub loop A) A
+      sub-seq
+        : ∀ {Γ Δ Θ A}
+        → (f : Sub Θ Γ)
+        → (g : Sub Δ Θ)
+        → hom Δ (sub (f ≫=≫ g) A) (sub g (sub f A))
+      sub-rsp -- functoriality or whiskering
+        : ∀ {Γ Δ A B}
+        → (f g : Sub Δ Γ)
+        → (α : f Sub.≅ g)
+        → (β : hom Γ A B)
+        → hom Δ (sub f A) (sub g B)
+  open □Set public
 open □Set public
+  hiding (module □Set)
 
 -- the formal or representable Γ-cube
-□ : Sym → □Set
+□ : Symbols → □Set
 obj (□ Γ) Δ = Sub Δ Γ
 hom (□ Γ) Δ = Sub._≅_
 idn (□ Γ) = 𝕀.idn refl
@@ -363,7 +355,7 @@ sub-seq (□ Γ) {A = A} f g = 𝕀.idn (Sub.ass (look A _) f g)
 sub-rsp (□ Γ) {A = A}{B} f g α β {i} = Sub.rsp (look A i) (look B i) f g β α
 
 -- the interval in HIT style
-data Interval (I : Sym) : Set where
+data Interval (I : Symbols) : Set where
   west : Interval I
   east : Interval I
   walk : (φ : 𝕀 I) → Interval I
