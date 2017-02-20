@@ -320,6 +320,7 @@ module Presheaf where
   □Set : Set
   □Set = Presheaf Cube.cat
 
+  -- the formal or representable cube
   □ : Symbols → □Set
   □ = ap₀ (Yo Cube.cat)
 
@@ -441,7 +442,7 @@ module Flattened where
         → hom Δ (sub f A) (sub g B)
   open □Set public
 
-  -- the formal or representable Γ-cube
+  -- the formal or representable cube
   □ : Symbols → □Set
   □ Δ .obj Γ = Sub Γ Δ
   □ Δ .hom Γ = Cube._≅_
