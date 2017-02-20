@@ -50,5 +50,5 @@ Now we can reason about relatedness of the interval operators:
   hom interval []
     (sub interval ("a" ≔ #0 ∷ "b" ≔ #0 ∷ []) (walk (¬ ≪ "a" ≫ ∨ ≪ "b" ≫)))
     east
-ϕ₁ = 𝕀.seq 𝕀.∨-uni 𝕀.¬-#0
+ϕ₁ = 𝕀.cmp 𝕀.¬-#0 𝕀.∨-uni
 ```
