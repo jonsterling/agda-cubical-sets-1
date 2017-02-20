@@ -445,6 +445,36 @@ module Flattened where
         → hom Δ (sub f x) (sub g y)
   open □Set public
 
+  record □Map (𝒳 𝒴 : □Set) : Set where
+    no-eta-equality
+    field
+      ap₀ : ∀ {Γ} → obj 𝒳 Γ → obj 𝒴 Γ
+      ap₁ : ∀ {Γ x y} → hom 𝒳 Γ x y → hom 𝒴 Γ (ap₀ x) (ap₀ y)
+      ap₂ : ∀ {Γ Δ} (f : Sub Δ Γ) {x} → hom 𝒴 Δ (ap₀ (sub 𝒳 f x)) (sub 𝒴 f (ap₀ x))
+  open □Map public
+  {-# DISPLAY □Map.ap₀ 𝒳 x = 𝒳 x #-}
+  {-# DISPLAY □Map.ap₁ 𝒳 p = 𝒳 p #-}
+  {-# DISPLAY □Map.ap₂ 𝒳 f = 𝒳 f #-}
+
+  ≪□Set≫ : Category
+  ⟪ ≪□Set≫ ⟫ .● = □Set
+  ⟪ ≪□Set≫ ⟫ .∂ 𝒳 𝒴 .● = □Map 𝒳 𝒴
+  ⟪ ≪□Set≫ ⟫ .∂ 𝒳 𝒴 .∂ F G .● = ∀ {Γ x} → hom 𝒴 Γ (ap₀ F x) (ap₀ G x)
+  ⟪ ≪□Set≫ ⟫ .∂ 𝒳 𝒴 .∂ F G .∂ α β = Void
+  ≪□Set≫ .idn₀ {𝒳} .ap₀ x = x
+  ≪□Set≫ .idn₀ {𝒳} .ap₁ p = p
+  ≪□Set≫ .idn₀ {𝒳} .ap₂ f = idn 𝒳
+  ≪□Set≫ .cmp₀ {𝒳}{𝒴}{𝒵} G F .ap₀ x = ap₀ G (ap₀ F x)
+  ≪□Set≫ .cmp₀ {𝒳}{𝒴}{𝒵} G F .ap₁ p = ap₁ G (ap₁ F p)
+  ≪□Set≫ .cmp₀ {𝒳}{𝒴}{𝒵} G F .ap₂ f = cmp 𝒵 (ap₂ G f) (ap₁ G (ap₂ F f))
+  ≪□Set≫ .idn₁ {𝒳}{𝒴}{F}{Γ}{x} = idn 𝒴 {Γ} {ap₀ F x}
+  ≪□Set≫ .cmp₁ {𝒳}{𝒴}{F}{G}{H} β α {Γ}{x} = cmp 𝒴 {Γ} (β {Γ}{x}) (α {Γ}{x})
+  ≪□Set≫ .inv₁ {𝒳}{𝒴}{F}{G} α {Γ}{x} = inv 𝒴 {Γ} (α {Γ}{x})
+  ≪□Set≫ .cmp₀* {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α {Γ}{x} = cmp 𝒵 {Γ} (β {Γ}{ap₀ F₁ x}) (ap₁ G₀ (α {Γ}{x}))
+  ≪□Set≫ .coh-λ {𝒳}{𝒴}{F}{Γ}{x} = idn 𝒴
+  ≪□Set≫ .coh-ρ {𝒳}{𝒴}{F}{Γ}{x} = idn 𝒴
+  ≪□Set≫ .coh-α {𝒲}{𝒳}{𝒴}{𝒵}{F}{G}{H}{Γ}{x} = idn 𝒵
+
   -- the formal or representable cube
   □ : Symbols → □Set
   □ Δ .obj Γ = Sub Γ Δ
