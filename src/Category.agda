@@ -91,12 +91,9 @@ coh-α (Op 𝒳) = inv₁ 𝒳 (coh-α 𝒳)
 ⟪ [ 𝒳 , 𝒴 ] ⟫ .∂ F G .● = Transform F G
 ⟪ [ 𝒳 , 𝒴 ] ⟫ .∂ F G .∂ α β .● = ∀ {x} → 𝒴 ⊧ ap₀ α x ⇔ ap₀ β x
 ⟪ [ 𝒳 , 𝒴 ] ⟫ .∂ F G .∂ α β .∂ 𝔭 𝔮 = Void
-idn₀ [ 𝒳 , 𝒴 ] .ap₀ x =
-  idn₀ 𝒴
-idn₀ [ 𝒳 , 𝒴 ] {F} .ap₁ {x}{y} f =
-  cmp₁ 𝒴 (inv₁ 𝒴 (coh-ρ 𝒴)) (coh-λ 𝒴)
-cmp₀ [ 𝒳 , 𝒴 ] {F}{G}{H} β α .ap₀ x =
-  cmp₀ 𝒴 (ap₀ β x) (ap₀ α x)
+idn₀ [ 𝒳 , 𝒴 ] .ap₀ x = idn₀ 𝒴
+idn₀ [ 𝒳 , 𝒴 ] {F} .ap₁ {x}{y} f = cmp₁ 𝒴 (inv₁ 𝒴 (coh-ρ 𝒴)) (coh-λ 𝒴)
+cmp₀ [ 𝒳 , 𝒴 ] {F}{G}{H} β α .ap₀ x = cmp₀ 𝒴 (ap₀ β x) (ap₀ α x)
 cmp₀ [ 𝒳 , 𝒴 ] {F}{G}{H} β α .ap₁ {x}{y} f =
   cmp₁ 𝒴
     (cmp₁ 𝒴
