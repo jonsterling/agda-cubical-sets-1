@@ -361,15 +361,15 @@ open □Set public
 
 -- the formal or representable Γ-cube
 □ : Symbols → □Set
-obj (□ Γ) Δ = Sub Δ Γ
-hom (□ Γ) Δ = Cube._≅_
-idn (□ Γ) = 𝕀.idn refl
-cmp (□ Γ) q p {i} = 𝕀.cmp (q {i}) (p {i})
-inv (□ Γ) p {i} = 𝕀.inv (p {i})
-sub (□ Γ) = _≪=≪_
-sub-idn (□ Γ) = 𝕀.idn Cube.idn
-sub-cmp (□ Γ) {A = A} g f = 𝕀.idn (Cube.ass (look A _) f g)
-sub-rsp (□ Γ) {A = A}{B} f g α β {i} = Cube.rsp (look A i) (look B i) f g β α
+□ Γ .obj Δ = Sub Δ Γ
+□ Γ .hom Δ = Cube._≅_
+□ Γ .idn = 𝕀.idn refl
+□ Γ .cmp q p {i} = 𝕀.cmp (q {i}) (p {i})
+□ Γ .inv p {i} = 𝕀.inv (p {i})
+□ Γ .sub = _≪=≪_
+□ Γ .sub-idn = 𝕀.idn Cube.idn
+□ Γ .sub-cmp {A = A} g f = 𝕀.idn (Cube.ass (look A _) f g)
+□ Γ .sub-rsp {A = A}{B} f g α β {i} = Cube.rsp (look A i) (look B i) f g β α
 
 -- the interval in HIT style
 data Interval (I : Symbols) : Set where
@@ -378,68 +378,68 @@ data Interval (I : Symbols) : Set where
   walk : (φ : 𝕀 I) → Interval I
 
 interval : □Set
-obj interval = Interval
-hom interval I west west = T.𝟙
-hom interval I east east = T.𝟙
-hom interval I west (walk φ₁) = φ₁ 𝕀.≅ #0
-hom interval I east (walk φ₁) = φ₁ 𝕀.≅ #1
-hom interval I (walk φ₀) west = φ₀ 𝕀.≅ #0
-hom interval I (walk φ₀) east = φ₀ 𝕀.≅ #1
-hom interval I (walk φ₀) (walk φ₁) = φ₀ 𝕀.≅ φ₁
-hom interval I _ _ = T.𝟘
-idn interval {A = west} = *
-idn interval {A = east} = *
-idn interval {A = walk φ} = 𝕀.idn refl
-cmp interval {A = west} {west} {west} q p = *
-cmp interval {A = west} {west} {east} () p
-cmp interval {A = west} {west} {walk φ} q p = q
-cmp interval {A = west} {east} {C} q ()
-cmp interval {A = west} {walk φ₁} {west} q p = *
-cmp interval {A = west} {walk φ₁} {east} q p = 𝕀.distinct (𝕀.cmp q (𝕀.inv p))
-cmp interval {A = west} {walk φ₁} {walk φ₂} q p = 𝕀.cmp p (𝕀.inv q)
-cmp interval {A = east} {west} {C} q ()
-cmp interval {A = east} {east} {west} () p
-cmp interval {A = east} {east} {east} q p = *
-cmp interval {A = east} {east} {walk φ} q p = q
-cmp interval {A = east} {walk φ₁} {west} q p = 𝕀.distinct (𝕀.cmp p (𝕀.inv q))
-cmp interval {A = east} {walk φ₁} {east} q p = *
-cmp interval {A = east} {walk φ₁} {walk φ₂} q p = 𝕀.cmp p (𝕀.inv q)
-cmp interval {A = walk φ₀} {west} {west} q p = p
-cmp interval {A = walk φ₀} {west} {east} () p
-cmp interval {A = walk φ₀} {west} {walk φ₂} q p = 𝕀.cmp (𝕀.inv q) p
-cmp interval {A = walk φ₀} {east} {west} () p
-cmp interval {A = walk φ₀} {east} {east} q p = p
-cmp interval {A = walk φ₀} {east} {walk φ₂} q p = 𝕀.cmp (𝕀.inv q) p
-cmp interval {A = walk φ₀} {walk φ₁} {west} q p = 𝕀.cmp q p
-cmp interval {A = walk φ₀} {walk φ₁} {east} q p = 𝕀.cmp q p
-cmp interval {A = walk φ₀} {walk φ₁} {walk φ₂} q p = 𝕀.cmp q p
-inv interval {A = west} {west} p = *
-inv interval {A = west} {east} ()
-inv interval {A = west} {walk φ₁} p = p
-inv interval {A = east} {west} ()
-inv interval {A = east} {east} p = *
-inv interval {A = east} {walk φ₁} p = p
-inv interval {A = walk φ₀} {west} p = p
-inv interval {A = walk φ₀} {east} p = p
-inv interval {A = walk φ₀} {walk φ₁} p = 𝕀.inv p
-sub interval f west = west
-sub interval f east = east
-sub interval f (walk φ) = walk (φ ≫= f)
-sub-idn interval {A = west} = *
-sub-idn interval {A = east} = *
-sub-idn interval {A = walk φ} = 𝕀.idn Cube.idn
-sub-cmp interval {A = west} g f = *
-sub-cmp interval {A = east} g f = *
-sub-cmp interval {A = walk φ} g f = 𝕀.idn (Cube.ass φ f g)
-sub-rsp interval {A = west} {west} f p α β = *
-sub-rsp interval {A = west} {east} f p α ()
-sub-rsp interval {A = west} {walk φ₁} f p α β = Cube.rsp φ₁ #0 p p β (𝕀.idn refl)
-sub-rsp interval {A = east} {west} f p α ()
-sub-rsp interval {A = east} {east} f p α β = *
-sub-rsp interval {A = east} {walk φ₁} f p α β = Cube.rsp φ₁ #1 p f β (𝕀.inv α)
-sub-rsp interval {A = walk φ₀} {west} f p α β = Cube.rsp φ₀ #0 f p β α
-sub-rsp interval {A = walk φ₀} {east} f p α β = Cube.rsp φ₀ #1 f p β α
-sub-rsp interval {A = walk φ₀} {walk φ₁} f p α β = Cube.rsp φ₀ φ₁ f p β α
+interval .obj = Interval
+interval .hom I west west = T.𝟙
+interval .hom I east east = T.𝟙
+interval .hom I west (walk φ₁) = φ₁ 𝕀.≅ #0
+interval .hom I east (walk φ₁) = φ₁ 𝕀.≅ #1
+interval .hom I (walk φ₀) west = φ₀ 𝕀.≅ #0
+interval .hom I (walk φ₀) east = φ₀ 𝕀.≅ #1
+interval .hom I (walk φ₀) (walk φ₁) = φ₀ 𝕀.≅ φ₁
+interval .hom I _ _ = T.𝟘
+interval .idn {A = west} = *
+interval .idn {A = east} = *
+interval .idn {A = walk φ} = 𝕀.idn refl
+interval .cmp {A = west} {west} {west} q p = *
+interval .cmp {A = west} {west} {east} () p
+interval .cmp {A = west} {west} {walk φ} q p = q
+interval .cmp {A = west} {east} {C} q ()
+interval .cmp {A = west} {walk φ₁} {west} q p = *
+interval .cmp {A = west} {walk φ₁} {east} q p = 𝕀.distinct (𝕀.cmp q (𝕀.inv p))
+interval .cmp {A = west} {walk φ₁} {walk φ₂} q p = 𝕀.cmp p (𝕀.inv q)
+interval .cmp {A = east} {west} {C} q ()
+interval .cmp {A = east} {east} {west} () p
+interval .cmp {A = east} {east} {east} q p = *
+interval .cmp {A = east} {east} {walk φ} q p = q
+interval .cmp {A = east} {walk φ₁} {west} q p = 𝕀.distinct (𝕀.cmp p (𝕀.inv q))
+interval .cmp {A = east} {walk φ₁} {east} q p = *
+interval .cmp {A = east} {walk φ₁} {walk φ₂} q p = 𝕀.cmp p (𝕀.inv q)
+interval .cmp {A = walk φ₀} {west} {west} q p = p
+interval .cmp {A = walk φ₀} {west} {east} () p
+interval .cmp {A = walk φ₀} {west} {walk φ₂} q p = 𝕀.cmp (𝕀.inv q) p
+interval .cmp {A = walk φ₀} {east} {west} () p
+interval .cmp {A = walk φ₀} {east} {east} q p = p
+interval .cmp {A = walk φ₀} {east} {walk φ₂} q p = 𝕀.cmp (𝕀.inv q) p
+interval .cmp {A = walk φ₀} {walk φ₁} {west} q p = 𝕀.cmp q p
+interval .cmp {A = walk φ₀} {walk φ₁} {east} q p = 𝕀.cmp q p
+interval .cmp {A = walk φ₀} {walk φ₁} {walk φ₂} q p = 𝕀.cmp q p
+interval .inv {A = west} {west} p = *
+interval .inv {A = west} {east} ()
+interval .inv {A = west} {walk φ₁} p = p
+interval .inv {A = east} {west} ()
+interval .inv {A = east} {east} p = *
+interval .inv {A = east} {walk φ₁} p = p
+interval .inv {A = walk φ₀} {west} p = p
+interval .inv {A = walk φ₀} {east} p = p
+interval .inv {A = walk φ₀} {walk φ₁} p = 𝕀.inv p
+interval .sub f west = west
+interval .sub f east = east
+interval .sub f (walk φ) = walk (φ ≫= f)
+interval .sub-idn {A = west} = *
+interval .sub-idn {A = east} = *
+interval .sub-idn {A = walk φ} = 𝕀.idn Cube.idn
+interval .sub-cmp {A = west} g f = *
+interval .sub-cmp {A = east} g f = *
+interval .sub-cmp {A = walk φ} g f = 𝕀.idn (Cube.ass φ f g)
+interval .sub-rsp {A = west} {west} f p α β = *
+interval .sub-rsp {A = west} {east} f p α ()
+interval .sub-rsp {A = west} {walk φ₁} f p α β = Cube.rsp φ₁ #0 p p β (𝕀.idn refl)
+interval .sub-rsp {A = east} {west} f p α ()
+interval .sub-rsp {A = east} {east} f p α β = *
+interval .sub-rsp {A = east} {walk φ₁} f p α β = Cube.rsp φ₁ #1 p f β (𝕀.inv α)
+interval .sub-rsp {A = walk φ₀} {west} f p α β = Cube.rsp φ₀ #0 f p β α
+interval .sub-rsp {A = walk φ₀} {east} f p α β = Cube.rsp φ₀ #1 f p β α
+interval .sub-rsp {A = walk φ₀} {walk φ₁} f p α β = Cube.rsp φ₀ φ₁ f p β α
 
 -- example: walk "a" ≅ west (given {"a" ≔ #0})
 ϕ₀ : hom interval [] (sub interval ("a" ≔ #0 ∷ []) (walk ≪ "a" ≫)) west

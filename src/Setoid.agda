@@ -49,17 +49,17 @@ open import Category
 ⟪ ≪Setoid≫ ⟫ .∂ 𝒳 𝒴 .● = Map 𝒳 𝒴
 ⟪ ≪Setoid≫ ⟫ .∂ 𝒳 𝒴 .∂ F G .● = ∀ {x} → hom 𝒴 (ap₀ F x) (ap₀ G x)
 ⟪ ≪Setoid≫ ⟫ .∂ 𝒳 𝒴 .∂ F G .∂ α β = Void
-idn₀ ≪Setoid≫ {𝒳} .ap₀ x = x
-idn₀ ≪Setoid≫ {𝒳} .ap₁ f = f
-cmp₀ ≪Setoid≫ {𝒳}{𝒴}{𝒵} G F .ap₀ x = ap₀ G (ap₀ F x)
-cmp₀ ≪Setoid≫ {𝒳}{𝒴}{𝒵} G F .ap₁ f = ap₁ G (ap₁ F f)
-idn₁ ≪Setoid≫ {𝒳}{𝒴}{F}{x} = idn 𝒴
-cmp₁ ≪Setoid≫ {𝒳}{𝒴}{F}{G}{H} β α {x} = cmp 𝒴 (β {x}) (α {x})
-inv₁ ≪Setoid≫ {𝒳}{𝒴}{F}{G} α {x} = inv 𝒴 (α {x})
-cmp₀* ≪Setoid≫ {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} α β {x} = cmp 𝒵 (ap₁ G₁ (β {x})) (α {ap₀ F₀ x})
-coh-λ ≪Setoid≫ {𝒳}{𝒴}{F}{x} = idn 𝒴
-coh-ρ ≪Setoid≫ {𝒳}{𝒴}{F}{x} = idn 𝒴
-coh-α ≪Setoid≫ {𝒲}{𝒳}{𝒴}{𝒵}{F}{G}{H}{x} = idn 𝒵
+≪Setoid≫ .idn₀ {𝒳} .ap₀ x = x
+≪Setoid≫ .idn₀ {𝒳} .ap₁ f = f
+≪Setoid≫ .cmp₀ {𝒳}{𝒴}{𝒵} G F .ap₀ x = ap₀ G (ap₀ F x)
+≪Setoid≫ .cmp₀ {𝒳}{𝒴}{𝒵} G F .ap₁ f = ap₁ G (ap₁ F f)
+≪Setoid≫ .idn₁ {𝒳}{𝒴}{F}{x} = idn 𝒴
+≪Setoid≫ .cmp₁ {𝒳}{𝒴}{F}{G}{H} β α {x} = cmp 𝒴 (β {x}) (α {x})
+≪Setoid≫ .inv₁ {𝒳}{𝒴}{F}{G} α {x} = inv 𝒴 (α {x})
+≪Setoid≫ .cmp₀* {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} α β {x} = cmp 𝒵 (ap₁ G₁ (β {x})) (α {ap₀ F₀ x})
+≪Setoid≫ .coh-λ {𝒳}{𝒴}{F}{x} = idn 𝒴
+≪Setoid≫ .coh-ρ {𝒳}{𝒴}{F}{x} = idn 𝒴
+≪Setoid≫ .coh-α {𝒲}{𝒳}{𝒴}{𝒵}{F}{G}{H}{x} = idn 𝒵
 
 ≪-∘_≫₀
   : {𝒳 : Category} {x y z : ⟪ 𝒳 ⟫ .●}

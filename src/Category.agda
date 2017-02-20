@@ -76,25 +76,25 @@ Op : Category → Category
 ⟪ Op 𝒳 ⟫ .∂ x y .● = ⟪ 𝒳 ⟫ .∂ y x .●
 ⟪ Op 𝒳 ⟫ .∂ x y .∂ f g .● = ⟪ 𝒳 ⟫ .∂ y x .∂ f g .●
 ⟪ Op 𝒳 ⟫ .∂ x y .∂ f g .∂ α β = ⟪ 𝒳 ⟫ .∂ y x .∂ f g .∂ α β
-idn₀ (Op 𝒳) = idn₀ 𝒳
-cmp₀ (Op 𝒳) g f = cmp₀ 𝒳 f g
-idn₁ (Op 𝒳) = idn₁ 𝒳
-cmp₁ (Op 𝒳) = cmp₁ 𝒳
-inv₁ (Op 𝒳) = inv₁ 𝒳
-cmp₀* (Op 𝒳) α β = cmp₀* 𝒳 β α
-coh-λ (Op 𝒳) = coh-ρ 𝒳
-coh-ρ (Op 𝒳) = coh-λ 𝒳
-coh-α (Op 𝒳) = inv₁ 𝒳 (coh-α 𝒳)
+Op 𝒳 .idn₀ = idn₀ 𝒳
+Op 𝒳 .cmp₀ g f = cmp₀ 𝒳 f g
+Op 𝒳 .idn₁ = idn₁ 𝒳
+Op 𝒳 .cmp₁ = cmp₁ 𝒳
+Op 𝒳 .inv₁ = inv₁ 𝒳
+Op 𝒳 .cmp₀* α β = cmp₀* 𝒳 β α
+Op 𝒳 .coh-λ = coh-ρ 𝒳
+Op 𝒳 .coh-ρ = coh-λ 𝒳
+Op 𝒳 .coh-α = inv₁ 𝒳 (coh-α 𝒳)
 
 [_,_] : Category → Category → Category
 ⟪ [ 𝒳 , 𝒴 ] ⟫ .● = Functor 𝒳 𝒴
 ⟪ [ 𝒳 , 𝒴 ] ⟫ .∂ F G .● = Transform F G
 ⟪ [ 𝒳 , 𝒴 ] ⟫ .∂ F G .∂ α β .● = ∀ {x} → 𝒴 ⊧ ap₀ α x ⇔ ap₀ β x
 ⟪ [ 𝒳 , 𝒴 ] ⟫ .∂ F G .∂ α β .∂ 𝔭 𝔮 = Void
-idn₀ [ 𝒳 , 𝒴 ] .ap₀ x = idn₀ 𝒴
-idn₀ [ 𝒳 , 𝒴 ] {F} .ap₁ {x}{y} f = cmp₁ 𝒴 (inv₁ 𝒴 (coh-ρ 𝒴)) (coh-λ 𝒴)
-cmp₀ [ 𝒳 , 𝒴 ] {F}{G}{H} β α .ap₀ x = cmp₀ 𝒴 (ap₀ β x) (ap₀ α x)
-cmp₀ [ 𝒳 , 𝒴 ] {F}{G}{H} β α .ap₁ {x}{y} f =
+[ 𝒳 , 𝒴 ] .idn₀ .ap₀ x = idn₀ 𝒴
+[ 𝒳 , 𝒴 ] .idn₀ {F} .ap₁ {x}{y} f = cmp₁ 𝒴 (inv₁ 𝒴 (coh-ρ 𝒴)) (coh-λ 𝒴)
+[ 𝒳 , 𝒴 ] .cmp₀ {F}{G}{H} β α .ap₀ x = cmp₀ 𝒴 (ap₀ β x) (ap₀ α x)
+[ 𝒳 , 𝒴 ] .cmp₀ {F}{G}{H} β α .ap₁ {x}{y} f =
   cmp₁ 𝒴
     (cmp₁ 𝒴
       (cmp₁ 𝒴
@@ -108,10 +108,10 @@ cmp₀ [ 𝒳 , 𝒴 ] {F}{G}{H} β α .ap₁ {x}{y} f =
         (idn₁ 𝒴)
         (ap₁ α f)))
     (coh-α 𝒴)
-idn₁ [ 𝒳 , 𝒴 ] {F}{G}{α}{x} = idn₁ 𝒴
-cmp₁ [ 𝒳 , 𝒴 ] {F}{G}{α}{β}{γ} q p {x} = cmp₁ 𝒴 (q {x}) (p {x})
-inv₁ [ 𝒳 , 𝒴 ] {F}{G}{α}{β} p {x} = inv₁ 𝒴 (p {x})
-cmp₀* [ 𝒳 , 𝒴 ] {F}{G}{H}{α₀}{α₁}{β₀}{β₁} q p {x} = cmp₀* 𝒴 (q {x}) (p {x})
-coh-λ [ 𝒳 , 𝒴 ] {F}{G}{α}{x} = coh-λ 𝒴
-coh-ρ [ 𝒳 , 𝒴 ] {F}{G}{α}{x} = coh-ρ 𝒴
-coh-α [ 𝒳 , 𝒴 ] {F}{G}{H}{I}{α}{β}{γ}{x} = coh-α 𝒴
+[ 𝒳 , 𝒴 ] .idn₁ {F}{G}{α}{x} = idn₁ 𝒴
+[ 𝒳 , 𝒴 ] .cmp₁ {F}{G}{α}{β}{γ} q p {x} = cmp₁ 𝒴 (q {x}) (p {x})
+[ 𝒳 , 𝒴 ] .inv₁ {F}{G}{α}{β} p {x} = inv₁ 𝒴 (p {x})
+[ 𝒳 , 𝒴 ] .cmp₀* {F}{G}{H}{α₀}{α₁}{β₀}{β₁} q p {x} = cmp₀* 𝒴 (q {x}) (p {x})
+[ 𝒳 , 𝒴 ] .coh-λ {F}{G}{α}{x} = coh-λ 𝒴
+[ 𝒳 , 𝒴 ] .coh-ρ {F}{G}{α}{x} = coh-ρ 𝒴
+[ 𝒳 , 𝒴 ] .coh-α {F}{G}{H}{I}{α}{β}{γ}{x} = coh-α 𝒴
