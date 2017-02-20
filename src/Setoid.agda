@@ -98,9 +98,9 @@ Presheaf 𝒳 = Functor (Op 𝒳) ≪Setoid≫
 ≪_∘-≫₁ {𝒳} g .ap₀ x = ≪ g ∘-≫₀
 ≪_∘-≫₁ {𝒳} g .ap₁ f = inv₁ 𝒳 (coh-α 𝒳)
 
-Yo : (𝒳 : Category) → Functor 𝒳 (≪Presheaf≫ 𝒳)
-Yo 𝒳 .ap₀ y = ≪ 𝒳 [-, y ]≫
-Yo 𝒳 .ap₁ g = ≪ g ∘-≫₁
-Yo 𝒳 .ap₂ α = cmp₀* 𝒳 α (idn₁ 𝒳)
-Yo 𝒳 .coh-idn = coh-λ 𝒳
-Yo 𝒳 .coh-cmp g f = coh-α 𝒳
+Yoneda : (𝒳 : Category) → Functor 𝒳 (≪Presheaf≫ 𝒳)
+Yoneda 𝒳 .ap₀ y = ≪ 𝒳 [-, y ]≫
+Yoneda 𝒳 .ap₁ g = ≪ g ∘-≫₁
+Yoneda 𝒳 .ap₂ α = cmp₀* 𝒳 α (idn₁ 𝒳)
+Yoneda 𝒳 .coh-idn = coh-λ 𝒳
+Yoneda 𝒳 .coh-cmp g f = coh-α 𝒳

@@ -322,7 +322,7 @@ module Presheaf where
 
   -- the formal or representable cube
   □ : Symbols → □Set
-  □ = ap₀ (Yo Cube.cat)
+  □ = ap₀ (Yoneda Cube.cat)
 
   data Interval (I : Symbols) : Set where
     west : Interval I
