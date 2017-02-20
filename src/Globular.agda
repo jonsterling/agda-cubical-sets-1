@@ -12,6 +12,10 @@ record Globular : Set where
     ∂ : ● → ● → Globular
 open Globular public
 
+Void : Globular
+● Void = T.𝟘
+∂ Void () ()
+
 Cell : Globular → Nat → Set
 Cell A zero = Set
 Cell A (succ zero) = (a b : ● A) → Set

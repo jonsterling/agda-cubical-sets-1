@@ -6,6 +6,11 @@ open import Category
 open import Globular
 open import Prelude
   hiding (¬_)
+open import Setoid
+  hiding (module Setoid)
+  using (Setoid)
+  using (ap₀)
+  using (ap₁)
 
 module Symbols where
   infix  1 _∈_
@@ -29,12 +34,12 @@ module Symbols where
     … | no  _ = T.𝟙
     … | yes _ = T.𝟘
 
-  record Names (X : Symbols) : Set where
+  record Name (X : Symbols) : Set where
     constructor pt
     field
       x : String
       el : x ∈ X
-  open Names public
+  open Name public
 open Symbols public
 
 module 𝕀 where
@@ -44,7 +49,7 @@ module 𝕀 where
   infixr 3 _∧_
 
   data 𝕀 (Γ : Symbols) : Set where
-    var : (i : Names Γ) → 𝕀 Γ
+    var : (i : Name Γ) → 𝕀 Γ
     #0 : 𝕀 Γ
     #1 : 𝕀 Γ
     _∨_ : (a b : 𝕀 Γ) → 𝕀 Γ
@@ -66,10 +71,10 @@ module 𝕀 where
       : ∀ {a b}
       → a ≡ b
       → a ≅ b
-    seq -- composition (diagrammatic order)
+    cmp
       : ∀ {a b c}
-      → (p : a ≅ b)
       → (q : b ≅ c)
+      → (p : a ≅ b)
       → a ≅ c
     inv -- symmetry
       : ∀ {a b}
@@ -152,10 +157,10 @@ open 𝕀 public
   using (≪_≫)
   using (𝕀)
 
-module Sub where
+module Cube where
   infix  6 _≔_
   infixl 1 _≫=_
-  infixr 1 _≫=≫_
+  infixr 1 _≪=≪_
 
   record Decl (Γ : Symbols) : Set where
     constructor _≔_
@@ -174,19 +179,19 @@ module Sub where
       → Sub Δ (▸i δ ∷ Γ)
     loop
       : Sub Δ Δ
-    _≫=≫_
+    _≪=≪_
       : ∀ {Γ Θ}
-      → (f : Sub Θ Γ)
       → (g : Sub Δ Θ)
+      → (f : Sub Θ Γ)
       → Sub Δ Γ
 
   mutual
-    look : ∀ {Γ Δ} → Sub Δ Γ → Names Γ → 𝕀 Δ
+    look : ∀ {Γ Δ} → Sub Δ Γ → Name Γ → 𝕀 Δ
     look [] (pt _ ())
     look (_ ≔ φ ∷ _) (pt _ (stop)) = φ
     look (_ ∷ f) (pt i (step _ _ ε)) = look f (pt i ε)
     look (loop) ε = var ε
-    look (f ≫=≫ g) ε = look f ε ≫= g
+    look (g ≪=≪ f) ε = look f ε ≫= g
 
     _≫=_ : ∀ {Γ Δ} → 𝕀 Γ → Sub Δ Γ → 𝕀 Δ
     var i ≫= f = look f i
@@ -215,7 +220,7 @@ module Sub where
     → a 𝕀.≅ b
     → a ≫= f 𝕀.≅ b ≫= f
   rsp-lhs f (𝕀.idn refl) = 𝕀.idn refl
-  rsp-lhs f (𝕀.seq p q) = 𝕀.seq (rsp-lhs f p) (rsp-lhs f q)
+  rsp-lhs f (𝕀.cmp q p) = 𝕀.cmp (rsp-lhs f q) (rsp-lhs f p)
   rsp-lhs f (𝕀.inv p) = 𝕀.inv (rsp-lhs f p)
   rsp-lhs f 𝕀.∨-abs = 𝕀.∨-abs
   rsp-lhs f 𝕀.∨-ass = 𝕀.∨-ass
@@ -255,7 +260,7 @@ module Sub where
     → (a : 𝕀 Γ)
     → (f : Sub Δ Γ)
     → (g : Sub Θ Δ)
-    → (a ≫= (f ≫=≫ g)) ≡ ((a ≫= f) ≫= g)
+    → (a ≫= (g ≪=≪ f)) ≡ ((a ≫= f) ≫= g)
   ass (var _) f g = refl
   ass #0 f g = refl
   ass #1 f g = refl
@@ -269,31 +274,43 @@ module Sub where
     → a 𝕀.≅ b
     → f ≅ g
     → a ≫= f 𝕀.≅ b ≫= g
-  rsp a b f g α β = 𝕀.seq (rsp-lhs f α) (rsp-rhs b f g β)
+  rsp a b f g α β = 𝕀.cmp (rsp-rhs b f g β) (rsp-lhs f α)
+
+  module _ where
+    module S where
+      open Setoid public
+
+    -- the setoid of nominal cubes
+    set : Symbols → Symbols → Setoid
+    set Δ Γ .S.obj = Sub Δ Γ
+    set Δ Γ .S.hom = _≅_
+    set Δ Γ .S.idn = 𝕀.idn refl
+    set Δ Γ .S.cmp β α {i} = 𝕀.cmp (β {i}) (α {i})
+    set Δ Γ .S.inv α {i} = 𝕀.inv (α {i})
 
   -- the category of nominal cubes
   cat : Category
-  quiver cat .● = Symbols
-  quiver cat .∂ Γ Δ .● = Sub Δ Γ
-  quiver cat .∂ Γ Δ .∂ f g .● = f ≅ g
-  quiver cat .∂ Γ Δ .∂ f g .∂ α β = Void
-  idn₀ cat = loop
-  seq₀ cat = _≫=≫_
-  idn₁ cat = 𝕀.idn refl
-  seq₁ cat α β {i} = 𝕀.seq (α {i}) (β {i})
-  inv₁ cat α {i} = 𝕀.inv (α {i})
-  seq₀* cat {f₀ = f₀}{f₁}{g₀}{g₁} α β {i} = rsp (look f₀ i) (look f₁ i) g₀ g₁ (α {i}) β
-  coh-λ cat = 𝕀.idn refl
-  coh-ρ cat = 𝕀.idn idn
-  coh-α cat {f = f}{g}{h}{i} = 𝕀.idn (ass (look f i) g h)
-open Sub
+  ⟪ cat ⟫ .● = Symbols
+  ⟪ cat ⟫ .∂ Γ Δ .● = Sub Δ Γ
+  ⟪ cat ⟫ .∂ Γ Δ .∂ f g .● = f ≅ g
+  ⟪ cat ⟫ .∂ Γ Δ .∂ f g .∂ α β = Void
+  cat .idn₀ = loop
+  cat .cmp₀ = _≪=≪_
+  cat .idn₁ = 𝕀.idn refl
+  cat .cmp₁ β α {i} = 𝕀.cmp (β {i}) (α {i})
+  cat .inv₁ α {i} = 𝕀.inv (α {i})
+  cat .cmp₀* {f₀ = f₀}{f₁}{g₀}{g₁} α β {i} = rsp (look f₀ i) (look f₁ i) g₀ g₁ (β {i}) α
+  cat .coh-λ = 𝕀.idn idn
+  cat .coh-ρ = 𝕀.idn refl
+  cat .coh-α {f = f}{g}{h}{i} = 𝕀.idn (ass (look f i) g h)
+open Cube
   hiding (module Sub)
   using (Sub)
   using ([])
   using (_∷_)
   using (_≔_)
   using (_≫=_)
-  using (_≫=≫_)
+  using (_≪=≪_)
   using (look)
   using (loop)
 
@@ -310,10 +327,10 @@ module □Set where
       idn
         : ∀ {Γ A}
         → hom Γ A A
-      seq
+      cmp
         : ∀ {Γ A B C}
-        → (p : hom Γ A B)
         → (q : hom Γ B C)
+        → (p : hom Γ A B)
         → hom Γ A C
       inv
         : ∀ {Γ A B}
@@ -327,15 +344,15 @@ module □Set where
       sub-idn
         : ∀ {Γ A}
         → hom Γ (sub loop A) A
-      sub-seq
+      sub-cmp
         : ∀ {Γ Δ Θ A}
-        → (f : Sub Θ Γ)
         → (g : Sub Δ Θ)
-        → hom Δ (sub (f ≫=≫ g) A) (sub g (sub f A))
+        → (f : Sub Θ Γ)
+        → hom Δ (sub (g ≪=≪ f) A) (sub g (sub f A))
       sub-rsp -- functoriality or whiskering
         : ∀ {Γ Δ A B}
         → (f g : Sub Δ Γ)
-        → (α : f Sub.≅ g)
+        → (α : f Cube.≅ g)
         → (β : hom Γ A B)
         → hom Δ (sub f A) (sub g B)
   open □Set public
@@ -345,14 +362,14 @@ open □Set public
 -- the formal or representable Γ-cube
 □ : Symbols → □Set
 obj (□ Γ) Δ = Sub Δ Γ
-hom (□ Γ) Δ = Sub._≅_
+hom (□ Γ) Δ = Cube._≅_
 idn (□ Γ) = 𝕀.idn refl
-seq (□ Γ) p q = 𝕀.seq p q
-inv (□ Γ) p = 𝕀.inv p
-sub (□ Γ) f g = g ≫=≫ f
-sub-idn (□ Γ) = 𝕀.idn Sub.idn
-sub-seq (□ Γ) {A = A} f g = 𝕀.idn (Sub.ass (look A _) f g)
-sub-rsp (□ Γ) {A = A}{B} f g α β {i} = Sub.rsp (look A i) (look B i) f g β α
+cmp (□ Γ) q p {i} = 𝕀.cmp (q {i}) (p {i})
+inv (□ Γ) p {i} = 𝕀.inv (p {i})
+sub (□ Γ) = _≪=≪_
+sub-idn (□ Γ) = 𝕀.idn Cube.idn
+sub-cmp (□ Γ) {A = A} g f = 𝕀.idn (Cube.ass (look A _) f g)
+sub-rsp (□ Γ) {A = A}{B} f g α β {i} = Cube.rsp (look A i) (look B i) f g β α
 
 -- the interval in HIT style
 data Interval (I : Symbols) : Set where
@@ -373,29 +390,29 @@ hom interval I _ _ = T.𝟘
 idn interval {A = west} = *
 idn interval {A = east} = *
 idn interval {A = walk φ} = 𝕀.idn refl
-seq interval {A = west} {west} {west} p q = *
-seq interval {A = west} {west} {east} p ()
-seq interval {A = west} {west} {walk φ} p q = q
-seq interval {A = west} {east} {C} () q
-seq interval {A = west} {walk φ₁} {west} p q = *
-seq interval {A = west} {walk φ₁} {east} p q = 𝕀.distinct (𝕀.seq (𝕀.inv p) q)
-seq interval {A = west} {walk φ₁} {walk φ₂} p q = 𝕀.seq (𝕀.inv q) p
-seq interval {A = east} {west} {C} () q
-seq interval {A = east} {east} {west} p ()
-seq interval {A = east} {east} {east} p q = *
-seq interval {A = east} {east} {walk φ} p q = q
-seq interval {A = east} {walk φ₁} {west} p q = 𝕀.distinct (𝕀.seq (𝕀.inv q) p)
-seq interval {A = east} {walk φ₁} {east} p q = *
-seq interval {A = east} {walk φ₁} {walk φ₂} p q = 𝕀.seq (𝕀.inv q) p
-seq interval {A = walk φ₀} {west} {west} p q = p
-seq interval {A = walk φ₀} {west} {east} p ()
-seq interval {A = walk φ₀} {west} {walk φ₂} p q = 𝕀.seq p (𝕀.inv q)
-seq interval {A = walk φ₀} {east} {west} p ()
-seq interval {A = walk φ₀} {east} {east} p q = p
-seq interval {A = walk φ₀} {east} {walk φ₂} p q = 𝕀.seq p (𝕀.inv q)
-seq interval {A = walk φ₀} {walk φ₁} {west} p q = 𝕀.seq p q
-seq interval {A = walk φ₀} {walk φ₁} {east} p q = 𝕀.seq p q
-seq interval {A = walk φ₀} {walk φ₁} {walk φ₂} p q = 𝕀.seq p q
+cmp interval {A = west} {west} {west} q p = *
+cmp interval {A = west} {west} {east} () p
+cmp interval {A = west} {west} {walk φ} q p = q
+cmp interval {A = west} {east} {C} q ()
+cmp interval {A = west} {walk φ₁} {west} q p = *
+cmp interval {A = west} {walk φ₁} {east} q p = 𝕀.distinct (𝕀.cmp q (𝕀.inv p))
+cmp interval {A = west} {walk φ₁} {walk φ₂} q p = 𝕀.cmp p (𝕀.inv q)
+cmp interval {A = east} {west} {C} q ()
+cmp interval {A = east} {east} {west} () p
+cmp interval {A = east} {east} {east} q p = *
+cmp interval {A = east} {east} {walk φ} q p = q
+cmp interval {A = east} {walk φ₁} {west} q p = 𝕀.distinct (𝕀.cmp p (𝕀.inv q))
+cmp interval {A = east} {walk φ₁} {east} q p = *
+cmp interval {A = east} {walk φ₁} {walk φ₂} q p = 𝕀.cmp p (𝕀.inv q)
+cmp interval {A = walk φ₀} {west} {west} q p = p
+cmp interval {A = walk φ₀} {west} {east} () p
+cmp interval {A = walk φ₀} {west} {walk φ₂} q p = 𝕀.cmp (𝕀.inv q) p
+cmp interval {A = walk φ₀} {east} {west} () p
+cmp interval {A = walk φ₀} {east} {east} q p = p
+cmp interval {A = walk φ₀} {east} {walk φ₂} q p = 𝕀.cmp (𝕀.inv q) p
+cmp interval {A = walk φ₀} {walk φ₁} {west} q p = 𝕀.cmp q p
+cmp interval {A = walk φ₀} {walk φ₁} {east} q p = 𝕀.cmp q p
+cmp interval {A = walk φ₀} {walk φ₁} {walk φ₂} q p = 𝕀.cmp q p
 inv interval {A = west} {west} p = *
 inv interval {A = west} {east} ()
 inv interval {A = west} {walk φ₁} p = p
@@ -410,19 +427,19 @@ sub interval f east = east
 sub interval f (walk φ) = walk (φ ≫= f)
 sub-idn interval {A = west} = *
 sub-idn interval {A = east} = *
-sub-idn interval {A = walk φ} = 𝕀.idn Sub.idn
-sub-seq interval {A = west} f g = *
-sub-seq interval {A = east} f g = *
-sub-seq interval {A = walk φ} f g = 𝕀.idn (Sub.ass φ f g)
+sub-idn interval {A = walk φ} = 𝕀.idn Cube.idn
+sub-cmp interval {A = west} g f = *
+sub-cmp interval {A = east} g f = *
+sub-cmp interval {A = walk φ} g f = 𝕀.idn (Cube.ass φ f g)
 sub-rsp interval {A = west} {west} f p α β = *
 sub-rsp interval {A = west} {east} f p α ()
-sub-rsp interval {A = west} {walk φ₁} f p α β = Sub.rsp φ₁ #0 p p β (𝕀.idn refl)
+sub-rsp interval {A = west} {walk φ₁} f p α β = Cube.rsp φ₁ #0 p p β (𝕀.idn refl)
 sub-rsp interval {A = east} {west} f p α ()
 sub-rsp interval {A = east} {east} f p α β = *
-sub-rsp interval {A = east} {walk φ₁} f p α β = Sub.rsp φ₁ #1 p f β (𝕀.inv α)
-sub-rsp interval {A = walk φ₀} {west} f p α β = Sub.rsp φ₀ #0 f p β α
-sub-rsp interval {A = walk φ₀} {east} f p α β = Sub.rsp φ₀ #1 f p β α
-sub-rsp interval {A = walk φ₀} {walk φ₁} f p α β = Sub.rsp φ₀ φ₁ f p β α
+sub-rsp interval {A = east} {walk φ₁} f p α β = Cube.rsp φ₁ #1 p f β (𝕀.inv α)
+sub-rsp interval {A = walk φ₀} {west} f p α β = Cube.rsp φ₀ #0 f p β α
+sub-rsp interval {A = walk φ₀} {east} f p α β = Cube.rsp φ₀ #1 f p β α
+sub-rsp interval {A = walk φ₀} {walk φ₁} f p α β = Cube.rsp φ₀ φ₁ f p β α
 
 -- example: walk "a" ≅ west (given {"a" ≔ #0})
 ϕ₀ : hom interval [] (sub interval ("a" ≔ #0 ∷ []) (walk ≪ "a" ≫)) west
@@ -432,4 +449,4 @@ sub-rsp interval {A = walk φ₀} {walk φ₁} f p α β = Sub.rsp φ₀ φ₁ f
 ϕ₁ : hom interval []
   (sub interval ("a" ≔ #0 ∷ "b" ≔ #0 ∷ []) (walk (¬ ≪ "a" ≫ ∨ ≪ "b" ≫)))
   east
-ϕ₁ = 𝕀.seq 𝕀.∨-uni 𝕀.¬-#0
+ϕ₁ = 𝕀.cmp 𝕀.¬-#0 𝕀.∨-uni
