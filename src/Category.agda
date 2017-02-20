@@ -4,6 +4,8 @@ open import Globular
 open import Prelude
 open import Syntax
 
+infix 0 _⊧_≅_
+
 record Category : Set where
   no-eta-equality
   field ⟪_⟫ : Globular
@@ -70,6 +72,17 @@ record Transform {𝒳 𝒴} (F G : Functor 𝒳 𝒴) : Set where
 open Transform public
 {-# DISPLAY Transform.ap₀ α x = α x #-}
 {-# DISPLAY Transform.ap₁ α f = α f #-}
+
+record Isomorphism (𝒳 : Category) (x y : ● ⟪ 𝒳 ⟫) : Set where
+  no-eta-equality
+  field
+    into : 𝒳 ⊧ x ⇾ y
+    from : 𝒳 ⊧ y ⇾ x
+    coh-from∘into : 𝒳 ⊧ cmp₀ 𝒳 from into ⇔ idn₀ 𝒳 {x}
+    coh-into∘from : 𝒳 ⊧ cmp₀ 𝒳 into from ⇔ idn₀ 𝒳 {y}
+_⊧_≅_ : (𝒳 : Category) (x y : ● ⟪ 𝒳 ⟫) → Set
+_⊧_≅_ = Isomorphism
+{-# DISPLAY Isomorphism 𝒳 x y = 𝒳 ⊧ x ≅ y #-}
 
 Op : Category → Category
 ⟪ Op 𝒳 ⟫ .● = ● ⟪ 𝒳 ⟫
