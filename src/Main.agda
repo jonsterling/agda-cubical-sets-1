@@ -318,7 +318,7 @@ module Presheaf where
     hiding (module Setoid)
 
   □Set : Set
-  □Set = Functor (Op Cube.cat) ≪Setoid≫
+  □Set = Presheaf Cube.cat
 
   □ : Symbols → □Set
   □ = ap₀ (Yo Cube.cat)

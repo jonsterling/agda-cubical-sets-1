@@ -61,6 +61,12 @@ open import Category
 ≪Setoid≫ .coh-ρ {𝒳}{𝒴}{F}{x} = idn 𝒴
 ≪Setoid≫ .coh-α {𝒲}{𝒳}{𝒴}{𝒵}{F}{G}{H}{x} = idn 𝒵
 
+Presheaf : Category → Set
+Presheaf 𝒳 = Functor (Op 𝒳) ≪Setoid≫
+
+≪Presheaf≫ : Category → Category
+≪Presheaf≫ 𝒳 = [ Op 𝒳 , ≪Setoid≫ ]
+
 ≪-∘_≫₀
   : {𝒳 : Category} {x y z : ⟪ 𝒳 ⟫ .●}
   → (f : 𝒳 ⊧ x ⇾ y)
@@ -92,7 +98,7 @@ open import Category
 ≪_∘-≫₁ {𝒳} g .ap₀ x = ≪ g ∘-≫₀
 ≪_∘-≫₁ {𝒳} g .ap₁ f = inv₁ 𝒳 (coh-α 𝒳)
 
-Yo : (𝒳 : Category) → Functor 𝒳 [ Op 𝒳 , ≪Setoid≫ ]
+Yo : (𝒳 : Category) → Functor 𝒳 (≪Presheaf≫ 𝒳)
 Yo 𝒳 .ap₀ y = ≪ 𝒳 [-, y ]≫
 Yo 𝒳 .ap₁ g = ≪ g ∘-≫₁
 Yo 𝒳 .ap₂ α = cmp₀* 𝒳 α (idn₁ 𝒳)
