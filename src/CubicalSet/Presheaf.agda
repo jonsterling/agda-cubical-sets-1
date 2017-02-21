@@ -23,8 +23,8 @@ open import Symbol
 ≪□Set≫ = ≪Presheaf≫ Cube.cat
 
 -- the formal or representable cube
-□ : Symbols → □Set
-□ = ap₀ (Yoneda Cube.cat)
+□ : Functor Cube.cat ≪□Set≫
+□ = Yoneda Cube.cat
 
 data Interval (I : Symbols) : Set where
   west : Interval I
