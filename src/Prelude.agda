@@ -4,6 +4,7 @@ open import Agda.Builtin.String public
 
 module T where
   infix 0 ¬_
+  infixr 0 _▸_
 
   data 𝟘 : Set where
 
