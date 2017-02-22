@@ -54,6 +54,12 @@ module ≡ where
   _≢_ : ∀ {a} {A : Set a} (x : A) → A → Set a
   x ≢ y = ¬ (x ≡ y)
 
+  idn : {A : Set} {a : A} → a ≡ a
+  idn = refl
+
+  cmp : {A : Set} {a b c : A} → b ≡ c → a ≡ b → a ≡ c
+  cmp refl q = q
+
   seq : {A : Set} {a b c : A} → a ≡ b → b ≡ c → a ≡ c
   seq p refl = p
 
