@@ -27,7 +27,7 @@ record Cell₁
   field
     {dom₁} : _
     {cod₁} : _
-    arr₁ : 𝒵 ⊧ cmp₀ 𝒵 (f .arr₀) (ap₁ F dom₁) ⇔ cmp₀ 𝒵 (ap₁ G cod₁) (g .arr₀)
+    arr₁ : 𝒵 ⊧ cmp₀ 𝒵 (arr₀ f) (ap₁ F dom₁) ⇔ cmp₀ 𝒵 (ap₁ G cod₁) (arr₀ g)
 open Cell₁ public
 
 record Cell₂
@@ -39,8 +39,8 @@ record Cell₂
   no-eta-equality
   constructor cell₂
   field
-    coh-λ : 𝒳 ⊧ α .dom₁ ⇔ β .dom₁
-    coh-ρ : 𝒴 ⊧ α .cod₁ ⇔ β .cod₁
+    coh-λ : 𝒳 ⊧ dom₁ α ⇔ dom₁ β
+    coh-ρ : 𝒴 ⊧ cod₁ α ⇔ cod₁ β
 open Cell₂ public
 
 [_↓_] : {𝒳 𝒴 𝒵 : Category} (F : Functor 𝒳 𝒵) (G : Functor 𝒴 𝒵) → Category
