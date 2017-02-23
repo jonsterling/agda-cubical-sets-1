@@ -15,8 +15,11 @@ module T where
   open import Basis.Prelude.Unit public
   open import Basis.Prelude.Void public
 open T public
-  hiding (_⊕_)
   hiding (_⊗_)
+  hiding (fst)
+  hiding (snd)
+  hiding (⟨_,_⟩)
+  hiding (_⊕_)
+  hiding (𝟙)
   hiding (¬_)
   hiding (𝟘)
-  hiding (𝟙)
