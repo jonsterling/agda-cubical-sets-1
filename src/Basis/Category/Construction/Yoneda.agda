@@ -7,6 +7,7 @@ open import Basis.Category.Construction.Functor
 open import Basis.Category.Construction.Opposite
 open import Basis.Category.Construction.Presheaf
 open import Basis.Category.Construction.Product
+open import Basis.Category.Construction.Profunctor
 open import Basis.Category.Construction.Setoid
 open import Basis.Category.Construction.Terminal
 open import Basis.Category.Functor
@@ -16,23 +17,6 @@ open import Basis.Setoid.Boot
 open import Basis.Setoid.Construction.Hom
 open import Basis.Setoid.Map
 open import Basis.Prelude
-
-≪_[-,-]≫ : ∀ 𝒳 → Functor (Op 𝒳 ⊗ 𝒳) ≪Setoid≫
-≪ 𝒳 [-,-]≫ .ap₀ (x , y) = ≪hom≫ 𝒳 x y
-≪ 𝒳 [-,-]≫ .ap₁ (f , g) .ap₀ h = cmp₀ 𝒳 (cmp₀ 𝒳 g h) f
-≪ 𝒳 [-,-]≫ .ap₁ (f , g) .ap₁ α = cmp₀* 𝒳 (cmp₀* 𝒳 (idn₁ 𝒳) α) (idn₁ 𝒳)
-≪ 𝒳 [-,-]≫ .ap₂ (α , β) = cmp₀* 𝒳 (cmp₀* 𝒳 β (idn₁ 𝒳)) α
-≪ 𝒳 [-,-]≫ .coh-idn = cmp₁ 𝒳 (coh-λ 𝒳) (coh-ρ 𝒳)
-≪ 𝒳 [-,-]≫ .coh-cmp (f₁ , g₁) (f₀ , g₀) {h} =
-  cmp₁ 𝒳
-    (cmp₀* 𝒳
-      (cmp₁ 𝒳
-        (coh-α 𝒳)
-        (cmp₀* 𝒳
-          (coh-α 𝒳)
-          (idn₁ 𝒳)))
-      (idn₁ 𝒳))
-    (inv₁ 𝒳 (coh-α 𝒳))
 
 ≪_[-,_]≫ : ∀ 𝒳 → ⟪ 𝒳 ⟫ .● → Presheaf 𝒳
 ≪ 𝒳 [-, y ]≫ =
