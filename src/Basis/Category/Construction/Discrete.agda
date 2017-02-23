@@ -4,10 +4,6 @@ open import Basis.Category.Boot
 open import Basis.Globular
 open import Basis.Prelude
 
-ℼ : Set → Globular
-ℼ X .● = X
-ℼ X .∂ x y = ℼ (x ≡ y)
-
 Discrete : Set → Category
 ⟪ Discrete X ⟫ = ℼ X
 Discrete X .idn₀ = ≡.idn
