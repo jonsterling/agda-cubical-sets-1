@@ -1,4 +1,4 @@
-module Basis.Globular.Void where
+module Basis.Globular.Initial where
 
 open import Basis.Globular.Boot
 open import Basis.Prelude

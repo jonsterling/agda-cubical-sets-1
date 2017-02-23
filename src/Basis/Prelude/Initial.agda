@@ -1,4 +1,4 @@
-module Basis.Prelude.Void where
+module Basis.Prelude.Initial where
 
 module 𝟘 where
   infix 0 ¬_

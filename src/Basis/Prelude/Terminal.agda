@@ -1,4 +1,4 @@
-module Basis.Prelude.Unit where
+module Basis.Prelude.Terminal where
 
 module 𝟙 where
   record 𝟙 : Set where

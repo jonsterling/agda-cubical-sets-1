@@ -14,5 +14,5 @@ record Setoid : Set where
     cmp : ∀ {x y z} → hom y z → hom x y → hom x z
     inv : ∀ {x y} → hom x y → hom y x
 open Setoid public
-{-# DISPLAY Setoid.idn A = 𝟙 #-}
+{-# DISPLAY Setoid.idn A = ↻ #-}
 {-# DISPLAY Setoid.cmp A g f = g ∘ f #-}

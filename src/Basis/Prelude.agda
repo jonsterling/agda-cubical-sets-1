@@ -12,14 +12,14 @@ open import Basis.Prelude.String public
 module T where
   open import Basis.Prelude.Product public
   open import Basis.Prelude.Sum public
-  open import Basis.Prelude.Unit public
-  open import Basis.Prelude.Void public
+  open import Basis.Prelude.Initial public
+  open import Basis.Prelude.Terminal public
 open T public
   hiding (_⊗_)
   hiding (fst)
   hiding (snd)
   hiding (⟨_,_⟩)
   hiding (_⊕_)
-  hiding (𝟙)
   hiding (¬_)
   hiding (𝟘)
+  hiding (𝟙)

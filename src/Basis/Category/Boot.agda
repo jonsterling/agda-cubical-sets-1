@@ -36,6 +36,6 @@ record Category : Set where
   _⊧_⇾_ = G.cell ⟪_⟫ 1
   _⊧_⇔_ = G.cell ⟪_⟫ 2
 open Category public
-{-# DISPLAY Category.idn₀ A = 𝟙 #-}
+{-# DISPLAY Category.idn₀ A = ↻ #-}
 {-# DISPLAY Category.cmp₀ A g f = g ∘ f #-}
 open G.Cell.Syntax public

@@ -1,6 +1,6 @@
 module Basis.Prelude.Decidable where
 
-open import Basis.Prelude.Void
+open import Basis.Prelude.Initial
 
 module Decidable where
   data Decidable (A : Set) : Set where

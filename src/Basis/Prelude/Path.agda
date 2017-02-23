@@ -1,6 +1,6 @@
 module Basis.Prelude.Path where
 
-open import Basis.Prelude.Void
+open import Basis.Prelude.Initial
 
 module ≡ where
   open import Agda.Builtin.Equality public

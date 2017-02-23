@@ -1,7 +1,7 @@
 module Basis.Prelude.Bool where
 
-open import Basis.Prelude.Void
-open import Basis.Prelude.Unit
+open import Basis.Prelude.Initial
+open import Basis.Prelude.Terminal
 
 module Bool where
   open import Agda.Builtin.Bool public
