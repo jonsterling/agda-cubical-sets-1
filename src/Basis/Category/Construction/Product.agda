@@ -6,6 +6,8 @@ open import Basis.Category.Functor
 open import Basis.Globular
 open import Basis.Prelude
 
+infixr 1 _⊗_
+
 _⊗_ : Category → Category → Category
 ⟪ 𝒳 ⊗ 𝒴 ⟫ .● =
   ⟪ 𝒳 ⟫ .● T.⊗ ⟪ 𝒴 ⟫ .●
