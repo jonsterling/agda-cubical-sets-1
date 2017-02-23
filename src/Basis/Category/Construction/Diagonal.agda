@@ -1,8 +1,9 @@
-module Diagonal where
+module Basis.Category.Construction.Diagonal where
 
-open import Category
-open import Globular
-open import Prelude
+open import Basis.Category.Boot
+open import Basis.Category.Construction.Functor
+open import Basis.Category.Functor
+open import Basis.Category.Transform
 
 Diagonal : {𝒜 : Category} (𝒳 : Category) → Functor 𝒜 [ 𝒳 , 𝒜 ]
 Diagonal {𝒜} 𝒳 .ap₀ a .ap₀ _ = a

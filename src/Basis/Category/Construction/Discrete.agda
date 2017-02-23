@@ -1,8 +1,8 @@
-module Discrete where
+module Basis.Category.Construction.Discrete where
 
-open import Category
-open import Globular
-open import Prelude
+open import Basis.Category.Boot
+open import Basis.Globular
+open import Basis.Prelude
 
 ℼ : Set → Globular
 ℼ X .● = X

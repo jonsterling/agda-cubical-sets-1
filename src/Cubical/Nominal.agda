@@ -1,14 +1,6 @@
-{-# OPTIONS --type-in-type #-}
+module Cubical.Nominal where
 
-module Symbol where
-
-open import Category
-open import Globular
-open import Prelude
-  hiding (¬_)
-open import Setoid
-  hiding (module Setoid)
-  using (Setoid)
+open import Basis
 
 infix  1 _∈_
 

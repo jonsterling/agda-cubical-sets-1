@@ -1,6 +1,6 @@
-module Syntax where
+module Basis.Syntax where
 
-open import Prelude
+open import Basis.Prelude
 
 infixr 1 _∘_
 
