@@ -11,3 +11,9 @@ Presheaf 𝒳 = Functor (Op 𝒳) ≪Setoid≫
 
 ≪Presheaf≫ : Category → Category
 ≪Presheaf≫ 𝒳 = [ Op 𝒳 , ≪Setoid≫ ]
+
+Copresheaf : Category → Set
+Copresheaf 𝒳 = Functor 𝒳 ≪Setoid≫
+
+≪Copresheaf≫ : Category → Category
+≪Copresheaf≫ 𝒳 = [ 𝒳 , ≪Setoid≫ ]
