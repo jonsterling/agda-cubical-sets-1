@@ -4,7 +4,7 @@ open import Basis.Prelude.Function
 
 module ⊗ where
   infixr 0 _,_
-  infixr 1 _⊗_
+  infixr 2 _⊗_
   record _⊗_ (A B : Set) : Set where
     constructor _,_
     field
