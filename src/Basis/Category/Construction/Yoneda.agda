@@ -18,29 +18,22 @@ open import Basis.Setoid.Construction.Hom
 open import Basis.Setoid.Map
 open import Basis.Prelude
 
-≪_[-,_]≫ : ∀ 𝒳 → ⟪ 𝒳 ⟫ .● → Presheaf 𝒳
-≪ 𝒳 [-, y ]≫ =
-  cmp₀ ≪Category≫
-    ≪ 𝒳 [-,-]≫
-    ⟨ idn₀ ≪Category≫ , ap₀ (Diagonal (Op 𝒳)) y ⟩
+≪_[-,_]≫
+  : ∀ 𝒳
+  → ● ⟪ 𝒳 ⟫
+  → Functor (Op 𝒳) ≪Setoid≫
+≪ 𝒳 [-, y ]≫ .ap₀ x = ≪hom≫ 𝒳 x y
+≪ 𝒳 [-, y ]≫ .ap₁ f = ≪-∘ f ≫₀
+≪ 𝒳 [-, y ]≫ .ap₂ α = coh-ω-ρ 𝒳 α
+≪ 𝒳 [-, y ]≫ .coh-idn = coh-ρ 𝒳
+≪ 𝒳 [-, y ]≫ .coh-cmp g f = inv₁ 𝒳 (coh-α 𝒳)
 
 ≪_∘-≫₁
   : {𝒳 : Category} {y z : ⟪ 𝒳 ⟫ .●}
   → (g : 𝒳 ⊧ y ⇾ z)
   → Transform ≪ 𝒳 [-, y ]≫ ≪ 𝒳 [-, z ]≫
 ≪_∘-≫₁ {𝒳} g .ap₀ x = ≪ g ∘-≫₀
-≪_∘-≫₁ {𝒳} g .ap₁ f =
-  cmp₁ 𝒳
-    (coh-ω-λ 𝒳
-      (cmp₁ 𝒳
-        (cmp₁ 𝒳
-          (coh-α 𝒳)
-          (coh-ω-λ 𝒳
-            (cmp₁ 𝒳
-              (inv₁ 𝒳 (coh-λ 𝒳))
-              (coh-ρ 𝒳))))
-        (inv₁ 𝒳 (coh-α 𝒳))))
-    (inv₁ 𝒳 (coh-α 𝒳))
+≪_∘-≫₁ {𝒳} g .ap₁ f = inv₁ 𝒳 (coh-α 𝒳)
 
 Yoneda : (𝒳 : Category) → Functor 𝒳 (≪Presheaf≫ 𝒳)
 Yoneda 𝒳 .ap₀ y = ≪ 𝒳 [-, y ]≫
