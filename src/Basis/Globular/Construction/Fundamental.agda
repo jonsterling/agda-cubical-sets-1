@@ -1,4 +1,4 @@
-module Basis.Globular.Fundamental where
+module Basis.Globular.Construction.Fundamental where
 
 open import Basis.Globular.Boot
 open import Basis.Prelude

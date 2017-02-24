@@ -5,6 +5,9 @@ module 𝟘 where
 
   data 𝟘 : Set where
 
+  ¡ : {X : Set} → 𝟘 → X
+  ¡ ()
+
   ¬_ : ∀ {a} → Set a → Set a
   ¬ A = A → 𝟘
 
@@ -14,3 +17,4 @@ open 𝟘 public
   hiding (module 𝟘)
   using (𝟘)
   using (¬_)
+  using (¡)

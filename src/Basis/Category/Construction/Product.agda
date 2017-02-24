@@ -9,13 +9,7 @@ open import Basis.Prelude
 infixr 1 _⊗_
 
 _⊗_ : Category → Category → Category
-⟪ 𝒳 ⊗ 𝒴 ⟫ .● =
-  ⟪ 𝒳 ⟫ .● T.⊗ ⟪ 𝒴 ⟫ .●
-⟪ 𝒳 ⊗ 𝒴 ⟫ .∂ (x₀ , y₀) (x₁ , y₁) .● =
-  (𝒳 ⊧ x₀ ⇾ x₁) T.⊗ (𝒴 ⊧ y₀ ⇾ y₁)
-⟪ 𝒳 ⊗ 𝒴 ⟫ .∂ (x₀ , y₀) (x₁ , y₁) .∂ (f₀ , g₀) (f₁ , g₁) .● =
-  (𝒳 ⊧ f₀ ⇔ f₁) T.⊗ (𝒴 ⊧ g₀ ⇔ g₁)
-⟪ 𝒳 ⊗ 𝒴 ⟫ .∂ x y .∂ f g .∂ α β = G.𝟘
+⟪ 𝒳 ⊗ 𝒴 ⟫ = ⟪ 𝒳 ⟫ G.⊗ ⟪ 𝒴 ⟫
 (𝒳 ⊗ 𝒴) .idn₀ =
   idn₀ 𝒳 , idn₀ 𝒴
 (𝒳 ⊗ 𝒴) .cmp₀ (f₁ , g₁) (f₀ , g₀) =
