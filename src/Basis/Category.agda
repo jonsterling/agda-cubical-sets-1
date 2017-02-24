@@ -15,7 +15,14 @@ module C where
   open import Basis.Category.Construction.Initial public
   open import Basis.Category.Construction.Opposite public
   open import Basis.Category.Construction.Presheaf public
+  open import Basis.Category.Construction.Product public
   open import Basis.Category.Construction.Profunctor public
   open import Basis.Category.Construction.Setoid public
   open import Basis.Category.Construction.Terminal public
   open import Basis.Category.Construction.Yoneda public
+open C public
+  using (Copresheaf)
+  using (Presheaf)
+  using (Profunctor)
+  using (Yoneda)
+  using (≪Category≫)

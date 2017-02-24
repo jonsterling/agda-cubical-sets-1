@@ -4,6 +4,7 @@ open import Basis.Prelude.Finite
 open import Basis.Prelude.Natural
 
 module Vector where
+  infixr 5 _∷_
   data Vector (A : Set) : ℕ → Set where
     [] : Vector A 0
     _∷_ : ∀ {n} (x : A) (xs : Vector A n) → Vector A (succ n)

@@ -13,7 +13,7 @@ open ≅
 ≪Category≫ : Category
 ⟪ ≪Category≫ ⟫ .● = Category
 ⟪ ≪Category≫ ⟫ .∂ 𝒳 𝒴 .● = Functor 𝒳 𝒴
-⟪ ≪Category≫ ⟫ .∂ 𝒳 𝒴 .∂ F G .● = Core [ 𝒳 , 𝒴 ] ⊧ F ⇾ G
+⟪ ≪Category≫ ⟫ .∂ 𝒳 𝒴 .∂ F G .● = Core (≪Functor≫ 𝒳 𝒴) ⊧ F ⇾ G
 ⟪ ≪Category≫ ⟫ .∂ 𝒳 𝒴 .∂ F G .∂ α β = G.𝟘
 ≪Category≫ .idn₀ .ap₀ x = x
 ≪Category≫ .idn₀ .ap₁ f = f
@@ -25,12 +25,12 @@ open ≅
 ≪Category≫ .cmp₀ G F .ap₂ p = ap₂ G (ap₂ F p)
 ≪Category≫ .cmp₀ {𝒳}{𝒴}{𝒵} G F .coh-idn = cmp₁ 𝒵 (coh-idn G) (ap₂ G (coh-idn F))
 ≪Category≫ .cmp₀ {𝒳}{𝒴}{𝒵} G F .coh-cmp g f = cmp₁ 𝒵 (coh-cmp G (ap₁ F g) (ap₁ F f)) (ap₂ G (coh-cmp F g f))
-≪Category≫ .idn₁ {𝒳}{𝒴}{F} .into = idn₀ [ 𝒳 , 𝒴 ]
-≪Category≫ .idn₁ {𝒳}{𝒴} .from = idn₀ [ 𝒳 , 𝒴 ]
+≪Category≫ .idn₁ {𝒳}{𝒴}{F} .into = idn₀ (≪Functor≫ 𝒳 𝒴)
+≪Category≫ .idn₁ {𝒳}{𝒴} .from = idn₀ (≪Functor≫ 𝒳 𝒴)
 ≪Category≫ .idn₁ {𝒳}{𝒴} .coh-from∘into = coh-λ 𝒴
 ≪Category≫ .idn₁ {𝒳}{𝒴} .coh-into∘from = coh-λ 𝒴
-≪Category≫ .cmp₁ {𝒳}{𝒴}{F}{G}{H} β α .into = cmp₀ [ 𝒳 , 𝒴 ] (into β) (into α)
-≪Category≫ .cmp₁ {𝒳}{𝒴}{F}{G}{H} β α .from = cmp₀ [ 𝒳 , 𝒴 ] (from α) (from β)
+≪Category≫ .cmp₁ {𝒳}{𝒴}{F}{G}{H} β α .into = cmp₀ (≪Functor≫ 𝒳 𝒴) (into β) (into α)
+≪Category≫ .cmp₁ {𝒳}{𝒴}{F}{G}{H} β α .from = cmp₀ (≪Functor≫ 𝒳 𝒴) (from α) (from β)
 ≪Category≫ .cmp₁ {𝒳}{𝒴}{F}{G}{H} β α .coh-from∘into =
   cmp₁ 𝒴
     (cmp₁ 𝒴
