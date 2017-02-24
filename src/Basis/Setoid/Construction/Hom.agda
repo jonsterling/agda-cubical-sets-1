@@ -8,9 +8,9 @@ open import Basis.Setoid.Map
 ≪hom≫ : (𝒳 : Category) (x y : ⟪ 𝒳 ⟫ .●) → Setoid
 ≪hom≫ 𝒳 x y .obj = ⟪ 𝒳 ⟫ .∂ x y .●
 ≪hom≫ 𝒳 x y .hom f g = ⟪ 𝒳 ⟫ .∂ x y .∂ f g .●
-≪hom≫ 𝒳 x y .idn {f} = idn₁ 𝒳
-≪hom≫ 𝒳 x y .cmp {f}{g}{h} = cmp₁ 𝒳
-≪hom≫ 𝒳 x y .inv {f}{g} = inv₁ 𝒳
+≪hom≫ 𝒳 x y .idn₀ {f} = idn₁ 𝒳
+≪hom≫ 𝒳 x y .cmp₀ {f}{g}{h} = cmp₁ 𝒳
+≪hom≫ 𝒳 x y .inv₀ {f}{g} = inv₁ 𝒳
 
 ≪-∘_≫₀
   : {𝒳 : Category} {x y z : ⟪ 𝒳 ⟫ .●}
