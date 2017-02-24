@@ -5,7 +5,7 @@ open import Basis.Prelude
 
 module Free {A : Set} (Ψ : A → A → Set) where
   data ⊢[_] (x : A) : A → Set where
-    ≪_≫
+    ▸emb
       : ∀ {y}
       → (f : Ψ x y)
       → ⊢[_] x y
@@ -29,7 +29,7 @@ module Free {A : Set} (Ψ : A → A → Set) where
   Free .inv₀ = ▸inv
 open Free public
   using (Free)
-  using (≪_≫)
+  using (▸emb)
   using (▸idn)
   using (▸cmp)
   using (▸inv)
