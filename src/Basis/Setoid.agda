@@ -6,6 +6,7 @@ module S where
   open import Basis.Setoid.Boot public
   open import Basis.Setoid.Construction.Coequalizer public
   open import Basis.Setoid.Construction.Equalizer public
+  open import Basis.Setoid.Construction.Free public
   open import Basis.Setoid.Construction.Hom public
   open import Basis.Setoid.Construction.Map public
   open import Basis.Setoid.Construction.Pullback public
