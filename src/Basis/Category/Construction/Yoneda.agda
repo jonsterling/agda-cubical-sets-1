@@ -31,22 +31,20 @@ open import Basis.Prelude
 ≪_∘-≫₁ {𝒳} g .ap₀ x = ≪ g ∘-≫₀
 ≪_∘-≫₁ {𝒳} g .ap₁ f =
   cmp₁ 𝒳
-    (cmp₀* 𝒳
+    (coh-ω-λ 𝒳
       (cmp₁ 𝒳
         (cmp₁ 𝒳
           (coh-α 𝒳)
-          (cmp₀* 𝒳
+          (coh-ω-λ 𝒳
             (cmp₁ 𝒳
               (inv₁ 𝒳 (coh-λ 𝒳))
-              (coh-ρ 𝒳))
-            (idn₁ 𝒳)))
-        (inv₁ 𝒳 (coh-α 𝒳)))
-      (idn₁ 𝒳))
+              (coh-ρ 𝒳))))
+        (inv₁ 𝒳 (coh-α 𝒳))))
     (inv₁ 𝒳 (coh-α 𝒳))
 
 Yoneda : (𝒳 : Category) → Functor 𝒳 (≪Presheaf≫ 𝒳)
 Yoneda 𝒳 .ap₀ y = ≪ 𝒳 [-, y ]≫
 Yoneda 𝒳 .ap₁ g = ≪ g ∘-≫₁
-Yoneda 𝒳 .ap₂ α = cmp₀* 𝒳 α (idn₁ 𝒳)
+Yoneda 𝒳 .ap₂ α = coh-ω-λ 𝒳 α
 Yoneda 𝒳 .coh-idn = coh-λ 𝒳
 Yoneda 𝒳 .coh-cmp g f = coh-α 𝒳

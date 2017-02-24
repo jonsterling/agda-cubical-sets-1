@@ -56,13 +56,9 @@ module ↓ where
         (inv₁ 𝒵
           (cmp₁ 𝒵
             (coh-λ 𝒵)
-            (cmp₀* 𝒵
-              (coh-idn G)
-              (idn₁ 𝒵))))
+            (coh-ω-λ 𝒵 (coh-idn G))))
         (coh-ρ 𝒵))
-      (cmp₀* 𝒵
-        (idn₁ 𝒵)
-        (coh-idn F))
+      (coh-ω-ρ 𝒵 (coh-idn F))
   [_↓_] {𝒳}{𝒴}{𝒵} F G .cmp₀ {f}{g}{h} β α .dom₁ = cmp₀ 𝒳 (dom₁ α) (dom₁ β)
   [_↓_] {𝒳}{𝒴}{𝒵} F G .cmp₀ {f}{g}{h} β α .cod₁ = cmp₀ 𝒴 (cod₁ α) (cod₁ β)
   [_↓_] {𝒳}{𝒴}{𝒵} F G .cmp₀ {f}{g}{h} β α .arr₁ =
@@ -74,33 +70,25 @@ module ↓ where
               (inv₁ 𝒵
                 (cmp₁ 𝒵
                   (coh-α 𝒵)
-                  (cmp₀* 𝒵
-                    (coh-cmp G (cod₁ α) (cod₁ β))
-                    (idn₁ 𝒵))))
-              (cmp₀* 𝒵
-                (idn₁ 𝒵)
-                (arr₁ β)))
+                  (coh-ω-λ 𝒵 (coh-cmp G (cod₁ α) (cod₁ β)))))
+              (coh-ω-ρ 𝒵 (arr₁ β)))
             (coh-α 𝒵))
-          (cmp₀* 𝒵
-            (arr₁ α)
-            (idn₁ 𝒵)))
+          (coh-ω-λ 𝒵 (arr₁ α)))
         (inv₁ 𝒵 (coh-α 𝒵)))
-      (cmp₀* 𝒵
-        (idn₁ 𝒵)
-        (coh-cmp F (dom₁ α) (dom₁ β)))
+      (coh-ω-ρ 𝒵 (coh-cmp F (dom₁ α) (dom₁ β)))
   [_↓_] {𝒳}{𝒴}{𝒵} F G .idn₁ .coh-λ = idn₁ 𝒳
   [_↓_] {𝒳}{𝒴}{𝒵} F G .idn₁ .coh-ρ = idn₁ 𝒴
   [_↓_] {𝒳}{𝒴}{𝒵} F G .cmp₁ 𝔮 𝔭 .coh-λ = cmp₁ 𝒳 (coh-λ 𝔮) (coh-λ 𝔭)
   [_↓_] {𝒳}{𝒴}{𝒵} F G .cmp₁ 𝔮 𝔭 .coh-ρ = cmp₁ 𝒴 (coh-ρ 𝔮) (coh-ρ 𝔭)
   [_↓_] {𝒳}{𝒴}{𝒵} F G .inv₁ 𝔭 .coh-λ = inv₁ 𝒳 (coh-λ 𝔭)
   [_↓_] {𝒳}{𝒴}{𝒵} F G .inv₁ 𝔭 .coh-ρ = inv₁ 𝒴 (coh-ρ 𝔭)
-  [_↓_] {𝒳}{𝒴}{𝒵} F G .cmp₀* 𝔮 𝔭 .coh-λ = cmp₀* 𝒳 (coh-λ 𝔭) (coh-λ 𝔮)
-  [_↓_] {𝒳}{𝒴}{𝒵} F G .cmp₀* 𝔮 𝔭 .coh-ρ = cmp₀* 𝒴 (coh-ρ 𝔭) (coh-ρ 𝔮)
   [_↓_] {𝒳}{𝒴}{𝒵} F G .coh-λ .coh-λ = coh-ρ 𝒳
   [_↓_] {𝒳}{𝒴}{𝒵} F G .coh-λ .coh-ρ = coh-ρ 𝒴
   [_↓_] {𝒳}{𝒴}{𝒵} F G .coh-ρ .coh-λ = coh-λ 𝒳
   [_↓_] {𝒳}{𝒴}{𝒵} F G .coh-ρ .coh-ρ = coh-λ 𝒴
   [_↓_] {𝒳}{𝒴}{𝒵} F G .coh-α .coh-λ = inv₁ 𝒳 (coh-α 𝒳)
   [_↓_] {𝒳}{𝒴}{𝒵} F G .coh-α .coh-ρ = inv₁ 𝒴 (coh-α 𝒴)
+  [_↓_] {𝒳}{𝒴}{𝒵} F G .coh-ω 𝔮 𝔭 .coh-λ = coh-ω 𝒳 (coh-λ 𝔭) (coh-λ 𝔮)
+  [_↓_] {𝒳}{𝒴}{𝒵} F G .coh-ω 𝔮 𝔭 .coh-ρ = coh-ω 𝒴 (coh-ρ 𝔭) (coh-ρ 𝔮)
 open ↓ public
   using ([_↓_])

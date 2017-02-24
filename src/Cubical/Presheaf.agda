@@ -75,16 +75,16 @@ module Presheaf where
   interval .ap₁ f .ap₀ (walk φ) = walk (φ ≫= f)
   interval .ap₁ f .ap₁ {west} {west} * = *
   interval .ap₁ f .ap₁ {west} {east} ()
-  interval .ap₁ f .ap₁ {west} {walk φ₁} p = Sub.⊢cmp₀*-λ p
+  interval .ap₁ f .ap₁ {west} {walk φ₁} p = Sub.⊢coh-ω-λ p
   interval .ap₁ f .ap₁ {east} {west} ()
   interval .ap₁ f .ap₁ {east} {east} * = *
-  interval .ap₁ f .ap₁ {east} {walk φ₁} p = Sub.⊢cmp₀*-λ p
-  interval .ap₁ f .ap₁ {walk φ₀} {west} p = Sub.⊢cmp₀*-λ p
-  interval .ap₁ f .ap₁ {walk φ₀} {east} p = Sub.⊢cmp₀*-λ p
-  interval .ap₁ f .ap₁ {walk φ₀} {walk φ₁} p = Sub.⊢cmp₀*-λ p
+  interval .ap₁ f .ap₁ {east} {walk φ₁} p = Sub.⊢coh-ω-λ p
+  interval .ap₁ f .ap₁ {walk φ₀} {west} p = Sub.⊢coh-ω-λ p
+  interval .ap₁ f .ap₁ {walk φ₀} {east} p = Sub.⊢coh-ω-λ p
+  interval .ap₁ f .ap₁ {walk φ₀} {walk φ₁} p = Sub.⊢coh-ω-λ p
   interval .ap₂ α {west} = *
   interval .ap₂ α {east} = *
-  interval .ap₂ {Γ}{Δ}{f}{g} α {walk φ} = Sub.⊢cmp₀*-ρ φ α
+  interval .ap₂ {Γ}{Δ}{f}{g} α {walk φ} = Sub.⊢coh-ω-ρ φ α
   interval .coh-idn {Γ} {west} = *
   interval .coh-idn {Γ} {east} = *
   interval .coh-idn {Γ} {walk φ} = Sub.⊢coh-ρ

@@ -11,7 +11,7 @@ open import Basis.Prelude
 𝟙 .idn₁ = *
 𝟙 .cmp₁ * * = *
 𝟙 .inv₁ * = *
-𝟙 .cmp₀* * * = *
 𝟙 .coh-λ = *
 𝟙 .coh-ρ = *
 𝟙 .coh-α = *
+𝟙 .coh-ω * * = *

@@ -73,44 +73,44 @@ module Sub where
     → (a ≫= loop) 𝕀.≅ a
   ⊢coh-ρ = 𝕀.idn ⊢coh-ρ-aux
 
-  ⊢cmp₀*-λ
+  ⊢coh-ω-λ
     : ∀ {Γ Δ a b} {f : Sub Δ Γ}
     → a 𝕀.≅ b
     → a ≫= f 𝕀.≅ b ≫= f
-  ⊢cmp₀*-λ (𝕀.idn refl) = 𝕀.idn refl
-  ⊢cmp₀*-λ (𝕀.cmp q p) = 𝕀.cmp (⊢cmp₀*-λ q) (⊢cmp₀*-λ p)
-  ⊢cmp₀*-λ (𝕀.inv p) = 𝕀.inv (⊢cmp₀*-λ p)
-  ⊢cmp₀*-λ 𝕀.∨-abs = 𝕀.∨-abs
-  ⊢cmp₀*-λ 𝕀.∨-ass = 𝕀.∨-ass
-  ⊢cmp₀*-λ 𝕀.∨-com = 𝕀.∨-com
-  ⊢cmp₀*-λ 𝕀.∨-dis = 𝕀.∨-dis
-  ⊢cmp₀*-λ 𝕀.∨-ide = 𝕀.∨-ide
-  ⊢cmp₀*-λ (𝕀.∨-rsp p q) = 𝕀.∨-rsp (⊢cmp₀*-λ p) (⊢cmp₀*-λ q)
-  ⊢cmp₀*-λ 𝕀.∨-uni = 𝕀.∨-uni
-  ⊢cmp₀*-λ 𝕀.∧-abs = 𝕀.∧-abs
-  ⊢cmp₀*-λ 𝕀.∧-ass = 𝕀.∧-ass
-  ⊢cmp₀*-λ 𝕀.∧-com = 𝕀.∧-com
-  ⊢cmp₀*-λ 𝕀.∧-dis = 𝕀.∧-dis
-  ⊢cmp₀*-λ 𝕀.∧-ide = 𝕀.∧-ide
-  ⊢cmp₀*-λ (𝕀.∧-rsp p q) = 𝕀.∧-rsp (⊢cmp₀*-λ p) (⊢cmp₀*-λ q)
-  ⊢cmp₀*-λ 𝕀.∧-uni = 𝕀.∧-uni
-  ⊢cmp₀*-λ 𝕀.¬-dis-∧ = 𝕀.¬-dis-∧
-  ⊢cmp₀*-λ 𝕀.¬-dis-∨ = 𝕀.¬-dis-∨
-  ⊢cmp₀*-λ 𝕀.¬-inv = 𝕀.¬-inv
-  ⊢cmp₀*-λ (𝕀.¬-rsp p) = 𝕀.¬-rsp (⊢cmp₀*-λ p)
-  ⊢cmp₀*-λ 𝕀.¬-#0 = 𝕀.¬-#0
-  ⊢cmp₀*-λ 𝕀.¬-#1 = 𝕀.¬-#1
+  ⊢coh-ω-λ (𝕀.idn refl) = 𝕀.idn refl
+  ⊢coh-ω-λ (𝕀.cmp q p) = 𝕀.cmp (⊢coh-ω-λ q) (⊢coh-ω-λ p)
+  ⊢coh-ω-λ (𝕀.inv p) = 𝕀.inv (⊢coh-ω-λ p)
+  ⊢coh-ω-λ 𝕀.∨-abs = 𝕀.∨-abs
+  ⊢coh-ω-λ 𝕀.∨-ass = 𝕀.∨-ass
+  ⊢coh-ω-λ 𝕀.∨-com = 𝕀.∨-com
+  ⊢coh-ω-λ 𝕀.∨-dis = 𝕀.∨-dis
+  ⊢coh-ω-λ 𝕀.∨-ide = 𝕀.∨-ide
+  ⊢coh-ω-λ (𝕀.∨-rsp p q) = 𝕀.∨-rsp (⊢coh-ω-λ p) (⊢coh-ω-λ q)
+  ⊢coh-ω-λ 𝕀.∨-uni = 𝕀.∨-uni
+  ⊢coh-ω-λ 𝕀.∧-abs = 𝕀.∧-abs
+  ⊢coh-ω-λ 𝕀.∧-ass = 𝕀.∧-ass
+  ⊢coh-ω-λ 𝕀.∧-com = 𝕀.∧-com
+  ⊢coh-ω-λ 𝕀.∧-dis = 𝕀.∧-dis
+  ⊢coh-ω-λ 𝕀.∧-ide = 𝕀.∧-ide
+  ⊢coh-ω-λ (𝕀.∧-rsp p q) = 𝕀.∧-rsp (⊢coh-ω-λ p) (⊢coh-ω-λ q)
+  ⊢coh-ω-λ 𝕀.∧-uni = 𝕀.∧-uni
+  ⊢coh-ω-λ 𝕀.¬-dis-∧ = 𝕀.¬-dis-∧
+  ⊢coh-ω-λ 𝕀.¬-dis-∨ = 𝕀.¬-dis-∨
+  ⊢coh-ω-λ 𝕀.¬-inv = 𝕀.¬-inv
+  ⊢coh-ω-λ (𝕀.¬-rsp p) = 𝕀.¬-rsp (⊢coh-ω-λ p)
+  ⊢coh-ω-λ 𝕀.¬-#0 = 𝕀.¬-#0
+  ⊢coh-ω-λ 𝕀.¬-#1 = 𝕀.¬-#1
 
-  ⊢cmp₀*-ρ
+  ⊢coh-ω-ρ
     : ∀ {Γ Δ} a {f g : Sub Δ Γ}
     → f ≅ g
     → a ≫= f 𝕀.≅ a ≫= g
-  ⊢cmp₀*-ρ (var i) α = ext α {i}
-  ⊢cmp₀*-ρ #0 α = 𝕀.idn refl
-  ⊢cmp₀*-ρ #1 α = 𝕀.idn refl
-  ⊢cmp₀*-ρ (a ∨ b) α = 𝕀.∨-rsp (⊢cmp₀*-ρ a α) (⊢cmp₀*-ρ b α)
-  ⊢cmp₀*-ρ (a ∧ b) α = 𝕀.∧-rsp (⊢cmp₀*-ρ a α) (⊢cmp₀*-ρ b α)
-  ⊢cmp₀*-ρ (¬ a) α = 𝕀.¬-rsp (⊢cmp₀*-ρ a α)
+  ⊢coh-ω-ρ (var i) α = ext α {i}
+  ⊢coh-ω-ρ #0 α = 𝕀.idn refl
+  ⊢coh-ω-ρ #1 α = 𝕀.idn refl
+  ⊢coh-ω-ρ (a ∨ b) α = 𝕀.∨-rsp (⊢coh-ω-ρ a α) (⊢coh-ω-ρ b α)
+  ⊢coh-ω-ρ (a ∧ b) α = 𝕀.∧-rsp (⊢coh-ω-ρ a α) (⊢coh-ω-ρ b α)
+  ⊢coh-ω-ρ (¬ a) α = 𝕀.¬-rsp (⊢coh-ω-ρ a α)
 
   private
     ⊢coh-α-aux
@@ -128,12 +128,12 @@ module Sub where
     → a ≫= (f ≫=≫ g) 𝕀.≅ (a ≫= f) ≫= g
   ⊢coh-α a = 𝕀.idn (⊢coh-α-aux a)
 
-  ⊢cmp₀*
+  ⊢coh-ω
     : ∀ {Γ Δ a b} {f g : Sub Δ Γ}
     → a 𝕀.≅ b
     → f ≅ g
     → a ≫= f 𝕀.≅ b ≫= g
-  ⊢cmp₀* {b = b} α β = 𝕀.cmp (⊢cmp₀*-ρ b β) (⊢cmp₀*-λ α)
+  ⊢coh-ω {b = b} α β = 𝕀.cmp (⊢coh-ω-ρ b β) (⊢coh-ω-λ α)
 
   -- the setoid of nominal cubes
   set : Symbols → Symbols → Setoid
@@ -154,15 +154,15 @@ module Sub where
   cat .idn₁ = ▸ext λ {i} → 𝕀.idn refl
   cat .cmp₁ β α = ▸ext λ {i} → 𝕀.cmp (ext β {i}) (ext α {i})
   cat .inv₁ α = ▸ext λ {i} → 𝕀.inv (ext α {i})
-  cat .cmp₀* β α = ▸ext λ {i} → ⊢cmp₀* (ext β {i}) α
   cat .coh-λ = ▸ext λ {i} → 𝕀.idn refl
   cat .coh-ρ = ▸ext λ {i} → ⊢coh-ρ
   cat .coh-α {h = h} = ▸ext λ {i} → 𝕀.inv (⊢coh-α (look h i))
+  cat .coh-ω β α = ▸ext λ {i} → ⊢coh-ω (ext β {i}) α
 open Sub public
   hiding (module Sub)
   hiding (_≅_)
   hiding (⊢coh-α)
   hiding (⊢coh-ρ)
-  hiding (⊢cmp₀*-λ)
-  hiding (⊢cmp₀*-ρ)
-  hiding (⊢cmp₀*)
+  hiding (⊢coh-ω-λ)
+  hiding (⊢coh-ω-ρ)
+  hiding (⊢coh-ω)

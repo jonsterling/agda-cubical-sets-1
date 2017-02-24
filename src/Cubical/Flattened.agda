@@ -74,10 +74,10 @@ module Flattened where
   ≪□Set≫ .idn₁ {y = 𝒴} = idn 𝒴
   ≪□Set≫ .cmp₁ {y = 𝒴} β α = cmp 𝒴 β α
   ≪□Set≫ .inv₁ {y = 𝒴} α = inv 𝒴 α
-  ≪□Set≫ .cmp₀* {z = 𝒵}{g₀ = G₀} β α = cmp 𝒵 β (ap₁ G₀ α)
   ≪□Set≫ .coh-λ {y = 𝒴} = idn 𝒴
   ≪□Set≫ .coh-ρ {y = 𝒴} = idn 𝒴
   ≪□Set≫ .coh-α {z = 𝒵} = idn 𝒵
+  ≪□Set≫ .coh-ω {z = 𝒵}{g₀ = G₀} β α = cmp 𝒵 β (ap₁ G₀ α)
 
   -- the formal or representable cube
   □ : Symbols → □Set
@@ -89,7 +89,7 @@ module Flattened where
   □ Δ .sub f = λ g → cmp₀ Sub.cat g f
   □ Δ .sub-idn = coh-ρ Sub.cat
   □ Δ .sub-cmp g f = inv₁ Sub.cat (coh-α Sub.cat)
-  □ Δ .sub-rsp α β = cmp₀* cat β α
+  □ Δ .sub-rsp α β = coh-ω cat β α
 
   -- the interval in HIT style
   data Interval (I : Symbols) : Set where
@@ -157,13 +157,13 @@ module Flattened where
   interval .sub-cmp {x = walk φ} g f = Sub.⊢coh-α φ
   interval .sub-rsp {x = west} {west} α β = *
   interval .sub-rsp {x = west} {east} α ()
-  interval .sub-rsp {x = west} {walk φ₁} α β = Sub.⊢cmp₀*-λ β
+  interval .sub-rsp {x = west} {walk φ₁} α β = Sub.⊢coh-ω-λ β
   interval .sub-rsp {x = east} {west} α ()
   interval .sub-rsp {x = east} {east} α β = *
-  interval .sub-rsp {x = east} {walk φ₁} α β = Sub.⊢cmp₀*-λ β
-  interval .sub-rsp {x = walk φ₀} {west} α β = Sub.⊢cmp₀*-λ β
-  interval .sub-rsp {x = walk φ₀} {east} α β = Sub.⊢cmp₀*-λ β
-  interval .sub-rsp {x = walk φ₀} {walk φ₁} α β = Sub.⊢cmp₀* β α
+  interval .sub-rsp {x = east} {walk φ₁} α β = Sub.⊢coh-ω-λ β
+  interval .sub-rsp {x = walk φ₀} {west} α β = Sub.⊢coh-ω-λ β
+  interval .sub-rsp {x = walk φ₀} {east} α β = Sub.⊢coh-ω-λ β
+  interval .sub-rsp {x = walk φ₀} {walk φ₁} α β = Sub.⊢coh-ω β α
 
   -- walk "a" ≅ west (under {"a" ≔ #0})
   ϕ₀ :

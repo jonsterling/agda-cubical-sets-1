@@ -35,118 +35,28 @@ open ≅
   cmp₁ 𝒴
     (cmp₁ 𝒴
       (coh-from∘into α)
-      (cmp₀* 𝒴
-        (idn₁ 𝒴)
+      (coh-ω-ρ 𝒴
         (cmp₁ 𝒴
           (cmp₁ 𝒴
             (coh-λ 𝒴)
-            (cmp₀* 𝒴
-              (coh-from∘into β)
-              (idn₁ 𝒴)))
+            (coh-ω-λ 𝒴 (coh-from∘into β)))
           (inv₁ 𝒴 (coh-α 𝒴)))))
     (coh-α 𝒴)
 ≪Category≫ .cmp₁ {𝒳}{𝒴}{F}{G}{H} β α .coh-into∘from =
   cmp₁ 𝒴
     (cmp₁ 𝒴
       (coh-into∘from β)
-      (cmp₀* 𝒴
-        (idn₁ 𝒴)
+      (coh-ω-ρ 𝒴
         (cmp₁ 𝒴
           (cmp₁ 𝒴
             (coh-λ 𝒴)
-            (cmp₀* 𝒴
-              (coh-into∘from α)
-              (idn₁ 𝒴)))
+            (coh-ω-λ 𝒴 (coh-into∘from α)))
           (inv₁ 𝒴 (coh-α 𝒴)))))
     (coh-α 𝒴)
 ≪Category≫ .inv₁ {𝒳}{𝒴}{F}{G} α .into = from α
 ≪Category≫ .inv₁ {𝒳}{𝒴}{F}{G} α .from = into α
 ≪Category≫ .inv₁ {𝒳}{𝒴}{F}{G} α .coh-from∘into = coh-into∘from α
 ≪Category≫ .inv₁ {𝒳}{𝒴}{F}{G} α .coh-into∘from = coh-from∘into α
-≪Category≫ .cmp₀* {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .into .ap₀ x =
-  cmp₀ 𝒵 (ap₀ (into β) (ap₀ F₁ x)) (ap₁ G₀ (ap₀ (into α) x))
-≪Category≫ .cmp₀* {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .into .ap₁ {x}{y} f =
-  cmp₁ 𝒵
-    (cmp₁ 𝒵
-      (cmp₁ 𝒵
-        (cmp₁ 𝒵
-          (coh-α 𝒵)
-          (cmp₀* 𝒵
-            (ap₁ (into β) (ap₁ F₁ f))
-            (idn₁ 𝒵)))
-        (inv₁ 𝒵 (coh-α 𝒵)))
-      (cmp₀* 𝒵
-        (idn₁ 𝒵)
-        (cmp₁ 𝒵
-          (cmp₁ 𝒵
-            (coh-cmp G₀ (ap₁ F₁ f) (ap₀ (into α) x))
-            (ap₂ G₀ (ap₁ (into α) f)))
-          (inv₁ 𝒵 (coh-cmp G₀ (ap₀ (into α) y) (ap₁ F₀ f))))))
-    (coh-α 𝒵)
-≪Category≫ .cmp₀* {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .from .ap₀ x =
-  cmp₀ 𝒵 (ap₀ (from β) (ap₀ F₀ x)) (ap₁ G₁ (ap₀ (from α) x))
-≪Category≫ .cmp₀* {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .from .ap₁ {x}{y} f =
-  cmp₁ 𝒵
-    (cmp₁ 𝒵
-      (cmp₁ 𝒵
-        (cmp₁ 𝒵
-          (coh-α 𝒵)
-          (cmp₀* 𝒵
-            (ap₁ (from β) (ap₁ F₀ f))
-            (idn₁ 𝒵)))
-        (inv₁ 𝒵 (coh-α 𝒵)))
-      (cmp₀* 𝒵
-        (idn₁ 𝒵)
-        (cmp₁ 𝒵
-          (cmp₁ 𝒵
-            (coh-cmp G₁ (ap₁ F₀ f) (ap₀ (from α) x))
-            (ap₂ G₁ (ap₁ (from α) f)))
-          (inv₁ 𝒵 (coh-cmp G₁ (ap₀ (from α) y) (ap₁ F₁ f))))))
-    (coh-α 𝒵)
-≪Category≫ .cmp₀* {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .coh-from∘into {x} =
-  cmp₁ 𝒵
-    (cmp₁ 𝒵
-      (coh-from∘into β)
-      (cmp₀* 𝒵
-        (idn₁ 𝒵)
-        (cmp₁ 𝒵
-          (cmp₁ 𝒵
-            (cmp₁ 𝒵
-              (coh-λ 𝒵)
-              (cmp₀* 𝒵
-                (cmp₁ 𝒵
-                  (cmp₁ 𝒵
-                    (coh-idn G₁)
-                    (ap₂ G₁ (coh-from∘into α)))
-                  (inv₁ 𝒵 (coh-cmp G₁ (ap₀ (from α) x) (ap₀ (into α) x))))
-                (idn₁ 𝒵)))
-            (inv₁ 𝒵 (coh-α 𝒵)))
-          (cmp₀* 𝒵
-            (idn₁ 𝒵)
-            (ap₁ (into β) (ap₀ (into α) x))))))
-    (coh-α 𝒵)
-≪Category≫ .cmp₀* {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .coh-into∘from {x} =
-  cmp₁ 𝒵
-    (cmp₁ 𝒵
-      (coh-into∘from β)
-      (cmp₀* 𝒵
-        (idn₁ 𝒵)
-        (cmp₁ 𝒵
-          (cmp₁ 𝒵
-            (cmp₁ 𝒵
-              (coh-λ 𝒵)
-              (cmp₀* 𝒵
-                (cmp₁ 𝒵
-                  (cmp₁ 𝒵
-                    (coh-idn G₀)
-                    (ap₂ G₀ (coh-into∘from α)))
-                  (inv₁ 𝒵 (coh-cmp G₀ (ap₀ (into α) x) (ap₀ (from α) x))))
-                (idn₁ 𝒵)))
-            (inv₁ 𝒵 (coh-α 𝒵)))
-          (cmp₀* 𝒵
-            (idn₁ 𝒵)
-            (ap₁ (from β) (ap₀ (from α) x))))))
-    (coh-α 𝒵)
 ≪Category≫ .coh-λ {𝒳}{𝒴}{F} .into .ap₀ x = idn₀ 𝒴
 ≪Category≫ .coh-λ {𝒳}{𝒴}{F} .into .ap₁ f = cmp₁ 𝒴 (inv₁ 𝒴 (coh-ρ 𝒴)) (coh-λ 𝒴)
 ≪Category≫ .coh-λ {𝒳}{𝒴}{F} .from .ap₀ x = idn₀ 𝒴
@@ -165,3 +75,74 @@ open ≅
 ≪Category≫ .coh-α {𝒲}{𝒳}{𝒴}{𝒵}{F}{G}{H} .from .ap₁ f = cmp₁ 𝒵 (inv₁ 𝒵 (coh-ρ 𝒵)) (coh-λ 𝒵)
 ≪Category≫ .coh-α {𝒲}{𝒳}{𝒴}{𝒵}{F}{G}{H} .coh-from∘into = coh-λ 𝒵
 ≪Category≫ .coh-α {𝒲}{𝒳}{𝒴}{𝒵}{F}{G}{H} .coh-into∘from = coh-λ 𝒵
+≪Category≫ .coh-ω {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .into .ap₀ x =
+  cmp₀ 𝒵 (ap₀ (into β) (ap₀ F₁ x)) (ap₁ G₀ (ap₀ (into α) x))
+≪Category≫ .coh-ω {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .into .ap₁ {x}{y} f =
+  cmp₁ 𝒵
+    (cmp₁ 𝒵
+      (cmp₁ 𝒵
+        (cmp₁ 𝒵
+          (coh-α 𝒵)
+          (coh-ω-λ 𝒵
+            (ap₁ (into β) (ap₁ F₁ f))))
+        (inv₁ 𝒵 (coh-α 𝒵)))
+      (coh-ω-ρ 𝒵
+        (cmp₁ 𝒵
+          (cmp₁ 𝒵
+            (coh-cmp G₀ (ap₁ F₁ f) (ap₀ (into α) x))
+            (ap₂ G₀ (ap₁ (into α) f)))
+          (inv₁ 𝒵 (coh-cmp G₀ (ap₀ (into α) y) (ap₁ F₀ f))))))
+    (coh-α 𝒵)
+≪Category≫ .coh-ω {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .from .ap₀ x =
+  cmp₀ 𝒵 (ap₀ (from β) (ap₀ F₀ x)) (ap₁ G₁ (ap₀ (from α) x))
+≪Category≫ .coh-ω {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .from .ap₁ {x}{y} f =
+  cmp₁ 𝒵
+    (cmp₁ 𝒵
+      (cmp₁ 𝒵
+        (cmp₁ 𝒵
+          (coh-α 𝒵)
+          (coh-ω-λ 𝒵 (ap₁ (from β) (ap₁ F₀ f))))
+        (inv₁ 𝒵 (coh-α 𝒵)))
+      (coh-ω-ρ 𝒵
+        (cmp₁ 𝒵
+          (cmp₁ 𝒵
+            (coh-cmp G₁ (ap₁ F₀ f) (ap₀ (from α) x))
+            (ap₂ G₁ (ap₁ (from α) f)))
+          (inv₁ 𝒵 (coh-cmp G₁ (ap₀ (from α) y) (ap₁ F₁ f))))))
+    (coh-α 𝒵)
+≪Category≫ .coh-ω {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .coh-from∘into {x} =
+  cmp₁ 𝒵
+    (cmp₁ 𝒵
+      (coh-from∘into β)
+      (coh-ω-ρ 𝒵
+        (cmp₁ 𝒵
+          (cmp₁ 𝒵
+            (cmp₁ 𝒵
+              (coh-λ 𝒵)
+              (coh-ω-λ 𝒵
+                (cmp₁ 𝒵
+                  (cmp₁ 𝒵
+                    (coh-idn G₁)
+                    (ap₂ G₁ (coh-from∘into α)))
+                  (inv₁ 𝒵 (coh-cmp G₁ (ap₀ (from α) x) (ap₀ (into α) x))))))
+            (inv₁ 𝒵 (coh-α 𝒵)))
+          (coh-ω-ρ 𝒵 (ap₁ (into β) (ap₀ (into α) x))))))
+    (coh-α 𝒵)
+≪Category≫ .coh-ω {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} β α .coh-into∘from {x} =
+  cmp₁ 𝒵
+    (cmp₁ 𝒵
+      (coh-into∘from β)
+      (coh-ω-ρ 𝒵
+        (cmp₁ 𝒵
+          (cmp₁ 𝒵
+            (cmp₁ 𝒵
+              (coh-λ 𝒵)
+              (coh-ω-λ 𝒵
+                (cmp₁ 𝒵
+                  (cmp₁ 𝒵
+                    (coh-idn G₀)
+                    (ap₂ G₀ (coh-into∘from α)))
+                  (inv₁ 𝒵 (coh-cmp G₀ (ap₀ (into α) x) (ap₀ (from α) x))))))
+            (inv₁ 𝒵 (coh-α 𝒵)))
+          (coh-ω-ρ 𝒵 (ap₁ (from β) (ap₀ (from α) x))))))
+    (coh-α 𝒵)

@@ -21,34 +21,28 @@ Core 𝒳 .cmp₀ g f .coh-from∘into =
   cmp₁ 𝒳
     (cmp₁ 𝒳
       (coh-from∘into f)
-      (cmp₀* 𝒳
-        (idn₁ 𝒳)
+      (coh-ω-ρ 𝒳
         (cmp₁ 𝒳
           (cmp₁ 𝒳
             (coh-λ 𝒳)
-            (cmp₀* 𝒳
-              (coh-from∘into g)
-              (idn₁ 𝒳)))
+            (coh-ω-λ 𝒳 (coh-from∘into g)))
           (inv₁ 𝒳 (coh-α 𝒳)))))
     (coh-α 𝒳)
 Core 𝒳 .cmp₀ g f .coh-into∘from =
   cmp₁ 𝒳
     (cmp₁ 𝒳
       (coh-into∘from g)
-      (cmp₀* 𝒳
-        (idn₁ 𝒳)
+      (coh-ω-ρ 𝒳
         (cmp₁ 𝒳
           (cmp₁ 𝒳
             (coh-λ 𝒳)
-            (cmp₀* 𝒳
-              (coh-into∘from f)
-              (idn₁ 𝒳)))
+            (coh-ω-λ 𝒳 (coh-into∘from f)))
           (inv₁ 𝒳 (coh-α 𝒳)))))
     (coh-α 𝒳)
 Core 𝒳 .idn₁ = idn₁ 𝒳
 Core 𝒳 .cmp₁ = cmp₁ 𝒳
 Core 𝒳 .inv₁ = inv₁ 𝒳
-Core 𝒳 .cmp₀* = cmp₀* 𝒳
 Core 𝒳 .coh-λ = coh-λ 𝒳
 Core 𝒳 .coh-ρ = coh-ρ 𝒳
 Core 𝒳 .coh-α = coh-α 𝒳
+Core 𝒳 .coh-ω = coh-ω 𝒳

@@ -19,16 +19,13 @@ Profunctor 𝒳 𝒴 = Functor (Op 𝒳 ⊗ 𝒴) ≪Setoid≫
 ≪_[-,-]≫ : ∀ 𝒳 → Profunctor 𝒳 𝒳
 ≪ 𝒳 [-,-]≫ .ap₀ (x , y) = ≪hom≫ 𝒳 x y
 ≪ 𝒳 [-,-]≫ .ap₁ (f , g) .ap₀ h = cmp₀ 𝒳 (cmp₀ 𝒳 g h) f
-≪ 𝒳 [-,-]≫ .ap₁ (f , g) .ap₁ α = cmp₀* 𝒳 (cmp₀* 𝒳 (idn₁ 𝒳) α) (idn₁ 𝒳)
-≪ 𝒳 [-,-]≫ .ap₂ (α , β) = cmp₀* 𝒳 (cmp₀* 𝒳 β (idn₁ 𝒳)) α
+≪ 𝒳 [-,-]≫ .ap₁ (f , g) .ap₁ α = coh-ω-λ 𝒳 (coh-ω-ρ 𝒳 α)
+≪ 𝒳 [-,-]≫ .ap₂ (α , β) = coh-ω 𝒳 (coh-ω-λ 𝒳 β) α
 ≪ 𝒳 [-,-]≫ .coh-idn = cmp₁ 𝒳 (coh-λ 𝒳) (coh-ρ 𝒳)
 ≪ 𝒳 [-,-]≫ .coh-cmp (f₁ , g₁) (f₀ , g₀) {h} =
   cmp₁ 𝒳
-    (cmp₀* 𝒳
+    (coh-ω-λ 𝒳
       (cmp₁ 𝒳
         (coh-α 𝒳)
-        (cmp₀* 𝒳
-          (coh-α 𝒳)
-          (idn₁ 𝒳)))
-      (idn₁ 𝒳))
+        (coh-ω-λ 𝒳 (coh-α 𝒳))))
     (inv₁ 𝒳 (coh-α 𝒳))

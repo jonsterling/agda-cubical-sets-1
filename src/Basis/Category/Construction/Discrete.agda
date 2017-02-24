@@ -11,7 +11,7 @@ Discrete X .cmp₀ = ≡.cmp
 Discrete X .idn₁ = ≡.idn
 Discrete X .cmp₁ = ≡.cmp
 Discrete X .inv₁ = ≡.inv
-Discrete X .cmp₀* = ≡.ap² ≡.cmp
 Discrete X .coh-λ = ≡.idn
 Discrete X .coh-ρ {f = refl} = ≡.idn
 Discrete X .coh-α {h = refl} = ≡.idn
+Discrete X .coh-ω = ≡.ap² ≡.cmp
