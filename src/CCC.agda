@@ -127,7 +127,7 @@ module ƛ {I} {Γ 𝒳 𝒴 : Presheaf I} (α : ≪Presheaf≫ I ⊧ Γ ⊗ 𝒳
   curry₀₁
     : ∀ {i γ δ}
     → hom (ap₀ Γ i) γ δ
-    → hom ((ap₀ (𝒳 ⇒ 𝒴) i)) (curry₀₀ γ) (curry₀₀ δ)
+    → hom (ap₀ (𝒳 ⇒ 𝒴) i) (curry₀₀ γ) (curry₀₀ δ)
   curry₀₁ p = ap₁ (ap₀ α _) (ap₁ (ap₁ Γ _) p , idn₀ (ap₀ 𝒳 _))
 
   curry₀ : ∀ i → ≪Setoid≫ ⊧ ap₀ Γ i ⇾ ap₀ (𝒳 ⇒ 𝒴) i
