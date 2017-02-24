@@ -1,9 +1,6 @@
 module Cubical.DeMorgan where
 
 open import Basis
-  hiding (idn)
-  hiding (cmp)
-  hiding (inv)
 open import Cubical.Nominal
 
 module 𝕀 where

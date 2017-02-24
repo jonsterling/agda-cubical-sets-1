@@ -83,9 +83,9 @@ module Flattened where
   □ : Symbols → □Set
   □ Δ .obj Γ = Sub Γ Δ
   □ Δ .hom Γ = Sub._≅_
-  □ Δ .idn = idn (Sub.set _ Δ)
-  □ Δ .cmp β α = cmp (Sub.set _ Δ) β α
-  □ Δ .inv α = inv (Sub.set _ Δ) α
+  □ Δ .idn = idn₀ (Sub.set _ Δ)
+  □ Δ .cmp β α = cmp₀ (Sub.set _ Δ) β α
+  □ Δ .inv α = inv₀ (Sub.set _ Δ) α
   □ Δ .sub f = λ g → cmp₀ Sub.cat g f
   □ Δ .sub-idn = coh-ρ Sub.cat
   □ Δ .sub-cmp g f = inv₁ Sub.cat (coh-α Sub.cat)

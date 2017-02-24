@@ -7,3 +7,7 @@ module S where
   open import Basis.Setoid.Boot public
   open import Basis.Setoid.Construction.Hom public
   open import Basis.Setoid.Construction.Map public
+  open import Basis.Setoid.Map public
+open S public
+  hiding (idn)
+  hiding (cmp)

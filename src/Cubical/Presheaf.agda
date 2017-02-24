@@ -31,45 +31,45 @@ module Presheaf where
   interval .ap₀ I .hom west (walk φ₁) = #0 𝕀.≅ φ₁
   interval .ap₀ I .hom west west = T.𝟙
   interval .ap₀ I .hom _ _ = T.𝟘
-  interval .ap₀ I .idn {west} = *
-  interval .ap₀ I .idn {east} = *
-  interval .ap₀ I .idn {walk φ} = 𝕀.idn refl
-  interval .ap₀ I .cmp {west} {west} {west} * * = *
-  interval .ap₀ I .cmp {west} {west} {east} () *
-  interval .ap₀ I .cmp {west} {west} {walk φ₂} q * = q
-  interval .ap₀ I .cmp {west} {east} {west} () ()
-  interval .ap₀ I .cmp {west} {east} {east} * ()
-  interval .ap₀ I .cmp {west} {east} {walk φ₂} q ()
-  interval .ap₀ I .cmp {west} {walk φ₁} {west} q p = *
-  interval .ap₀ I .cmp {west} {walk φ₁} {east} q p = 𝕀.distinct (𝕀.cmp q p)
-  interval .ap₀ I .cmp {west} {walk φ₁} {walk φ₂} q p = 𝕀.cmp q p
-  interval .ap₀ I .cmp {east} {west} {west} * ()
-  interval .ap₀ I .cmp {east} {west} {east} () ()
-  interval .ap₀ I .cmp {east} {west} {walk φ₂} q ()
-  interval .ap₀ I .cmp {east} {east} {west} () *
-  interval .ap₀ I .cmp {east} {east} {east} * * = *
-  interval .ap₀ I .cmp {east} {east} {walk φ₂} q * = q
-  interval .ap₀ I .cmp {east} {walk φ₁} {west} q p = 𝕀.distinct (𝕀.cmp (𝕀.inv p) (𝕀.inv q))
-  interval .ap₀ I .cmp {east} {walk φ₁} {east} q p = *
-  interval .ap₀ I .cmp {east} {walk φ₁} {walk φ₂} q p = 𝕀.cmp q p
-  interval .ap₀ I .cmp {walk φ₀} {west} {west} * p = p
-  interval .ap₀ I .cmp {walk φ₀} {west} {east} () p
-  interval .ap₀ I .cmp {walk φ₀} {west} {walk φ₂} q p = 𝕀.cmp q p
-  interval .ap₀ I .cmp {walk φ₀} {east} {west} () p
-  interval .ap₀ I .cmp {walk φ₀} {east} {east} * p = p
-  interval .ap₀ I .cmp {walk φ₀} {east} {walk φ₂} q p = 𝕀.cmp q p
-  interval .ap₀ I .cmp {walk φ₀} {walk φ₁} {west} q p = 𝕀.cmp q p
-  interval .ap₀ I .cmp {walk φ₀} {walk φ₁} {east} q p = 𝕀.cmp q p
-  interval .ap₀ I .cmp {walk φ₀} {walk φ₁} {walk φ₂} q p = 𝕀.cmp q p
-  interval .ap₀ I .inv {west} {west} * = *
-  interval .ap₀ I .inv {west} {east} ()
-  interval .ap₀ I .inv {west} {walk φ₁} p = 𝕀.inv p
-  interval .ap₀ I .inv {east} {west} ()
-  interval .ap₀ I .inv {east} {east} * = *
-  interval .ap₀ I .inv {east} {walk φ₁} p = 𝕀.inv p
-  interval .ap₀ I .inv {walk φ₀} {west} p = 𝕀.inv p
-  interval .ap₀ I .inv {walk φ₀} {east} p = 𝕀.inv p
-  interval .ap₀ I .inv {walk φ₀} {walk φ₁} p = 𝕀.inv p
+  interval .ap₀ I .idn₀ {west} = *
+  interval .ap₀ I .idn₀ {east} = *
+  interval .ap₀ I .idn₀ {walk φ} = 𝕀.idn refl
+  interval .ap₀ I .cmp₀ {west} {west} {west} * * = *
+  interval .ap₀ I .cmp₀ {west} {west} {east} () *
+  interval .ap₀ I .cmp₀ {west} {west} {walk φ₂} q * = q
+  interval .ap₀ I .cmp₀ {west} {east} {west} () ()
+  interval .ap₀ I .cmp₀ {west} {east} {east} * ()
+  interval .ap₀ I .cmp₀ {west} {east} {walk φ₂} q ()
+  interval .ap₀ I .cmp₀ {west} {walk φ₁} {west} q p = *
+  interval .ap₀ I .cmp₀ {west} {walk φ₁} {east} q p = 𝕀.distinct (𝕀.cmp q p)
+  interval .ap₀ I .cmp₀ {west} {walk φ₁} {walk φ₂} q p = 𝕀.cmp q p
+  interval .ap₀ I .cmp₀ {east} {west} {west} * ()
+  interval .ap₀ I .cmp₀ {east} {west} {east} () ()
+  interval .ap₀ I .cmp₀ {east} {west} {walk φ₂} q ()
+  interval .ap₀ I .cmp₀ {east} {east} {west} () *
+  interval .ap₀ I .cmp₀ {east} {east} {east} * * = *
+  interval .ap₀ I .cmp₀ {east} {east} {walk φ₂} q * = q
+  interval .ap₀ I .cmp₀ {east} {walk φ₁} {west} q p = 𝕀.distinct (𝕀.cmp (𝕀.inv p) (𝕀.inv q))
+  interval .ap₀ I .cmp₀ {east} {walk φ₁} {east} q p = *
+  interval .ap₀ I .cmp₀ {east} {walk φ₁} {walk φ₂} q p = 𝕀.cmp q p
+  interval .ap₀ I .cmp₀ {walk φ₀} {west} {west} * p = p
+  interval .ap₀ I .cmp₀ {walk φ₀} {west} {east} () p
+  interval .ap₀ I .cmp₀ {walk φ₀} {west} {walk φ₂} q p = 𝕀.cmp q p
+  interval .ap₀ I .cmp₀ {walk φ₀} {east} {west} () p
+  interval .ap₀ I .cmp₀ {walk φ₀} {east} {east} * p = p
+  interval .ap₀ I .cmp₀ {walk φ₀} {east} {walk φ₂} q p = 𝕀.cmp q p
+  interval .ap₀ I .cmp₀ {walk φ₀} {walk φ₁} {west} q p = 𝕀.cmp q p
+  interval .ap₀ I .cmp₀ {walk φ₀} {walk φ₁} {east} q p = 𝕀.cmp q p
+  interval .ap₀ I .cmp₀ {walk φ₀} {walk φ₁} {walk φ₂} q p = 𝕀.cmp q p
+  interval .ap₀ I .inv₀ {west} {west} * = *
+  interval .ap₀ I .inv₀ {west} {east} ()
+  interval .ap₀ I .inv₀ {west} {walk φ₁} p = 𝕀.inv p
+  interval .ap₀ I .inv₀ {east} {west} ()
+  interval .ap₀ I .inv₀ {east} {east} * = *
+  interval .ap₀ I .inv₀ {east} {walk φ₁} p = 𝕀.inv p
+  interval .ap₀ I .inv₀ {walk φ₀} {west} p = 𝕀.inv p
+  interval .ap₀ I .inv₀ {walk φ₀} {east} p = 𝕀.inv p
+  interval .ap₀ I .inv₀ {walk φ₀} {walk φ₁} p = 𝕀.inv p
   interval .ap₁ f .ap₀ west = west
   interval .ap₁ f .ap₀ east = east
   interval .ap₁ f .ap₀ (walk φ) = walk (φ ≫= f)

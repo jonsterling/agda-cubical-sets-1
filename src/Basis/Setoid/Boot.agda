@@ -10,9 +10,9 @@ record Setoid : Set where
     obj : Set
     hom : obj → obj → Set
   field
-    idn : ∀ {x} → hom x x
-    cmp : ∀ {x y z} → hom y z → hom x y → hom x z
-    inv : ∀ {x y} → hom x y → hom y x
+    idn₀ : ∀ {x} → hom x x
+    cmp₀ : ∀ {x y z} → hom y z → hom x y → hom x z
+    inv₀ : ∀ {x y} → hom x y → hom y x
 open Setoid public
-{-# DISPLAY Setoid.idn A = ↻ #-}
-{-# DISPLAY Setoid.cmp A g f = g ∘ f #-}
+{-# DISPLAY Setoid.idn₀ A = ↻ #-}
+{-# DISPLAY Setoid.cmp₀ A g f = g ∘ f #-}

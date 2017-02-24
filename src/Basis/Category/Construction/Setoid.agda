@@ -14,10 +14,10 @@ open import Basis.Setoid.Map
 ≪Setoid≫ .idn₀ {𝒳} .ap₁ f = f
 ≪Setoid≫ .cmp₀ {𝒳}{𝒴}{𝒵} G F .ap₀ x = ap₀ G (ap₀ F x)
 ≪Setoid≫ .cmp₀ {𝒳}{𝒴}{𝒵} G F .ap₁ f = ap₁ G (ap₁ F f)
-≪Setoid≫ .idn₁ {𝒳}{𝒴}{F}{x} = idn 𝒴
-≪Setoid≫ .cmp₁ {𝒳}{𝒴}{F}{G}{H} β α {x} = cmp 𝒴 (β {x}) (α {x})
-≪Setoid≫ .inv₁ {𝒳}{𝒴}{F}{G} α {x} = inv 𝒴 (α {x})
-≪Setoid≫ .coh-λ {𝒳}{𝒴}{F}{x} = idn 𝒴
-≪Setoid≫ .coh-ρ {𝒳}{𝒴}{F}{x} = idn 𝒴
-≪Setoid≫ .coh-α {𝒲}{𝒳}{𝒴}{𝒵}{F}{G}{H}{x} = idn 𝒵
-≪Setoid≫ .coh-ω {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} α β {x} = cmp 𝒵 (ap₁ G₁ (β {x})) (α {ap₀ F₀ x})
+≪Setoid≫ .idn₁ {𝒳}{𝒴}{F}{x} = idn₀ 𝒴
+≪Setoid≫ .cmp₁ {𝒳}{𝒴}{F}{G}{H} β α {x} = cmp₀ 𝒴 (β {x}) (α {x})
+≪Setoid≫ .inv₁ {𝒳}{𝒴}{F}{G} α {x} = inv₀ 𝒴 (α {x})
+≪Setoid≫ .coh-λ {𝒳}{𝒴}{F}{x} = idn₀ 𝒴
+≪Setoid≫ .coh-ρ {𝒳}{𝒴}{F}{x} = idn₀ 𝒴
+≪Setoid≫ .coh-α {𝒲}{𝒳}{𝒴}{𝒵}{F}{G}{H}{x} = idn₀ 𝒵
+≪Setoid≫ .coh-ω {𝒳}{𝒴}{𝒵}{F₀}{F₁}{G₀}{G₁} α β {x} = cmp₀ 𝒵 (ap₁ G₁ (β {x})) (α {ap₀ F₀ x})

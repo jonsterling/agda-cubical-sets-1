@@ -139,9 +139,9 @@ module Sub where
   set : Symbols → Symbols → Setoid
   set Δ Γ .Setoid.obj = Sub Δ Γ
   set Δ Γ .Setoid.hom = _≅_
-  set Δ Γ .Setoid.idn = ▸ext λ {i} → 𝕀.idn refl
-  set Δ Γ .Setoid.cmp β α = ▸ext λ {i} → 𝕀.cmp (ext β {i}) (ext α {i})
-  set Δ Γ .Setoid.inv α = ▸ext λ {i} → 𝕀.inv (ext α {i})
+  set Δ Γ .Setoid.idn₀ = ▸ext λ {i} → 𝕀.idn refl
+  set Δ Γ .Setoid.cmp₀ β α = ▸ext λ {i} → 𝕀.cmp (ext β {i}) (ext α {i})
+  set Δ Γ .Setoid.inv₀ α = ▸ext λ {i} → 𝕀.inv (ext α {i})
 
   -- the category of nominal cubes
   cat : Category
