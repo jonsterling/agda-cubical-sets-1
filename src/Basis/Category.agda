@@ -11,6 +11,7 @@ module C where
   open import Basis.Category.Construction.Core public
   open import Basis.Category.Construction.Diagonal public
   open import Basis.Category.Construction.Discrete public
+  open import Basis.Category.Construction.Free public
   open import Basis.Category.Construction.Functor public
   open import Basis.Category.Construction.Initial public
   open import Basis.Category.Construction.Opposite public

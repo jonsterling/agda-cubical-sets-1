@@ -48,7 +48,9 @@ module Free (A : Globular) where
   Free .idn₁ = ≡.idn
   Free .cmp₁ = ≡.cmp
   Free .inv₁ = ≡.inv
-  Free .cmp₀* = ≡.ap² (cmp₀ Free)
   Free .coh-λ = refl
   Free .coh-ρ {f = f} = ⊢coh-ρ f
   Free .coh-α {h = h} = ⊢coh-α h
+  Free .coh-ω = ≡.ap² (cmp₀ Free)
+open Free public
+  using (Free)
