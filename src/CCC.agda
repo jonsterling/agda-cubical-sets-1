@@ -191,3 +191,39 @@ module ƛ {I} {𝒳 𝒴 : Presheaf I} where
       (ap₁ (ap₀ α _) (cmp₁ I (inv₁ I (coh-λ I)) (coh-ρ I) , idn₀ (ap₀ 𝒳 _)))
 open ƛ public
   using (ƛ)
+
+open Presheaf
+
+module Examples where
+
+  ex₀ : obj (ap₀ (interval ⊗ interval) ("a" ∷ []))
+  ex₀ = east , walk ≪ "a" ≫
+
+  φ₀ :
+    hom (ap₀ (interval ⊗ interval) ("a" ∷ []))
+      (ap₀ (ap₁ (interval ⊗ interval) ("a" ≔ #1 ∷ [])) ex₀)
+      (east , east)
+  φ₀ = * , 𝕀.idn refl
+
+  ex₁ : obj (ap₀ (interval ⇒ interval) ("a" ∷ []))
+  ex₁ .ap₀ Γ .ap₀ (γ , west) = east
+  ex₁ .ap₀ Γ .ap₀ (γ , east) = west
+  ex₁ .ap₀ Γ .ap₀ (γ , walk φ) = walk (¬ φ)
+  ex₁ .ap₀ Γ .ap₁ {γ₀ , west} {γ₁ , west} (p , *) = *
+  ex₁ .ap₀ Γ .ap₁ {γ₀ , west} {γ₁ , east} (p , ())
+  ex₁ .ap₀ Γ .ap₁ {γ₀ , west} {γ₁ , walk φ} (p , f) = 𝕀.cmp (𝕀.¬-rsp f) (𝕀.inv 𝕀.¬-#0)
+  ex₁ .ap₀ Γ .ap₁ {γ₀ , east} {γ₁ , west} (p , ())
+  ex₁ .ap₀ Γ .ap₁ {γ₀ , east} {γ₁ , east} (p , *) = *
+  ex₁ .ap₀ Γ .ap₁ {γ₀ , east} {γ₁ , walk φ} (p , f) = 𝕀.cmp (𝕀.¬-rsp f) (𝕀.inv 𝕀.¬-#1)
+  ex₁ .ap₀ Γ .ap₁ {γ₀ , walk φ} {γ₁ , west} (p , f) = 𝕀.cmp 𝕀.¬-#0 (𝕀.¬-rsp f)
+  ex₁ .ap₀ Γ .ap₁ {γ₀ , walk φ} {γ₁ , east} (p , f) = 𝕀.cmp 𝕀.¬-#1 (𝕀.¬-rsp f)
+  ex₁ .ap₀ Γ .ap₁ {γ₀ , walk φ} {γ₁ , walk φ₁} (p , f) = 𝕀.¬-rsp f
+  ex₁ .ap₁ {x} {y} f {e , west} = *
+  ex₁ .ap₁ {x} {y} f {e , east} = *
+  ex₁ .ap₁ {x} {y} f {e , walk φ} = 𝕀.idn refl
+
+  φ₁ :
+    hom (ap₀ interval ("a" ∷ []))
+      (ap₀ (ap₀ ex₁ _) (loop , west))
+      east
+  φ₁ = *
