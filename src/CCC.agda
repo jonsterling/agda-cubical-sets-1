@@ -226,3 +226,12 @@ module Examples where
       (ap₀ (ap₀ ex₁ _) (loop , west))
       east
   φ₁ = *
+
+  φ₂ :
+    hom (ap₀ (interval ⇒ interval) ("a" ∷ []))
+      ex₁
+      ex₁
+  -- normally we would just use refl here but this is more interesting
+  φ₂ {x} {γ , west} = *
+  φ₂ {x} {γ , east} = *
+  φ₂ {x} {γ , walk φ} = 𝕀.¬-rsp (𝕀.idn refl)
