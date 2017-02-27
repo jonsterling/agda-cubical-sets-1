@@ -35,19 +35,53 @@ open C
 ! {𝒳 = 𝒳} .ap₀ x = S.!
 ! {𝒳 = 𝒳} .ap₁ f = *
 
+_⊕_ : ∀ {I} (𝒳 𝒴 : Presheaf I) → Presheaf I
+(𝒳 ⊕ 𝒴) .ap₀ i = ap₀ 𝒳 i S.⊕ ap₀ 𝒴 i
+(𝒳 ⊕ 𝒴) .ap₁ f = S.[ ap₁ 𝒳 f ⊕ ap₁ 𝒴 f ]
+(𝒳 ⊕ 𝒴) .ap₂ α {T.inl x} = S.⊕.inl (ap₂ 𝒳 α)
+(𝒳 ⊕ 𝒴) .ap₂ α {T.inr y} = S.⊕.inr (ap₂ 𝒴 α)
+(𝒳 ⊕ 𝒴) .coh-idn {x} {T.inl a} = S.⊕.inl (coh-idn 𝒳)
+(𝒳 ⊕ 𝒴) .coh-idn {x} {T.inr b} = S.⊕.inr (coh-idn 𝒴)
+(𝒳 ⊕ 𝒴) .coh-cmp g f {T.inl a} = S.⊕.inl (coh-cmp 𝒳 g f)
+(𝒳 ⊕ 𝒴) .coh-cmp g f {T.inr b} = S.⊕.inr (coh-cmp 𝒴 g f)
+
+inl : ∀ {I} {𝒳 𝒴 : Presheaf I} → ≪Presheaf≫ I ⊧ 𝒳 ⇾ 𝒳 ⊕ 𝒴
+inl {I}{𝒳}{𝒴} .ap₀ i = S.inl
+inl {I}{𝒳}{𝒴} .ap₁ f = S.⊕.inl (idn₀ (ap₀ 𝒳 _))
+
+inr : ∀ {I} {𝒳 𝒴 : Presheaf I} → ≪Presheaf≫ I ⊧ 𝒴 ⇾ 𝒳 ⊕ 𝒴
+inr {I}{𝒳}{𝒴} .ap₀ i = S.inr
+inr {I}{𝒳}{𝒴} .ap₁ f = S.⊕.inr (idn₀ (ap₀ 𝒴 _))
+
+[_,_]
+  : ∀ {I} {𝒳 𝒴 𝒵 : Presheaf I}
+  → (α : ≪Presheaf≫ I ⊧ 𝒳 ⇾ 𝒵)
+  → (β : ≪Presheaf≫ I ⊧ 𝒴 ⇾ 𝒵)
+  → ≪Presheaf≫ I ⊧ 𝒳 ⊕ 𝒴 ⇾ 𝒵
+[ α , β ] .ap₀ i = S.[ ap₀ α i , ap₀ β i ]
+[ α , β ] .ap₁ f {T.inl a} = ap₁ α f
+[ α , β ] .ap₁ f {T.inr b} = ap₁ β f
+
+[_⊕_]
+  : ∀ {I} {𝒳 𝒴 𝒞 𝒟 : Presheaf I}
+  → (α : ≪Presheaf≫ I ⊧ 𝒳 ⇾ 𝒞)
+  → (β : ≪Presheaf≫ I ⊧ 𝒴 ⇾ 𝒟)
+  → ≪Presheaf≫ I ⊧ 𝒳 ⊕ 𝒴 ⇾ 𝒞 ⊕ 𝒟
+[ α ⊕ β ] = [ cmp₀ (≪Presheaf≫ _) inl α , cmp₀ (≪Presheaf≫ _) inr β ]
+
 _⊗_ : ∀ {I} (𝒳 𝒴 : Presheaf I) → Presheaf I
-(𝒳 ⊗ 𝒴) .ap₀ x = ap₀ 𝒳 x S.⊗ ap₀ 𝒴 x
+(𝒳 ⊗ 𝒴) .ap₀ i = ap₀ 𝒳 i S.⊗ ap₀ 𝒴 i
 (𝒳 ⊗ 𝒴) .ap₁ f = S.⟨ ap₁ 𝒳 f ⊗ ap₁ 𝒴 f ⟩
 (𝒳 ⊗ 𝒴) .ap₂ α = ap₂ 𝒳 α , ap₂ 𝒴 α
 (𝒳 ⊗ 𝒴) .coh-idn = coh-idn 𝒳 , coh-idn 𝒴
 (𝒳 ⊗ 𝒴) .coh-cmp g f = coh-cmp 𝒳 g f , coh-cmp 𝒴 g f
 
 fst : ∀ {I} {𝒳 𝒴 : Presheaf I} → ≪Presheaf≫ I ⊧ 𝒳 ⊗ 𝒴 ⇾ 𝒳
-fst {I}{𝒳}{𝒴} .ap₀ x = S.fst
+fst {I}{𝒳}{𝒴} .ap₀ i = S.fst
 fst {I}{𝒳}{𝒴} .ap₁ f = idn₀ (ap₀ 𝒳 _)
 
 snd : ∀ {I} {𝒳 𝒴 : Presheaf I} → ≪Presheaf≫ I ⊧ 𝒳 ⊗ 𝒴 ⇾ 𝒴
-snd {I}{𝒳}{𝒴} .ap₀ x = S.snd
+snd {I}{𝒳}{𝒴} .ap₀ i = S.snd
 snd {I}{𝒳}{𝒴} .ap₁ f = idn₀ (ap₀ 𝒴 _)
 
 ⟨_,_⟩
