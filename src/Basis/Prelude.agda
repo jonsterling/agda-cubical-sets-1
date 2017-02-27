@@ -19,19 +19,6 @@ module T where
   open import Basis.Prelude.Sum public
   open import Basis.Prelude.Terminal public
 open T public
-  hiding (idn)
-  hiding (cmp)
-  hiding (¬_)
-  hiding (𝟘)
-  hiding (¡)
-  hiding (_⊗_)
-  hiding (fst)
-  hiding (snd)
-  hiding (⟨_,_⟩)
-  hiding (⟨_⊗_⟩)
-  hiding (Σ)
-  hiding (_⊕_)
-  hiding (inl)
-  hiding (inr)
-  hiding (𝟙)
-  hiding (!)
+  using (_▸_)
+  using (_,_)
+  using (*)
