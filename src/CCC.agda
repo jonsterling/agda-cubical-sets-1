@@ -117,33 +117,43 @@ module ⇒ {I} (𝒳 𝒴 : Presheaf I) where
 open ⇒ public
   using (_⇒_)
 
-module ƛ {I} {Γ 𝒳 𝒴 : Presheaf I} (α : ≪Presheaf≫ I ⊧ Γ ⊗ 𝒳 ⇾ 𝒴) where
-  curry₀₀
-    : ∀ {i} (γ : obj (ap₀ Γ i))
-    → ≪Presheaf≫ I ⊧ (≪ I [-, i ]≫ ⊗ 𝒳) ⇾ 𝒴
-  curry₀₀ γ = cmp₀ (≪Presheaf≫ _) α ⟨ ⊢yoneda ⊗ idn₀ (≪Presheaf≫ I) ⟩
-    where ⊢yoneda = ap₀ (≅.from (C.⊢yoneda Γ)) γ
+module ƛ {I} {𝒳 𝒴 : Presheaf I} where
+  module _ {Γ} (α : ≪Presheaf≫ I ⊧ Γ ⊗ 𝒳 ⇾ 𝒴) where
+    curry₀₀
+      : ∀ {i} (γ : obj (ap₀ Γ i))
+      → ≪Presheaf≫ I ⊧ (≪ I [-, i ]≫ ⊗ 𝒳) ⇾ 𝒴
+    curry₀₀ γ = cmp₀ (≪Presheaf≫ _) α ⟨ ⊢yoneda ⊗ idn₀ (≪Presheaf≫ I) ⟩
+      where ⊢yoneda = ap₀ (≅.from (C.⊢yoneda Γ)) γ
 
-  curry₀₁
-    : ∀ {i γ δ}
-    → hom (ap₀ Γ i) γ δ
-    → hom (ap₀ (𝒳 ⇒ 𝒴) i) (curry₀₀ γ) (curry₀₀ δ)
-  curry₀₁ p = ap₁ (ap₀ α _) (ap₁ (ap₁ Γ _) p , idn₀ (ap₀ 𝒳 _))
+    curry₀₁
+      : ∀ {i γ δ}
+      → hom (ap₀ Γ i) γ δ
+      → hom (ap₀ (𝒳 ⇒ 𝒴) i) (curry₀₀ γ) (curry₀₀ δ)
+    curry₀₁ p = ap₁ (ap₀ α _) (ap₁ (ap₁ Γ _) p , idn₀ (ap₀ 𝒳 _))
 
-  curry₀ : ∀ i → ≪Setoid≫ ⊧ ap₀ Γ i ⇾ ap₀ (𝒳 ⇒ 𝒴) i
-  curry₀ i .ap₀ = curry₀₀
-  curry₀ i .ap₁ = curry₀₁
+    curry₀ : ∀ i → ≪Setoid≫ ⊧ ap₀ Γ i ⇾ ap₀ (𝒳 ⇒ 𝒴) i
+    curry₀ i .ap₀ = curry₀₀
+    curry₀ i .ap₁ = curry₀₁
 
-  curry₁
-    : ∀ {i j}
-    → (f : Op I ⊧ i ⇾ j)
-    → ≪Setoid≫
-    ⊧  cmp₀ ≪Setoid≫ (curry₀ j) (ap₁ Γ f)
-    ⇔ cmp₀ ≪Setoid≫ (ap₁ (𝒳 ⇒ 𝒴) f) (curry₀ i)
-  curry₁ g {γ} = ap₁ (ap₀ α _) (inv₀ (ap₀ Γ _) (coh-cmp Γ _ g) , idn₀ (ap₀ 𝒳 _))
+    curry₁
+      : ∀ {i j}
+      → (f : Op I ⊧ i ⇾ j)
+      → ≪Setoid≫
+      ⊧  cmp₀ ≪Setoid≫ (curry₀ j) (ap₁ Γ f)
+      ⇔ cmp₀ ≪Setoid≫ (ap₁ (𝒳 ⇒ 𝒴) f) (curry₀ i)
+    curry₁ g {γ} = ap₁ (ap₀ α _) (inv₀ (ap₀ Γ _) (coh-cmp Γ _ g) , idn₀ (ap₀ 𝒳 _))
 
-  ƛ : ≪Presheaf≫ I ⊧ Γ ⇾ 𝒳 ⇒ 𝒴
-  ƛ .ap₀ = curry₀
-  ƛ .ap₁ = curry₁
+    ƛ : ≪Presheaf≫ I ⊧ Γ ⇾ 𝒳 ⇒ 𝒴
+    ƛ .ap₀ = curry₀
+    ƛ .ap₁ = curry₁
+
+  -- FIXME: can we use Yoneda here?
+  ap : ≪Presheaf≫ I ⊧ (𝒳 ⇒ 𝒴) ⊗ 𝒳 ⇾ 𝒴
+  ap .ap₀ i .ap₀ (α , x) = ap₀ (ap₀ α i) (idn₀ I , x)
+  ap .ap₀ i .ap₁ {_}{α₁ , _} (f , g) = cmp₀ (ap₀ 𝒴 i) (ap₁ (ap₀ α₁ i) (idn₁ I , g)) f
+  ap .ap₁ f {α , _} =
+    cmp₀ (ap₀ 𝒴 _)
+      (ap₁ α f)
+      (ap₁ (ap₀ α _) (cmp₁ I (inv₁ I (coh-λ I)) (coh-ρ I) , idn₀ (ap₀ 𝒳 _)))
 open ƛ public
   using (ƛ)
