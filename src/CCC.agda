@@ -192,9 +192,8 @@ module ƛ {I} {𝒳 𝒴 : Presheaf I} where
 open ƛ public
   using (ƛ)
 
-open Presheaf
-
 module Examples where
+  open Presheaf
 
   ex₀ : obj (ap₀ (interval ⊗ interval) ("a" ∷ []))
   ex₀ = east , walk ≪ "a" ≫
