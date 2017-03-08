@@ -6,15 +6,15 @@ module 𝔾 where
   data hom : (m n : ℕ) → Set where
     idn : ∀ {m} → hom m m
     cmp : ∀ {m n o} (g : hom n o) (f : hom m n) → hom m o
-    dom : ∀ {m} → hom (succ m) m
-    cod : ∀ {m} → hom (succ m) m
+    dom : ∀ {m} → hom m (succ m)
+    cod : ∀ {m} → hom m (succ m)
 
   data rel : ∀ {m n} (f g : hom m n) → Set where
     idn : ∀ {m n f} → rel {m}{n} f f
     cmp : ∀ {m n f g h} (β : rel {m}{n} g h) (α : rel {m}{n} f g) → rel {m}{n} f h
     inv : ∀ {m n f g} (α : rel {m}{n} f g) → rel {m}{n} g f
-    dom : ∀ {m} → rel {succ (succ m)}{m} (cmp dom dom) (cmp cod dom)
-    cod : ∀ {m} → rel {succ (succ m)}{m} (cmp dom cod) (cmp cod cod)
+    dom : ∀ {m} → rel {m}{succ (succ m)} (cmp dom dom) (cmp cod dom)
+    cod : ∀ {m} → rel {m}{succ (succ m)} (cmp dom cod) (cmp cod cod)
     coh-λ : ∀ {m n f} → rel {m}{n} (cmp idn f) f
     coh-ρ : ∀ {m n f} → rel {m}{n} (cmp f idn) f
     coh-α : ∀ {m n o p f g h} → rel (cmp {m}{n}{p} (cmp {n}{o}{p} h g) f) (cmp {m}{o}{p} h (cmp {m}{n}{o} g f))
