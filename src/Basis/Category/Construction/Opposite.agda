@@ -1,7 +1,7 @@
 module Basis.Category.Construction.Opposite where
 
 open import Basis.Category.Boot
-open import Basis.Globular
+open import Basis.Graph
 
 Op : Category → Category
 ⟪ Op 𝒳 ⟫ .● = ● ⟪ 𝒳 ⟫

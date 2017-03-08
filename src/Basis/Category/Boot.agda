@@ -1,12 +1,12 @@
 module Basis.Category.Boot where
 
-open import Basis.Globular
+open import Basis.Graph
 open import Basis.Prelude
 open import Basis.Syntax public
 
 record Category : Set where
   no-eta-equality
-  field ⟪_⟫ : Globular
+  field ⟪_⟫ : Graph
   open G.Cell.Syntax {⟪_⟫}
   field
     idn₀ : ∀ {x}

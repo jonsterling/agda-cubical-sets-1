@@ -13,7 +13,7 @@ open import Basis.Category.Construction.Terminal
 open import Basis.Category.Functor
 open import Basis.Category.Isomorphism
 open import Basis.Category.Transform
-open import Basis.Globular
+open import Basis.Graph
 open import Basis.Setoid.Boot
 open import Basis.Setoid.Construction.Hom
 open import Basis.Setoid.Map

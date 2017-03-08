@@ -6,7 +6,7 @@ open import Basis.Category.Isomorphism
 open import Basis.Category.Transform
 open import Basis.Category.Construction.Core
 open import Basis.Category.Construction.Functor
-open import Basis.Globular
+open import Basis.Graph
 
 open ≅
 

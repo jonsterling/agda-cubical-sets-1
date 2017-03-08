@@ -2,7 +2,7 @@ module Basis.Category.Construction.Comma where
 
 open import Basis.Category.Boot
 open import Basis.Category.Functor
-open import Basis.Globular
+open import Basis.Graph
 
 module ↓ where
   record Cell₀

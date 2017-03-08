@@ -2,7 +2,7 @@ module Basis.Category.Construction.Core where
 
 open import Basis.Category.Boot
 open import Basis.Category.Isomorphism
-open import Basis.Globular
+open import Basis.Graph
 
 open ≅
 

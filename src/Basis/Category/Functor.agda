@@ -1,7 +1,7 @@
 module Basis.Category.Functor where
 
 open import Basis.Category.Boot
-open import Basis.Globular
+open import Basis.Graph
 
 record Functor (𝒳 𝒴 : Category) : Set where
   no-eta-equality

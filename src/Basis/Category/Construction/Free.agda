@@ -1,10 +1,10 @@
 module Basis.Category.Construction.Free where
 
 open import Basis.Category.Boot
-open import Basis.Globular
+open import Basis.Graph
 open import Basis.Prelude
 
-module Free (A : Globular) where
+module Free (A : Graph) where
   infixl 6 _≫_
   infixl 5 _⋙_
 

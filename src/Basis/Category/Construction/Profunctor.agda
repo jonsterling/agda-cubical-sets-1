@@ -7,7 +7,7 @@ open import Basis.Category.Construction.Product
 open import Basis.Category.Construction.Setoid
 open import Basis.Category.Functor
 open import Basis.Category.Transform
-open import Basis.Globular
+open import Basis.Graph
 open import Basis.Prelude
 open import Basis.Setoid.Boot
 open import Basis.Setoid.Construction.Hom

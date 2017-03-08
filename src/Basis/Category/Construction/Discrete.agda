@@ -1,7 +1,7 @@
 module Basis.Category.Construction.Discrete where
 
 open import Basis.Category.Boot
-open import Basis.Globular
+open import Basis.Graph
 open import Basis.Prelude
 
 Discrete : Set → Category

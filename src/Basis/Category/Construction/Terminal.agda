@@ -1,7 +1,7 @@
 module Basis.Category.Construction.Terminal where
 
 open import Basis.Category.Boot
-open import Basis.Globular
+open import Basis.Graph
 open import Basis.Prelude
 
 𝟙 : Category

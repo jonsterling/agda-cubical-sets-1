@@ -3,7 +3,7 @@ module Basis.Category.Construction.Functor where
 open import Basis.Category.Boot
 open import Basis.Category.Functor
 open import Basis.Category.Transform
-open import Basis.Globular
+open import Basis.Graph
 
 ≪Functor≫ : Category → Category → Category
 ⟪ ≪Functor≫ 𝒳 𝒴 ⟫ .● = Functor 𝒳 𝒴

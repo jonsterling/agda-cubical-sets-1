@@ -1,7 +1,7 @@
 module Basis.Category.Isomorphism where
 
 open import Basis.Category.Boot
-open import Basis.Globular
+open import Basis.Graph
 
 module ≅ where
   infix 0 _⊧_≅_
