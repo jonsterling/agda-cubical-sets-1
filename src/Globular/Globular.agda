@@ -44,3 +44,52 @@ Globes .coh-ω = 𝔾.coh-ω
 
 Globular : Set
 Globular = C.Presheaf Globes
+
+≪Globular≫ : Category
+≪Globular≫ = C.≪Presheaf≫ Globes
+
+-- data List≈ {A : Set} (rel : A → A → Set) : List A → List A → Set where
+--   [] : List≈ rel [] []
+--   _∷_ : ∀ {x y xs ys} → rel x y → List≈ rel xs ys → List≈ rel (x ∷ xs) (y ∷ ys)
+
+-- ≪List≫ : Setoid → Setoid
+-- ≪List≫ A .S.obj = List  (A .S.obj)
+-- ≪List≫ A .S.hom = List≈ (A .S.hom)
+-- ≪List≫ A .idn₀ {[]} = []
+-- ≪List≫ A .idn₀ {x ∷ xs} = A .idn₀ ∷ ≪List≫ A .S.idn₀
+-- ≪List≫ A .cmp₀ [] p = p
+-- ≪List≫ A .cmp₀ (g ∷ q) (f ∷ p) = A .cmp₀ g f ∷ ≪List≫ A .cmp₀ q p
+-- ≪List≫ A .inv₀ [] = []
+-- ≪List≫ A .inv₀ (f ∷ p) = A .inv₀ f ∷ ≪List≫ A .inv₀ p
+
+-- ≪map≫ : {A B : Set} → (A → B) → (List A → List B)
+-- ≪map≫ f [] = []
+-- ≪map≫ f (x ∷ xs) = f x ∷ ≪map≫ f xs
+
+-- {-# TERMINATING #-}
+-- Unlabeled : Globular
+-- Unlabeled .ap₀ zero = S.𝟙
+-- Unlabeled .ap₀ (succ n) = ≪List≫ (Unlabeled .ap₀ n)
+-- Unlabeled .ap₁ idn = S.idn
+-- Unlabeled .ap₁ (cmp q p) = S.cmp (Unlabeled .ap₁ p) (Unlabeled .ap₁ q)
+-- Unlabeled .ap₁ {y = zero}   dom .ap₀ xs = *
+-- Unlabeled .ap₁ {y = succ n} dom .ap₀ xs = ≪map≫ (ap₀ (ap₁ Unlabeled {y = n} dom)) xs
+-- Unlabeled .ap₁ {y = zero} dom .ap₁ p = *
+-- Unlabeled .ap₁ {y = succ n} dom .ap₁ [] = []
+-- Unlabeled .ap₁ {y = succ n} dom .ap₁ (f ∷ p) = ap₁ (ap₁ Unlabeled {y = n} dom) f ∷ ap₁ (ap₁ Unlabeled {y = succ n} dom) p
+-- Unlabeled .ap₁ {y = zero}   cod .ap₀ xs = *
+-- Unlabeled .ap₁ {y = succ n} cod .ap₀ xs = ≪map≫ (ap₀ (ap₁ Unlabeled {y = n} cod)) xs
+-- Unlabeled .ap₁ {y = zero} cod .ap₁ p = *
+-- Unlabeled .ap₁ {y = succ n} cod .ap₁ [] = []
+-- Unlabeled .ap₁ {y = succ n} cod .ap₁ (f ∷ p) = ap₁ (ap₁ Unlabeled {y = n} cod) f ∷ ap₁ (ap₁ Unlabeled {y = succ n} cod) p
+-- Unlabeled .ap₂ {y = n} idn = Unlabeled .ap₀ n .S.idn₀
+-- Unlabeled .ap₂ {y = n} (cmp q p) = Unlabeled .ap₀ n .S.cmp₀ (Unlabeled .ap₂ q) (Unlabeled .ap₂ p)
+-- Unlabeled .ap₂ {y = n} (inv p) = Unlabeled .ap₀ n .inv₀ (Unlabeled .ap₂ p)
+-- Unlabeled .ap₂ {y = n} dom = {!!}
+-- Unlabeled .ap₂ {y = n} cod = {!!}
+-- Unlabeled .ap₂ {y = n} rel.coh-λ = Unlabeled .ap₀ n .S.idn₀
+-- Unlabeled .ap₂ {y = n} rel.coh-ρ = Unlabeled .ap₀ n .S.idn₀
+-- Unlabeled .ap₂ {y = n} rel.coh-α = Unlabeled .ap₀ n .S.idn₀
+-- Unlabeled .ap₂ {y = n} (rel.coh-ω q p) = {!!}
+-- Unlabeled .coh-idn {n} = Unlabeled .ap₀ n .S.idn₀
+-- Unlabeled .coh-cmp {m}{n}{o} g f = Unlabeled .ap₀ o .S.idn₀
