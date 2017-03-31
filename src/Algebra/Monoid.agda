@@ -5,7 +5,7 @@ open import Basis.Setoid
 open import Basis.Category
 open import Basis.Graph
 
-import Algebra.Semigroup as SG
+import Algebra.Semigroup
 
 record Monoid : Set where
   no-eta-equality
@@ -60,7 +60,7 @@ open Monoid/Hom public
 ≪Monoid≫ .coh-ω {M} {N} {O} {F} {G} {H} {I} α β = C.≪Setoid≫ .coh-ω {M .car} {N .car} {O .car} {F .ap} {G .ap} {H .ap} {I .ap} α β
 
 module _ where
-  open SG
+  open Algebra.Semigroup
 
   Monoid⇒Semigroup : Monoid → Semigroup
   Monoid⇒Semigroup M .car = M .car
