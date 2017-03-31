@@ -106,3 +106,11 @@ Monoid⇒Semigroup M .coh-α = M .coh-α
 ≪Monoid≫ .coh-ρ {M} {N} = N .car .idn₀
 ≪Monoid≫ .coh-α {M} {N} {O} {P} = P .car .idn₀
 ≪Monoid≫ .coh-ω {M} {N} {O} {F} {G} {H} {I} α β = C.≪Setoid≫ .coh-ω {M .car} {N .car} {O .car} {F .ap} {G .ap} {H .ap} {I .ap} α β
+
+≪Monoid⇒Semigroup≫ : Functor ≪Monoid≫ ≪Semigroup≫
+≪Monoid⇒Semigroup≫ .ap₀ = Monoid⇒Semigroup
+≪Monoid⇒Semigroup≫ .ap₁ F .ap = F .ap
+≪Monoid⇒Semigroup≫ .ap₁ F .mul = F .mul
+≪Monoid⇒Semigroup≫ .ap₂ α = α
+≪Monoid⇒Semigroup≫ .coh-idn {M} = M .car .idn₀
+≪Monoid⇒Semigroup≫ .coh-cmp {M} {N} {O} g f = O .car .idn₀
