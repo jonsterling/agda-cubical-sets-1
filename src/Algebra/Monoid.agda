@@ -29,6 +29,8 @@ record Monoid : Set where
       : ∀ x y z
       → car ⊧ (x · y) · z ≐ (x · (y · z))
 
+  {-# DISPLAY S.Map.ap₀ mul (m , n) = _·_ m n #-}
+
 open Monoid public
 
 record Monoid/Hom (M N : Monoid) : Set where

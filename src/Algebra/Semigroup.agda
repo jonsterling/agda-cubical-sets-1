@@ -20,6 +20,8 @@ record Semigroup : Set where
       : ∀ x y z
       → car ⊧ (x · y) · z ≐ (x · (y · z))
 
+  {-# DISPLAY S.Map.ap₀ mul (m , n) = _·_ m n #-}
+
 record Semigroup/Hom (S T : Semigroup) : Set where
   open Semigroup
   field
