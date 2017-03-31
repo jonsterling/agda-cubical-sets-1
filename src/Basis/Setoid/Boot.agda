@@ -13,6 +13,10 @@ record Setoid : Set where
     idn₀ : ∀ {x} → hom x x
     cmp₀ : ∀ {x y z} → hom y z → hom x y → hom x z
     inv₀ : ∀ {x y} → hom x y → hom y x
+
+  _⊧_≐_ = hom
+
 open Setoid public
 {-# DISPLAY Setoid.idn₀ A = ↻ #-}
 {-# DISPLAY Setoid.cmp₀ A g f = g ∘ f #-}
+{-# DISPLAY Setoid.hom = _⊧_≐_ #-}

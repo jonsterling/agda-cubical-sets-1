@@ -5,11 +5,6 @@ open import Basis.Setoid
 open import Basis.Category
 open import Basis.Graph
 
-_⊧_≐_ : (S : Setoid) → S .obj → S .obj → Set
-_⊧_≐_ = Setoid.hom
-
-{-# DISPLAY Setoid.hom = _⊧_≐_ #-}
-
 record Semigroup : Set where
   no-eta-equality
   field
